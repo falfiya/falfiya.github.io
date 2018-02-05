@@ -1,0 +1,1 @@
+def debrujin(a,n)b=a.length;s=a[0]*n;q=0;while s.length<b**n-1+n;s[s[1-n,s.length]+f=a[q]]?(q+=1;q<b||(q=a.index(s[-1])+1;s=s[0...-1])):(s+=f;q=0);end;return s;end

@@ -1,0 +1,28 @@
+{
+  "name": "javascript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "none.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Coalpha/javascript.git"
+  },
+  "author": "Coalpha",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Coalpha/javascript/issues"
+  },
+  "homepage": "https://github.com/Coalpha/javascript#readme",
+  "devDependencies": {
+    "eslint": "^4.8.0",
+    "eslint-config-airbnb-base": "^12.0.2",
+    "eslint-plugin-import": "^2.7.0",
+    "express": "^4.16.2"
+  },
+  "dependencies": {
+    "ramda": "^0.25.0"
+  }
+}

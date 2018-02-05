@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta charset="utf-8">
+    <link rel="shortcut icon" type="image/png" href="pm.png"/>
+    <title>Project M Stock Counter</title>
+    <style media="screen">
+        @import "https://fonts.googleapis.com/css?family=Space+Mono:700";
+        body {
+            margin:0px;
+            user-select:none;
+            /* The above just stops the highlighty stuff
+            also, såns*/
+            font-family: "Space Mono";
+        }
+        .titleBackground {
+            color:white;
+            text-align:center;
+            font-size:40px;
+            line-height:200px;
+            background:url(http://projectmirror.no-ip.org/background.jpg) no-repeat fixed;
+            /* Fucking hotlinking asshole. */
+            background-size: cover;
+            height:200px;
+        }
+        .stupidFlexBoxContainer {
+            display:flex;
+            /* I really hate and love the above statment */
+            border:none;
+        }
+        .namePlate {
+            border-radius:2px;
+            flex: 1;
+            background: #f2f2f2;
+            border: 1px solid #e6e6e6;
+            box-sizing: border-box;
+            padding:5px;
+            text-align:center;
+            transition:all 200ms;
+        }
+        #keven {
+            display: none;
+            text-align: center;
+            cursor:pointer;
+        }
+        .controler {
+            opacity:0;
+            transition: all 600ms;
+        }
+        </style>
+        <script>/*jshint esversion: 6 */var my={Mailbox:{z:0,x:0,c:0,k:0}};</script>
+        <style>
+        .coolFlexBoxContainer {
+            top:20px;
+            display:flex;
+            /* I really hate and love the above statment */
+            border:none;
+            flex-flow: row wrap;
+            justify-content: space-around;
+        }
+        .subtract {
+            padding:10px;
+            border:5px solid white;
+            border-radius:2px;
+            height:80px;
+            width:80px;
+            background-color:transparent;
+            font-size:40px;
+            color:white;
+        }
+        .add {
+            padding:10px;
+            border:5px solid white;
+            border-radius:2px;
+            height:80px;
+            width:80px;
+            background-color:transparent;
+            font-size:40px;
+            color:white;
+        }
+        .simplify {
+            padding:10px;
+            top:20px;
+            border:5px solid white;
+            border-radius:2px;
+            height:80px;
+            width:80px;
+            background-color:transparent;
+            font-size:40px;
+            color:white;
+        }
+        .controlerChoser {
+            padding:10px;
+            top:20px;
+            border:5px solid white;
+            border-radius:2px;
+            height:80px;
+            width:80px;
+            background-color:transparent;
+            font-size:40px;
+            color:white;
+        }
+        .icon {
+            font-size:48px;
+        }
+        button {
+            color:white;
+            font-size:48px;
+            margin-top: 20px;
+            display:flex;
+            overflow:hidden;
+            transition:all 0.1s;
+        }
+        button:active {
+            border-color:#2E86C1;
+            color:#2E86C1;
+        }
+        button:focus {outline:0;}
+        .text {
+            font-size: 26px;
+            word-wrap: break-word;
+            padding:10px;
+            height:560vw;
+        }
+        @keyframes flash {
+            0%{background: #f2f2f2;}
+            50%{background: #ECFFAA;}
+            100%{background: #f2f2f2;}
+        }
+    </style>
+  </head>
+  <body onclick='kCount=0;'>
+      <!-- Before reading this code, please make yourself familiar with z, x, c, and k.
+      z=cole,x=marcus,c=joshua and k=keven. They are based on the key position of the
+      ui on this page. single letter names and regular names may be used interchangably
+      throughout the document depending on what Cole has decided is the most efficient
+      and makes the most sense. -->
+      <div class="titleBackground">
+          <div class="coolFlexBoxContainer">
+              <button onclick='subtractSelected()' class='subtract'><i class="material-icons icon">remove</i></button>
+              <button onclick='simplify()' class='simplify'><i class="material-icons icon">filter_list</i></button>
+              <button onclick='controlerChoser()' class='controlerChoser'><i class="material-icons icon">videogame_asset</i></button>
+              <button onclick='addSelected()' class='add'><i class="material-icons icon">add</i></button>
+          </div>
+      </div>
+      <div class="stupidFlexBoxContainer">
+          <div onclick='select.z()' id='cole' class='namePlate'>
+              Cole:<span id='z'></span>       <i id='zc' class="material-icons controler">videogame_asset</i>
+          </div>
+          <div onclick='select.x()' id='marcus' class="namePlate">
+              Marcus:<span id='x'></span>       <i id='xc' class="material-icons controler">videogame_asset</i>
+          </div>
+          <div onclick='select.c()' id='joshua' class="namePlate">
+              Joshua:<span id='c'></span>       <i id='cc' class="material-icons controler">videogame_asset</i>
+          </div>
+          <div onclick='select.scrub()' id='keven' class="namePlate">
+              Keven:<span id='k'></span>       <i class="material-icons">videogame_asset</i>
+          </div>
+      </div>
+      <div onclick='deselectAll()' class="text">
+          One SD is -0.5 of a stock for you. In a four stock game, the maximum that you can subtract from your stocks is 2 stocks.
+      </div>
+      <script type="text/javascript">
+          var d=document;
+          //I'll optimise it for characters later, Marcus.
+          d.titleState=0; //This controls wether the title switches
+          var isSelected={
+              /* isSelected holds the selection states of each player.
+              The keys should only return numerical values so make
+              sure that you remember that. Otherwise things might
+              break. I haven't tried so I dunno. */
+              z:0,
+              x:0,
+              c:0,
+              k:0
+          };
+          var dynamicDocumentTitle=0;
+          if(dynamicDocumentTitle){dynamicDocumentTitle=_=>{
+              d.titleState^=1;
+              //If the titleState is true, it's now false. Vice versa.
+              d.title=d.titleState&&'Project M'||'Stock Counter';
+              //Simplified if else statement. If the titleState is true
+              };
+              dynamicDocumentTitle=setInterval(dynamicDocumentTitle,600);
+	  	  }
+          var kCount=0;
+          var keySelectorObject={
+              /*
+              Cuz you see, I get really fucking tired of keven just barging in whenever he wants.
+              He just plugs another controler in and starts playing.
+              Like, wtf. How's that fair? Also, he's better than all of us by a lot.
+              It's fun to play with Joshua and Marcus because it's possible to win.
+              Also, this object is what controls keystrokes. Maybe don't mess with it.
+              */
+              k(){
+                  select.scrub();
+                  kCount++;
+                  kCount>395&&document.write('ded.'); //jshint ignore:line
+              },
+              z(){
+                  select.z();
+              },
+              x(){
+                  select.x();
+              },
+              c(){
+                  select.c();
+              },
+              r(){
+                  location='//rick.caseif.net';
+              },
+              g(){
+                  controlerChoser();
+              },
+              s(){
+                  simplify();
+              },
+              Shift(){
+                  deselectAll();
+              },
+              i(){
+                  randomly();
+              }
+          };
+          keySelectorObject['=']=addSelected;
+          keySelectorObject['-']=subtractSelected;
+          var keySelector=(e)/*Look! It's an underscore. It's a plane. It's Marcus...*/=>{
+          var currentFunction=keySelectorObject[e.key];
+          console.log(e.key);
+          if(e.key!='k'){kCount=0;}
+              //I was thinking switch, but that's slower.
+              currentFunction&&currentFunction(); // jshint ignore:line
+          };
+          var select = {
+              z(){
+                  isSelected.z^=1;
+                  /*Swaps it between 0 and 1.
+                  I know, I'm fucking awesome.
+                  "Less characters" -Marcus
+                  */
+                  choiceActive&&addChoiceControlerPlayer();//jshint ignore:line
+                  var element=d.getElementById('cole').style;
+                  if(isSelected.z){
+                      element.backgroundColor='#E91E4D';
+                  }else{
+                      element.backgroundColor='#f2f2f2';
+                  }
+              },
+              x(){
+                  isSelected.x^=1;
+                  choiceActive&&addChoiceControlerPlayer();//jshint ignore:line
+                  var element=d.getElementById('marcus').style;
+                  if(isSelected.x){
+                      element.backgroundColor='#29B6F6';
+                  }else{
+                      element.backgroundColor='#f2f2f2';
+                  }
+              },
+              c(){
+                  isSelected.c^=1;
+                  choiceActive&&addChoiceControlerPlayer();//jshint ignore:line
+                  var element=d.getElementById('joshua').style;
+                  if(isSelected.c){
+                      element.backgroundColor='#52BE80';
+                  }else{
+                      element.backgroundColor='#f2f2f2';
+                  }
+              },
+              scrub/*Keven*/(){
+                  isSelected.k^=1;
+                  var keven=d.getElementById('keven');
+                  keven.style.display=isSelected.k&&'block'||'none';
+              },
+          };
+          function setValue(id,number){
+              var element=d.getElementById(id);
+              element.innerHTML=number;
+          }
+          function getValue(id){
+              return +d.getElementById(id).innerHTML;
+          }
+          /*You know what's so cool about this? The numbers of stocks
+          that the webapp actually uses are stored in the dom.
+          */
+          function add(id,number){
+              var element=d.getElementById(id),
+                  value=+element.innerHTML;
+              element.innerHTML=value+number;
+          }
+          function subtract(id,number){
+              var element=d.getElementById(id),
+                  value=+element.innerHTML;
+              element.innerHTML=value-number;
+          }
+          function addSelected(){
+              for(var i in isSelected){
+                  /*Everyone probably knows how this works but whatever.
+                  This for statement goes through every key in the object
+                  "isSelected". Below, I'm testing for wether or not a
+                  particular player is selected. If that player is selected,
+                  I'm running the function add and I'm passing it the key
+                  name. jshint doesn't like the && though. ;)
+                  */
+                  isSelected[i]&&add(i,1);//jshint ignore:line
+              }
+          }
+          function subtractSelected(){
+              for(var i in isSelected){
+                  /*Everyone probably knows how this works but whatever.
+                  This for statement goes through every key in the object
+                  "isSelected". Below, I'm testing for wether or not a
+                  particular player is selected. If that player is selected,
+                  I'm running the function add and I'm passing it the key
+                  name. jshint doesn't like the && though. ;)
+                  */
+                  isSelected[i]&&subtract(i,1);//jshint ignore:line
+              }
+          }
+          function addInteger(number){
+              for(let ter in my.Mailbox){
+          /* Hahahaha xDDDD Letter in my mailbox. xD xP */
+              add(ter,number);
+              }
+          }
+          var baseId=['z','x','c'];
+          function getMinValue(){
+              var allValues=[],ids=Array.from(baseId);
+              isSelected.k&&ids.push('k');//jshint ignore:line
+              for(let ter of ids){
+                  allValues.push(getValue(ter));
+              }
+              return Math.min(...allValues);
+          }
+          function getCoreMinValue(){
+              var allValues=[],ids=Array.from(baseId);
+              for(let ter of ids){
+                  allValues.push(getValue(ter));
+              }
+              return Math.min(...allValues);
+          }
+          function simplify(){
+              addInteger(-getMinValue());
+          }
+          var l=localStorage;
+          function recordLocals(){
+              for(var i in isSelected){
+                  l.setItem(i,getValue(i));
+              }
+          }
+          function getSelected(){
+              /*Including Keven*/
+              var playersSelected=[];
+              for(var i in isSelected){
+                  isSelected[i]&&playersSelected.push(i);//jshint ignore:line
+              }
+              return playersSelected;
+          }
+          function getCoreSelected(){
+              var playersSelected=[];
+              for(var i of baseId){
+                  isSelected[i]&&playersSelected.push(i);//jshint ignore:line
+              }
+              return playersSelected;
+          }
+          function deselectAll(){
+              for(let person of baseId){
+                  isSelected[person]&&select[person]();//jshint ignore:line
+              }
+          }
+          function enableControler(id){
+              d.getElementById(id+'c').style.opacity=1;
+          }
+          function disableControlers(){
+              for(let ids of baseId){
+                  d.getElementById(ids+'c').style.opacity=0;
+              }
+          }
+          var choiceActive=0,choiceCounter=-1;//Yes, this does need to be at -1
+          var percentObject={
+              //Percent of the time that the first person gets the controler
+              zx:9.7,
+              zc:5.1,
+              xc:0.2
+          };
+          function controlerChoser(){
+              flash();
+              disableControlers();
+              deselectAll();
+              console.log('Beginning Controler Choice. Please chose two core players.');
+              choiceActive=1;
+          }
+          function addChoiceControlerPlayer(){
+              stopFlashing();
+              if(++choiceCounter){
+                  choiceCounter=-1;
+                  var people=getCoreSelected().join([]);
+                  choiceActive=0;
+                  enableControler(people[Math.random()*10>percentObject[people]?0:1]);
+              }
+          }
+          var namePlateId=['cole','marcus','joshua'];
+          function flash(){
+              for(let ids of namePlateId){
+                  d.getElementById(ids).style.animation='flash 1.5s infinite';
+              }
+          }
+          function stopFlashing(){
+              for(let ids of namePlateId){
+                  d.getElementById(ids).style.animation='';
+              }
+          }
+          var random;
+          function randomly(){
+              if(!random){
+                  random=setInterval(selectAtWill,200);
+              }else{
+                  clearInterval(random);
+                  random=0;
+              }
+          }
+          var numberAssignment=['scrub','x','z','c'];
+          function selectAtWill(){
+              select[numberAssignment[Math.floor(Math.random()*4)]]();
+          }
+
+          document.addEventListener('keydown',keySelector);
+          for(var i in isSelected){
+              setValue(i,l.getItem(i)||0);
+          }
+          /*This is all that there is to the localStorage manager.
+          All that happens is this for statement sets the value of
+          players convinently the same id as the keys in the object
+          isSelected. It also retrieves the item from the localStorage.
+          */
+          recordLocalsInterval=setInterval(recordLocals,600);
+	  backgroundMovementInterval=setInterval(function(){
+		var speed=1/1000;
+		var height=(Math.cos(Date.now()*speed)+1)/2,style=d.querySelector(".titleBackground").style;
+		style.backgroundPositionY=height*100+"%";
+		style["opacity"]=(height+9)/10;
+	  },15);
+      </script>
+  </body>
+</html>

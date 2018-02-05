@@ -1,0 +1,5 @@
+node_modules/
+.vscode/
+dtech-badge-issue/input/photos
+
+dtech-badge-issue/output/photos
