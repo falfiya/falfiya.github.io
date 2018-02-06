@@ -5,12 +5,12 @@ function transform(string) {
     .sort()
     .map(permutation => permutation[string.length + 1])
     .join``;
-};
+}
 function untransform(string) {
-  let ary = string.split``;
+  const ary = string.split``;
   let oary = string.split``.sort();
-  while(oary[0].length < string.length) {
+  while (oary[0].length < string.length) {
     oary = ary.map((val, idx) => val + oary[idx]).sort();
   }
   return oary[string.length - 1].slice(2);
-};
+}
