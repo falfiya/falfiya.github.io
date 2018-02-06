@@ -1,5 +1,5 @@
 # coalpha.github.io
 codalpha
 
-* [Choas Game](c)
-* [tek](tek)
+* [Choas Game](//coalpha.github.io/c)
+* [tek](//coalpha.github.io/tek)
