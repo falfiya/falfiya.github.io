@@ -14,4 +14,4 @@ fetch(url, {
   },
 }).then(res => res.headers)
   .catch(error => console.error('Error:', error))
-  .then(response => console.log('Success:', response));
+  .then(res => res.get('set-cookie'));

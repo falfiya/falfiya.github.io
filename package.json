@@ -1,22 +1,27 @@
 {
-  "name": "javascript",
+  "name": "coalpha.github.io",
   "version": "1.0.0",
   "description": "",
   "main": "none.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel -w --plugins syntax-function-bind,transform-function-bind"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Coalpha/javascript.git"
+    "url": "git+https://github.com/Coalpha/coalpha.github.io.git"
   },
   "author": "Coalpha",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Coalpha/javascript/issues"
+    "url": "https://github.com/Coalpha/coalpha.github.io/issues"
   },
-  "homepage": "https://github.com/Coalpha/javascript#readme",
+  "homepage": "https://github.com/Coalpha/coalpha.github.io#readme",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "babel-plugin-syntax-function-bind": "^6.13.0",
+    "babel-plugin-transform-function-bind": "^6.22.0",
     "eslint": "^4.17.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
