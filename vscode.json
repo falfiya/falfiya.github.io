@@ -1,9 +1,0 @@
-{
-    "workbench.colorTheme": "One Dark Pro Vivid",
-    "workbench.iconTheme": "vscode-icons",
-    "explorer.confirmDelete": false,
-    "explorer.confirmDragAndDrop": false,
-    "editor.tabSize": 2,
-    "editor.renderWhitespace": "all",
-    "files.eol": "\n"
-}
