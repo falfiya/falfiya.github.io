@@ -1,15 +1,13 @@
-// Author: Cole Gannon / Falfa
-// I really like how I wrote this and I'm proud of it
-// General Functions
+
 const mutate = R.curry((object, key, value) => object[key] = value);
 const impure = fn => (...args) => {
   fn(...args);
   return args;
 };
-const impure1 = fn => arg => {
+const impure1 = fn => (arg) => {
   fn(arg);
   return arg;
-}
+};
 const log = impure1(console.log);
 const list = R.unapply(R.identity);
 const toAll = (...fns) => arg => fns.map(fn => fn(arg));
@@ -102,23 +100,23 @@ function init() {
   const dotTitle = R.prop('title');
   const dotType = R.prop('type');
   const dotDesc = R.prop('desc');
-  const dotStaff= R.prop('staff')
+  const dotStaff = R.prop('staff');
   const dotln = R.prop('lastName');
   formatlns = R.pipe(R.map(dotln), joinBy(', '));
   formatStaffObj = R.pipe(R.prop('staff'), R.cond([
     [R.isNil, ''],
-    [isObj, list, ],
+    [isObj, list],
     [R.T, R.identity],
   ]));
   const sayLn = staffObj => R.unless(R.isNil, formatlns)(formatStaffObj(staffObj));
-  const writeStaffActually = R.pipe() 
+  const writeStaffActually = R.pipe();
   function aID(pe) {
     let id = null;
     if (pe.id && pe.id in areaData) {
       id = pe.id;
     }
     return id;
-  };
+  }
   const target = R.prop('target');
   const parentElement = R.prop('parentElement');
   const dimTarget = R.pipe(target, dim);
@@ -172,10 +170,7 @@ function init() {
   //    (elements) => element
   // Time Style Functions
   const getWidthNumber = R.pipe(getComputedStyle, R.prop('width'), sliceFrom0to(-2));
-  const infoCardFontDivisor = 16;
-  const scaleWidthNumber = R.pipe(divideBy(infoCardFontDivisor), Math.round);
-  const formatWidthNumber = R.pipe(toString, append('px'));
-  const processWidthNumber = R.pipe(getWidthNumber, scaleWidthNumber, formatWidthNumber);
+  const processWidthNumber = R.pipe(getWidthNumber, divideBy(infoCardFontDivisor), Math.round, toString, append('px'));
   const setFontSize = kariN(2, R.pipe(R.prop('style'), mutate(R.__, 'fontSize')));
   const setProcessedWidthNumber = R.converge(setFontSize, [R.identity, processWidthNumber]);
 

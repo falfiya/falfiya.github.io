@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "ramda": "^0.25.0",
-    "rollup-plugin-node-resolve": "^3.0.2"
+    "rollup-plugin-node-resolve": "^3.0.2",
+    "vue-cli": "^2.9.3"
   }
 }

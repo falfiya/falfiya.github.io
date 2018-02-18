@@ -1,4 +1,4 @@
-export const intersession = true;
+const intersession = true;
 /*
 staffInstance {
   prefix: (undefined, str),
@@ -7,7 +7,7 @@ staffInstance {
   role: (str, null)
 }
 */
-export const staff = {
+const staff = {
   Melissa: {
     firstName: 'Melissa',
     lastName: 'Mizel',
@@ -82,7 +82,7 @@ export const staff = {
   Galen: {
     firstName: 'Galen',
     lastName: 'McAndrew',
-    role: 'GoGuardian enforcer and salt dispenser',
+    role: 'Person',
   },
   Richard: {
     firstName: 'Richard',
@@ -132,7 +132,7 @@ export const staff = {
   Rachel: {
     firstName: 'Rachel',
     lastName: 'Seigman',
-    role: 'English Teacher & Other Stuff',
+    role: 'English Teacher & Model UN & Internship Person',
   },
   Quincy: {
     firstName: 'Quincy',
@@ -174,7 +174,7 @@ areaDataInstance {
 }
 */
 
-export const areaData = {
+const areaData = {
   '1A': {
     type: 0,
     staff: staff.Mizel,

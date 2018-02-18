@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="prefetch" href="./map.svg">
+  <link async href="https://fonts.googleapis.com/css?family=Montserrat:500,600|Roboto+Mono" rel="stylesheet">
+  <link rel="prefetch" href="map.svg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="style.css">
-  <link async href="https://fonts.googleapis.com/css?family=Montserrat:500,600|Roboto+Mono" rel="stylesheet">
+  <script src="lib/ramda.js"></script>
+  <script src=data.js></script>
   <title>Design Tech Map</title>
 </head>
 <body>
@@ -16,10 +18,10 @@
         <object id=map data="map.svg" type=""></object>
       </div>
       <div id=ic class="card info">
-          <span class="weight-600 block" id=ictitle></span>
+          <span class="weight-600 block" id=title></span>
           <div>
-            <span id=ictypel class='none'></span>
-            <span class="weight-500 sub" id=ictype></span>
+            <span id=typel class='none'></span>
+            <span class="weight-500 sub" id=type></span>
           </div>
           <div>
             <span id=icstaffl class='none'></span>
@@ -32,8 +34,6 @@
 
       </div>
   </div>
-  <script src=imperative.js></script>
-  <!--<script src=data.js></script>
-  <script src=script.js></script>-->
+  <script src=main.js></script>
 </body>
 </html>

@@ -35,5 +35,3 @@ function main() {
   R.forEach(R.pipe(test, mapDOM.getElementById, test), areas);
 }
 window.addEventListener('load', main);
-
-In my case, if you throw a molotov at a group of NPCs you can kill them normally like with real weapons. It's kind of weird but it seems that once you've damaged them with a molotov, they turn into just a neutral NPC.
