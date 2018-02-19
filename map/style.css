@@ -62,7 +62,7 @@ body {
 .block {
   display: block;
 }
-#ictitle {
+#title {
   font-size: 50px;
 }
 .none {
@@ -81,4 +81,10 @@ body {
 }
 #sic {
   padding: 16px;
+}
+#ic span {
+  display: block;
+}
+#ic span b {
+  color: white;
 }

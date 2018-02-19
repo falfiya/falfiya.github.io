@@ -5,6 +5,7 @@ const dot = R.curry((str, obj) => str.split`.`.reduce((acc, val) => acc[val], ob
 const wrap = R.curry((fn, arg) => () => fn(arg));
 const ignore = () => undefined;
 const invoke = R.curry((prop, args, obj) => obj[prop].bind(obj)(args));
+function foobar() {}
 // str => * => obj
 const list = R.unapply(R.identity);
 const kariN = R.pipe(R.uncurryN, R.curry);
@@ -14,7 +15,7 @@ const log = (arg) => {
   return arg;
 };
 // Flow
-const split = (...fns) => (...args) => ary.map(fn => fn(arg));
+const split = (...fns) => arg => fns.map(fn => fn(arg));
 const mergeTwo = (fn0, fn1) => R.converge(fn1, [R.identity, fn0]);
 
 // Logic
@@ -45,9 +46,9 @@ const interval = R.curry(setInterval);
 // fn => ms
 const setIntervalWithArgument = (fn, arg, ms) => setInterval(wrap(fn, arg), ms);
 // fn => arg => ms => #
-const setElementInnerText = R.curry((el, str) => { el.innerText = str ;});
+const setElementInnerText = R.curry((el, str) => { el.innerHTML = str; });
 // el => str => str
-
+// What's funny is that it actually sets the innerHTML
 const getMapFrom = geti('map');
 // DOM => el
 
@@ -58,7 +59,7 @@ const getMapFrom = geti('map');
   // el => #
   const setElOpacity = R.flip(R.invoker(2, 'setAttribute')('fill-opacity'));
   // # => el => null
-  const dimElement = mergeTwo(R.pipe(elOpacity, divideBy(num)), setElOpacity);
+  var dimElement = mergeTwo(R.pipe(elOpacity, divideBy(num)), setElOpacity);
   // el => null
   const dimFirstChild = R.pipe(dot('firstChild'), dimElement);
   // el => null
@@ -68,7 +69,7 @@ const getMapFrom = geti('map');
   // fn => ary
   var dimMapElementsFrom = (DOM, data) => mapOverKeysOf(data)(R.pipe(mapGetiFrom(DOM), dimFirstChild));
   // DOM => data => null
-  const undimElement = mergeTwo(R.pipe(elOpacity, multiplyBy(num)), setElOpacity);
+  var undimElement = mergeTwo(R.pipe(elOpacity, multiplyBy(num)), setElOpacity);
   // el => null
   var dimTarget = R.pipe(dot('target'), dimElement);
   // event => null
@@ -97,11 +98,72 @@ const getMapFrom = geti('map');
   var calibrateFontSize = R.pipe(getTimeElement, mergeTwo(processWidth, setFontSize));
   // DOM => null
 }
-// Event Listeners
+// Click Handler
 {
-  var listenMapFrom = R.curry((DOM, e, fn) => getMapFrom(DOM).contentDocument.addEventListener(e, fn));
-  // DOM => str => fn
+  // This stuff may look sorta functional but it isn't pure
+  const types = ['Break out space', 'Classroom'];
+  var active = null;
+  const write = id => (DOM, txt) => setElementInnerText(geti(id, DOM), txt);
+  // id => DOM => txt => null
+  const writeTitle = write('title');
+  // DOM => txt => null
+  const writeType = write('type');
+  // DOM => txt => null
+  const writeStaff = write('staff');
+  // DOM => txt => null
+  const writeDescription = write('description');
+  // DOM => txt => null
+  const typeString = (obj) => {
+    let str = '';
+    if (obj.type !== null) {
+      if (typeof obj.type === 'number') {
+        str = `Type: ${types[obj.type]}`;
+      } else {
+        str = `Type: ${obj.type}`;
+      }
+    }
+    return str;
+  };
+  const staffString = (obj) => {
+    let str = '';
+    if (obj.staff) {
+      if (Array.isArray(obj.staff)) {
+        str = `Staff: ${obj.staff.map(dot('lastName')).join(', ')}`;
+      } else {
+        str = `Staff: ${obj.staff.lastName}`;
+      }
+    }
+    return str;
+  };
+  const descriptionString = obj => obj.desc || '';
+  // obj => str
+  var writeData = R.curry((DOM, e) => {
+    if(active) {
+      dimElement(active);
+      active = null;
+    }
+    let obj;
+    let title = '';
+    if (e.target.parentElement && (title = e.target.parentNode.id)) {
+      obj = areaData[title];
+      undimElement(e.target);
+      active = e.target;
+    } else {
+      obj = {
+        type: null,
+        staff: null,
+        desc: '',
+      };
+    }
+    writeTitle(DOM, title);
+    writeType(DOM, typeString(obj));
+    writeStaff(DOM, staffString(obj));
+    writeDescription(DOM, descriptionString(obj));
+  });
+  // DOM => event
 }
+const listenMapFrom = R.curry((DOM, e, fn) => getMapFrom(DOM).contentDocument.addEventListener(e, fn));
+// DOM => str => fn
 function asyncLoad() {
   const listenMap = listenMapFrom(document);
   dimMapElementsFrom(document, areaData);
@@ -111,6 +173,6 @@ function asyncLoad() {
   setIntervalWithArgument(setTimeInnerTextToTimeFrom, document, 999);
   listenMap('mouseover', undimTarget);
   listenMap('mouseout', dimTarget);
-  // listenMap('mouseclick', )
+  listenMap('click', writeData(document));
 }
 window.addEventListener('load', asyncLoad);

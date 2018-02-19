@@ -195,7 +195,7 @@ const areaData = {
   '1E': {
     type: 0,
     staff: staff.Wendy,
-    desc: "Dr. Little's @d.tech",
+    desc: "Dr. Little's @d.tech: a nice big open space",
   },
   '2A': {
     type: 0,
@@ -219,7 +219,7 @@ const areaData = {
   103: {
     type: 1,
     staff: null,
-    desc: 'One does not simply walk into Morodor',
+    desc: 'One does not simply walk into Moroder',
   },
   105: {
     type: 1,
@@ -284,7 +284,7 @@ const areaData = {
   227: {
     type: 1,
     staff: staff.David,
-    desc: 'Rye are these puns so bad?',
+    desc: "He's the <b>Gr</b>eatest <b>o</b>f <b>a</b>ll <b>t</b>ime",
   },
   229: {
     type: 1,
