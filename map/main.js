@@ -3,6 +3,7 @@
 // Helper functions
 const dot = R.curry((str, obj) => str.split`.`.reduce((acc, val) => acc[val], obj));
 const wrap = R.curry((fn, arg) => () => fn(arg));
+const wrapFn = R.curry((fn, arg) => () => fn(arg()));
 const ignore = () => undefined;
 const invoke = R.curry((prop, args, obj) => obj[prop].bind(obj)(args));
 function foobar() {}
@@ -14,10 +15,25 @@ const log = (arg) => {
   console.log(arg);
   return arg;
 };
+const changeEveryKey = o => R.pipe(R.toPairs, R.map(p => [o[p[0]] || p[0], p[1]]), R.fromPairs);
 // Flow
 const split = (...fns) => arg => fns.map(fn => fn(arg));
 const mergeTwo = (fn0, fn1) => R.converge(fn1, [R.identity, fn0]);
+const pipeN = R.curryN(R.__, R.pipe);
+const pipe2 = pipeN(2);
+const pipeline = (ary, ...fns) => (...args) => Array.from(args).reduce((a, v, idx) => {
+  const argpos = a[0];
+  const passedArgs = a[1];
+  const argcount = ary[idx];
+  const fn = fns[idx];
+  if (argcount > 0) {
+    const fnargs = passedArgs.concat(args.slice(argpos, argcount + argpos));
+    return [argpos + argcount, [fn.apply(0, fnargs)]];
+  }
+  return [argpos, [fn]];
+}, [0, []])[1][0];
 
+// ^ oh geez
 // Logic
 const replaceNullWithOne = R.when(R.equals(null), R.always(1));
 
@@ -138,7 +154,7 @@ const getMapFrom = geti('map');
   const descriptionString = obj => obj.desc || '';
   // obj => str
   var writeData = R.curry((DOM, e) => {
-    if(active) {
+    if (active) {
       dimElement(active);
       active = null;
     }
@@ -162,6 +178,23 @@ const getMapFrom = geti('map');
   });
   // DOM => event
 }
+// Dynamic Schedules
+{
+  const getUsefulDateFromAPI = R.pipe(
+    splitBy(' '),
+    changeEveryKey(['day',,,, 'time']),
+    mergeTwo(
+      R.pipe(
+        dot('time'),
+        splitBy(':'),
+        changeEveryKey(['hours', 'minutes', 'seconds']),
+      ),
+      Object.assign,
+    ),
+  );
+  var getUsefulDate = wrapFn(getUsefulDateFromAPI, Date);
+}
+
 const listenMapFrom = R.curry((DOM, e, fn) => getMapFrom(DOM).contentDocument.addEventListener(e, fn));
 // DOM => str => fn
 function asyncLoad() {

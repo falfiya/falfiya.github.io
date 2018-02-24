@@ -178,7 +178,7 @@ const areaData = {
   '1A': {
     type: 0,
     staff: staff.Mizel,
-    desc: "Unspirited warning: Melissa's @d.tech ahead",
+    desc: "Only the best @d.tech in the school",
   },
   '1B': {
     type: 0,
@@ -211,6 +211,7 @@ const areaData = {
   '2D': {
     type: 0,
     staff: staff.Robert,
+
   },
   '2E': {
     type: 0,
@@ -237,7 +238,7 @@ const areaData = {
   120: {
     type: 1,
     staff: [staff.Greg, staff.Fannie],
-    desc: "It's the chemestry room; a room for chemestry",
+    desc: "It's the chemistry room; a room for chemistry",
   },
   127: {
     type: 1,
@@ -294,6 +295,7 @@ const areaData = {
   230: {
     type: 1,
     staff: staff.Lessley,
+    desc: 'Ms. Anderson is visiting The Oracle. Watch out for Cipher',
   },
   232: {
     type: 1,
@@ -311,3 +313,11 @@ const areaData = {
     desc: 'This is the upper DRG',
   },
 };
+
+/* const periodTimeTypes = {
+  'normal',
+  'lab',
+  'early',
+  'late': "Cole Gannon"
+}
+*/
