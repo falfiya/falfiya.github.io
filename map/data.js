@@ -171,6 +171,7 @@ areaDataInstance {
   type: (null, 0, 1, str), // 0 = break out space, 1 = classroom
   staff: (null, str, ary),
   desc: (null, str),
+  schdle: (schdleInstance)
 }
 */
 
@@ -178,7 +179,7 @@ const areaData = {
   '1A': {
     type: 0,
     staff: staff.Mizel,
-    desc: "Only the best @d.tech in the school",
+    desc: 'Only the best @d.tech in the school',
   },
   '1B': {
     type: 0,
@@ -321,3 +322,51 @@ const areaData = {
   'late': "Cole Gannon"
 }
 */
+/*
+schdleInstance {
+  title: (null, str),
+  staff: (null, str)
+}
+*/
+const schoolPeriodScheduleTypes = {
+  normal: {
+    '7:30': "It's zeroth period right now",
+    '8:40': 1,
+    '9:40': 2,
+    '10:40': 'Break',
+    '11:00': 3,
+    '12:00': 'Lunch',
+    '12:40': '@dtech',
+    '13:00': 4,
+    '14:00': 5,
+    '15:00': 6,
+    '25:00': 7,
+  },
+  lab: {
+  },
+  early: {
+
+  },
+  late: 'Cole Gannon',
+};
+const schoolPeriodSchedule = {
+  Mon: schoolPeriodScheduleTypes.normal,
+  Tue: schoolPeriodScheduleTypes.normal,
+  Wed: schoolPeriodScheduleTypes.early,
+  Thu: schoolPeriodScheduleTypes.lab,
+  Fri: schoolPeriodScheduleTypes.normal,
+  Sat: schoolPeriodScheduleTypes.normal,
+  Sun: schoolPeriodScheduleTypes.normal,
+};
+const areaSchedule = {
+  103: {
+    0: {
+      staff: staff.Ilene,
+      title: '"Morning" Math',
+    },
+    7: {
+      staff: staff.Ilene,
+      title: 'The Forbidden Math Class',
+    },
+  },
+};

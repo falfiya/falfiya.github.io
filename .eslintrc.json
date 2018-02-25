@@ -11,7 +11,9 @@
     "func-names": "off",
     "no-var": "off",
     "vars-on-top": "off",
-    "no-unused-vars": "warn"
+    "no-unused-vars": "warn",
+    "no-cond-assign": "off",
+    "max-len": "off"
   },
   "parserOptions": {
 

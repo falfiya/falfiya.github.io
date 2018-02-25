@@ -1,6 +1,7 @@
 // Author: Cole Gannon / Falfa
 // I really like how I wrote this and I'm proud of it
 // Helper functions
+let globalVariable = null;
 const dot = R.curry((str, obj) => str.split`.`.reduce((acc, val) => acc[val], obj));
 const wrap = R.curry((fn, arg) => () => fn(arg));
 const wrapFn = R.curry((fn, arg) => () => fn(arg()));
@@ -15,7 +16,8 @@ const log = (arg) => {
   console.log(arg);
   return arg;
 };
-const changeEveryKey = o => R.pipe(R.toPairs, R.map(p => [o[p[0]] || p[0], p[1]]), R.fromPairs);
+const changeEveryKey = o => R.pipe(R.toPairs, R.map(p => [R.isNil(o[p[0]]) ? p[0] : o[p[0]], p[1]]), R.fromPairs);
+const isBool = R.pipe(R.type, R.equals('Boolean'));
 // Flow
 const split = (...fns) => arg => fns.map(fn => fn(arg));
 const mergeTwo = (fn0, fn1) => R.converge(fn1, [R.identity, fn0]);
@@ -140,7 +142,7 @@ const getMapFrom = geti('map');
     }
     return str;
   };
-  const staffString = (obj) => {
+  var staffString = (obj) => {
     let str = '';
     if (obj.staff) {
       if (Array.isArray(obj.staff)) {
@@ -151,7 +153,7 @@ const getMapFrom = geti('map');
     }
     return str;
   };
-  const descriptionString = obj => obj.desc || '';
+  var descriptionString = obj => obj.desc || '';
   // obj => str
   var writeData = R.curry((DOM, e) => {
     if (active) {
@@ -175,14 +177,16 @@ const getMapFrom = geti('map');
     writeType(DOM, typeString(obj));
     writeStaff(DOM, staffString(obj));
     writeDescription(DOM, descriptionString(obj));
+    globalVariable = title;
+    writeCurrents();
   });
   // DOM => event
 }
 // Dynamic Schedules
 {
-  const getUsefulDateFromAPI = R.pipe(
+  const usefulDateFromAPI = R.pipe(
     splitBy(' '),
-    changeEveryKey(['day',,,, 'time']),
+    changeEveryKey(['day', 0, 0, 0, 'time']),
     mergeTwo(
       R.pipe(
         dot('time'),
@@ -192,9 +196,40 @@ const getMapFrom = geti('map');
       Object.assign,
     ),
   );
-  var getUsefulDate = wrapFn(getUsefulDateFromAPI, Date);
+  var getUsefulDate = wrapFn(usefulDateFromAPI, Date);
+  var timeIslessthan = R.curry((t0, t1) => t0.split`:`.map((v, i, m, M) => (v === (M = t1.split`:`)[i] ? null : +v < +M[i])).find(isBool));
+  // You know your code is good when eslint flags the whole thing as bad
+  // Here's where I start giving up on purely functional
+  const todayIsA = usefulDate => schoolPeriodSchedule[usefulDate.day];
+  var getTodayMasterScheduleFrom = R.pipe(getUsefulDate, dot('day'), R.prop)();
+  function writeCurrents() {
+    if (globalVariable) {
+      console.log(globalVariable);
+      const date = getUsefulDate();
+      const title = document.getElementById('ctitle');
+      const staff = document.getElementById('cstaff');
+      const today = todayIsA(date);
+      const beforeTime = Object.keys(today).find(timeIslessthan(`${date.hours}:${date.minutes}`));
+      const period = today[beforeTime];
+      title.innerText = staff.innerText = '';
+      let room = null;
+      if (+period) {
+        if(room = areaSchedule[globalVariable]) {
+          const roomPeriod = room[period];
+          console.log(roomPeriod);
+          if (roomPeriod) {
+            title.innerText = roomPeriod.title;
+            staff.innerText = staffString(roomPeriod);
+          } else {
+            title.innerText = "There's nothing going on in here right now";
+          }
+        }
+      } else {
+        title.innerText = period;
+      }
+    }
+  }
 }
-
 const listenMapFrom = R.curry((DOM, e, fn) => getMapFrom(DOM).contentDocument.addEventListener(e, fn));
 // DOM => str => fn
 function asyncLoad() {
@@ -204,8 +239,22 @@ function asyncLoad() {
   window.addEventListener('resize', wrap(calibrateFontSize, document));
   setTimeInnerTextToTimeFrom(document);
   setIntervalWithArgument(setTimeInnerTextToTimeFrom, document, 999);
+  setInterval(writeCurrents, 9999);
   listenMap('mouseover', undimTarget);
   listenMap('mouseout', dimTarget);
   listenMap('click', writeData(document));
 }
 window.addEventListener('load', asyncLoad);
+
+function invert() {
+  document.documentElement.style.filter = 'invert(100%)';
+}
+function uninvert() {
+  document.documentElement.style.filter = '';
+}
+function klick() {
+  invert();
+  setTimeout(uninvert, 100);
+  setTimeout(invert, 200);
+  setTimeout(uninvert, 300);
+}

@@ -1,3 +1,6 @@
+html {
+  transition: 0s;
+}
 html, body {
   height: 100vh;
   width: 100vw;
@@ -78,6 +81,9 @@ body {
   transition: none;
   text-align: center;
   font-family: 'Roboto Mono', sans-serif;
+  border-bottom: 2px solid white;
+  margin-bottom: 10px;
+  padding: 2px;
 }
 #sic {
   padding: 16px;
@@ -87,4 +93,7 @@ body {
 }
 #ic span b {
   color: white;
+}
+#current span {
+  display: block;
 }
