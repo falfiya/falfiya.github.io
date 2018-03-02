@@ -52,7 +52,7 @@ const joinBy = R.join;
 // ary => str
 const divideBy = R.flip(R.divide);
 // * => #
-const multiplyBy = R.flip(R.multiply);
+const multiplyBy = R.multiply;
 // * => #
 
 // API
@@ -61,7 +61,7 @@ const geti = invoke('getElementById');
 const getiFrom = R.flip(geti);
 // DOM => id => el
 const interval = R.curry(setInterval);
-// fn => ms
+// fn => ms => #
 const setIntervalWithArgument = (fn, arg, ms) => setInterval(wrap(fn, arg), ms);
 // fn => arg => ms => #
 const setElementInnerText = R.curry((el, str) => { el.innerHTML = str; });
@@ -214,7 +214,7 @@ const getMapFrom = geti('map');
       title.innerText = staff.innerText = '';
       let room = null;
       if (+period) {
-        if(room = areaSchedule[globalVariable]) {
+        if (room = areaSchedule[globalVariable]) {
           const roomPeriod = room[period];
           console.log(roomPeriod);
           if (roomPeriod) {

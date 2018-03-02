@@ -1,9 +1,9 @@
-const x = new Proxy(function (){}, {
+const multi = new Proxy((() => {}), {
   get(o, k) {
-    if(k === Symbol.toPrimitive) {
-      return hint => {
-        switch(hint) {
-          case 'number': 
+    if (k === Symbol.toPrimitive) {
+      return (hint) => {
+        switch (hint) {
+          case 'number':
             console.log('Atempted to coerse this to a number');
             break;
           case 'string':
@@ -13,9 +13,13 @@ const x = new Proxy(function (){}, {
             console.log('Received a default hint');
         }
       };
-  } 
-      console.log(`You called this using this[${k}]`);
-    
+    } else if (k === Symbol.iterator) {
+      console.log('You called this using [...this], probably');
+      return function* () {
+        yield ':P';
+      }
+    }
+    console.log(`You called this using this[${k}]`);
   },
   set(o, k, v) {
     console.log(`You called this using this[${k}] = ${v}`);
@@ -24,7 +28,7 @@ const x = new Proxy(function (){}, {
     if (a[0].raw) {
       const T = a.slice(1);
       const s = a[0];
-      console.log(`You called this using this\`${  s.map((v, i) => v + (T[i] ? '${' + T[i] + '}' : '')).join``  }\``);
+      console.log(`You called this using this\`${s.map((v, i) => v + (T[i] ? `\${${T[i]}}` : '')).join``}\``);
     } else {
       console.log('You called this using this(args)');
       console.log(a);
