@@ -1,1 +1,0 @@
-rollup $1/src/main.js -o $1/compiled.js -c
