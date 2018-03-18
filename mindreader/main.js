@@ -163,7 +163,7 @@ function writeToDom(){
     b.charging.innerHTML=battery.charging?'plugged in':'not plugged in';
     b.time.innerHTML=battery.time;
     b.mode.innerHTML=battery.charging?'charge':'discharge';
-    osOS.innerHTML=os;
+    osOS.innerHTM=os;
     w.online.innerHTML=connection.onLine?'':'not ';
     if(connection.onLine)w.type.innerHTML='Your connection type is '+connection.type+'.';
     s.height.innerHTML=theScreen.avail.height;

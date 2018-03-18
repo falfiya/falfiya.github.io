@@ -2,6 +2,7 @@ const pipes = (_ => _ = ((P, A = Array.isArray) => (...f) => (...a) => f.reduce(
 const debug = false;
 const log = (...args) => debug && console.log(...args);
 const warn = (...args) => debug && console.warn(...warn);
+const size = 6;
 const data = [
 ];
 const updated = {
@@ -32,14 +33,14 @@ function calibrateC() {
 }
 calibrateC(); // Running it just to make sure
 // window.addEventListener('resize', calibrateC);
-const centerx = 0 | (width() / 2 + 1); // Basically Math.ceil
-const centery = 0 | (height() / 2 + 1); // For both of these
+const centerx = 0 | ((width() / size) / 2 + 1); // Basically Math.ceil
+const centery = 0 | ((height() / size) / 2 + 1); // For both of these
 const ctx = c.getContext('2d');
 const pixelAt = (x, y, color) => {
   const coords = `${x}, ${y}`;
   log(`Drawing (${coords}) to the canvas`);
   ctx.fillStyle = color;
-  ctx.fillRect(x, y, 1, 1);
+  ctx.fillRect(x * size, y * size, size, size);
 };
 const pixelIsInsideScreen = (x, y) => x >= 0 && y >= 0 && x <= width() && y <= height();
 const queueForUpdate = (x, y) => {
@@ -126,6 +127,7 @@ function update() {
     }
   });
 }
+let draW = true;
 function draw() {
   Object.keys(drawbuffer).map((coords) => {
     const xy = coords.split`, `;
@@ -137,14 +139,15 @@ function draw() {
   });
 }
 const dropPattern = [
-  [2, 2],
-  [2, 2],
+  [1, 2],
+  [2, 1],
 ];
 function drop() {
   addToPixelsCenter(dropPattern);
 }
 setInterval((_) => {
   update();
-  // draw();
+  draW && draw();
 }, 1);
-onclick = draw;
+
+onclick = _ => draW ^= 1;
