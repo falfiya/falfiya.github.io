@@ -159,11 +159,12 @@ button[name="I want it!"] {
   text-align: right;
 }
 .get-it {
-  height: 50%;
   padding: 10%;
   display: grid;
   grid-template-columns: 5fr 20px 4fr;
-  grid-template-areas: "l . r";
+  grid-template-areas:
+  "l . r"
+  "e . d";
 }
 .get-itt {
   padding-right: 10px;
@@ -178,8 +179,37 @@ button[name="I want it!"] {
   /* Corrects the font size thingy */
   grid-area: r;
 }
+.appstore {
+  width: 16vw;
+}
 .tiny {
   font-size: var(--button-font-size);
+}
+.email {
+  grid-area: e;
+  text-align: right;
+}
+.doit {
+  grid-area: d;
+}
+.doitt {
+  border-top-right-radius: 500px;
+  border-bottom-right-radius: 500px;
+  padding: 15px;
+  border: none;
+	background: linear-gradient(180deg, #5AF6D2 0%, #50CBE5 100%);
+  font-weight: bold;
+  color: white;
+}
+.emayl {
+  border-top-left-radius: 500px;
+  border-bottom-left-radius: 500px;
+  padding: 15px;
+  border: none;
+  background: rgb(226, 244, 254);
+  font-style: italic;
+  color: #333;
+  min-width: 20vw;
 }
 .footer {
   padding: 40px;
