@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Contrail+One|Open+Sans:400,700i" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="main.css">
+  <script src="skrollr.min.js" charset="utf-8"></script>
+  <title>Mixup</title>
+</head>
+<body>
+  <img src="assets/art/art_tophero_2x.png" class="hero" data-0="top: 50px;" data-60p="top: -1000px;">
+  <div class="top">
+    <div class="top-content span-as-block">
+      <img src="assets/mixuplogo.svg" class="logo">
+      <span class="title">Hello</span>
+      <span class="title">World</span>
+      <span class="subtext">Foobar!</span>
+      <span class="subtext">Barfoo? Baz Qux.</span>
+      <button type="button" name="I want it!">I WANT IT!</button>
+    </div>
+  </div>
+  <div class="middle">
+    <div class="middle-content span-as-block">
+      <span class="pink-title">Qux Bar?</span>
+      <span class="subtext">Foo</span>
+      <span class="subtext">Bar bar, foo foo. Baz baz? Qux, bar, and foo  </span>
+    </div>
+    <div class="middle-picture">
+      <img src="assets/art/art_chat_2x.png" class="chat">
+    </div>
+    <div class="middle-bottom-content">
+      <span class="blue-title">Baz baz!</span>
+    </div>
+  </div>
+  <div class="bottom">
+    <img src="assets/art/art_multiple_2x.png" class="multi">
+    <img src="assets/art/art_build_2x.png" class="build">
+    <div class="bottom-top-content">
+      Foo foo foo. Baz bar qux!
+    </div>
+    <div class="bottom-left-content span-as-block">
+      <span class="yellow-title">Bar baz</span>
+      <span class="subtext">Bar foo</span>
+    </div>
+  </div>
+  <div class="get-it">
+    <div class="left">
+      <span class="cyan-title get-itt">See what all the buzz is about!</span>
+    </div>
+    <div class="right">
+      <span class="cyan-title tiny">Foo bar lipsum</span>
+    </div>
+  </div>
+  <div class="footer">
+    <span>Mixup Live is made with <img class="madewithlove" src="assets/asset_madewithlove_3x.png" alt=""> in San Mateo, CA by Mixbit, Inc.</span>
+  </div>
+  <script type="text/javascript">
+    const s = skrollr.init({
+      forceHeight: false, // This is important
+      smoothScrolling: false // Also if this isn't here, it looks jank
+    });
+  </script>
+</body>
+</html>
