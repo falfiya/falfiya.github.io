@@ -28,10 +28,14 @@ calibrateC(); // Running it just to make sure
 const centerx = Math.round(adjustedWidth / 2); // Try to place it in the center of the screen, ish
 const centery = Math.round(adjustedHeight / 2);
 const ctx = c.getContext('2d', { alpha: false });
-ctx.fillStyle = 'steelblue'; // This is the background color
+const bg = 'steelblue'
+ctx.fillStyle = bg; // This is the background color
 ctx.fillRect(0, 0, width, height); // Since alpha is false, fill the background
+let prevFillStyle = bg;
 const pixelAt = (x, y, color) => {
-  ctx.fillStyle = color;
+  if (prevFillStyle !== color) {
+    ctx.fillStyle = prevFillStyle = color;
+  }
   ctx.fillRect(x * size, y * size, size, size);
 };
 const pixelIsInsideScreen = (x, y) => x >= 0 && y >= 0 && x <= adjustedWidth && y <= adjustedHeight;
