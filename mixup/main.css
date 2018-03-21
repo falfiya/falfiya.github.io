@@ -1,9 +1,11 @@
-:root {
+html {
+  --font-scalar: 1;
   --hero-pos: 62%;
-  --hero-width: 350px;
-  --title-font-size: 48px;
-  --subtext-font-size: 16px;
-  --button-font-size: 18px;
+  --hero-max-width: 30vw;
+  --hero-max-height: 80vh;
+  --title-font-size: calc(48px * var(--font-scalar));
+  --subtext-font-size: calc(16px * var(--font-scalar));
+  --button-font-size: calc(18px * var(--font-scalar));
   --pink: #ff2aae;
   --blue: rgb(41, 150, 253);
   --yellow: rgb(242, 255, 31);
@@ -30,7 +32,8 @@ body > div {
 }
 .hero {
   position: absolute;
-  width: var(--hero-width);
+  max-width: var(--hero-max-width);
+  max-height: var(--hero-max-height);
   left: var(--hero-pos);
   z-index: 1;
 }
@@ -49,7 +52,8 @@ body > div {
   width: 50vw;
 }
 .logo {
-
+  max-width: 30vw;
+  max-height: 10vw;
 }
 .span-as-block span {
   display: block;
