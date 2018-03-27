@@ -330,17 +330,17 @@ schdleInstance {
 */
 const schoolPeriodScheduleTypes = {
   normal: {
-    '7:30': "It's zeroth period right now",
-    '8:40': 1,
-    '9:40': 2,
-    '10:40': 'Break',
-    '11:00': 3,
-    '12:00': 'Lunch',
-    '12:40': '@dtech',
-    '13:00': 4,
-    '14:00': 5,
-    '15:00': 6,
-    '25:00': 7,
+    '8:45': 0,
+    '9:41': 1,
+    '10:34': 2,
+    '10:46': 'Break',
+    '11:42': 3,
+    '12:12': '@dtech',
+    '12:45': 'Lunch',
+    '13:41': 4,
+    '14:37': 5,
+    '15:35': 6,
+    '22:00': "School's out: Get out.",
   },
   lab: {
   },
@@ -360,13 +360,79 @@ const schoolPeriodSchedule = {
 };
 const areaSchedule = {
   103: {
-    0: {
-      staff: staff.Ilene,
-      title: '"Morning" Math',
+    1: {
+      staff: staff.Emmy,
+      title: '9th FIT',
+    },
+    2: {
+      staff: staff.Unknown,
+      title: 'Spanish 2',
+    },
+    3: {
+      staff: staff.Unknown,
+      title: 'Spanish 2',
+    },
+    4: {
+      staff: staff.Unknown,
+      title: 'Spanish 2',
+    },
+    5: {
+      staff: staff.Unknown,
+      title: 'Spanish 1',
+    },
+    6: {
+      staff: staff.Unknown,
+    },
+  },
+  105: {
+    1: {
+      staff: staff.Lilia,
+      title: 'Spanish 1',
+    },
+    2: {
+      staff: staff.Lilia,
+      title: 'Spanish 1',
+    },
+    3: {
+      staff: staff.Lilia,
+      title: 'Spanish 1',
+    },
+    4: {
+      staff: staff.Quincy,
+      title: '9th FIT',
+    },
+    5: {
+      staff: staff.Lilia,
+      title: 'Spanish 3',
+    },
+  },
+  106: {
+    1: {
+      staff: staff.Bolt,
+      title: 'Economics',
+    },
+    2: {
+      staff: staff.Unknown,
+      title: 'Skyline Spanish 130 & 140',
+    },
+    3: {
+      staff: staff.Unknown,
+      title: 'Skyline Spanish 130 & 140',
+    },
+    4: {
+      staff: staff.Unknown,
+      title: 'Skyline Spanish 112',
+    },
+    5: {
+      staff: staff.Unknown,
+      title: 'Skyline Spanish 122',
+    },
+    6: {
+      staff: staff.Unknown,
+      title: 'Skyline Spanish 122 / FIT',
     },
     7: {
-      staff: staff.Ilene,
-      title: 'The Forbidden Math Class',
+      title: 'The forbidden math class',
     },
   },
 };

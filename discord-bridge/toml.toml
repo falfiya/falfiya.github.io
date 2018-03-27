@@ -1,0 +1,27 @@
+[discord]
+  [discord.discordBot]
+  #You can get your token by following the instructions on
+  #https://github.com/42wim/matterbridge/wiki/Discord-bot-setup
+  #If you want roles/groups mentions to be shown with names instead of ID,
+  #you'll need to give your bot the "Manage Roles" permission.
+  Token="NDI2ODkxNzMwMzI4MDkyNjcy.DZcliQ.a6Q5cE48HAaTYIz-LM4N-xdZ1iw"
+  Server="The Network of Rassilon"
+  RemoteNickFormat="[{PROTOCOL}] <{NICK}> "
+[slack]
+  [slack.slackBot]
+  #Token to connect with the Slack API
+  #You'll have to use a test/api-token using a dedicated user and not a bot token.
+  #See https://github.com/42wim/matterbridge/wiki/Slack-bot-setup for more information
+  Token="xoxp-188928142695-187539060961-335571112757-71686cbb1e31339a01538b75b939e7e0"
+  RemoteNickFormat="[{PROTOCOL}] <{NICK}> "
+[[gateway]]
+    name = "mygateway"
+    enable=true
+
+    [[gateway.inout]]
+    account = "discord.discordBot"
+    channel="slack"
+
+    [[gateway.inout]]
+    account ="slack.slackBot"
+    channel = "discord"

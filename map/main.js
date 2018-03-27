@@ -209,6 +209,7 @@ const getMapFrom = geti('map');
       const title = document.getElementById('ctitle');
       const staff = document.getElementById('cstaff');
       const today = todayIsA(date);
+      console.log(today);
       const beforeTime = Object.keys(today).find(timeIslessthan(`${date.hours}:${date.minutes}`));
       const period = today[beforeTime];
       title.innerText = staff.innerText = '';
