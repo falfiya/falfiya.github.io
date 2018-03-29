@@ -149,15 +149,12 @@ html, body {
   margin: 0;
   height: 100%;
   width: 100%;
-  font-family: 'Open Sans', sans-serif;
-  overflow: hidden; }
+  font-family: 'Open Sans', sans-serif; }
 
-body {
-  overflow-y: visible; }
-  body > div {
-    background-size: cover !important;
-    display: grid;
-    position: relative; }
+body > div {
+  background-size: cover !important;
+  display: grid;
+  position: relative; }
 
 .top {
   background: url("assets/backgrounds/bg_top.jpg");

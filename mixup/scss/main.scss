@@ -68,10 +68,8 @@ html, body {
   height: 100%;
   width: 100%;
   font-family: 'Open Sans', sans-serif;
-  overflow: hidden;
 }
 body {
-  overflow-y: visible;
   & > div {
     background-size: cover !important;
     display: grid;
