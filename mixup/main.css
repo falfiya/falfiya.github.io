@@ -17,7 +17,12 @@
   --bottom-gta: ".  .  bt" ".  .  . " "bl .  . ";
   --color-title-font: 'Contrail One', cursive;
   --color-title-font-size: var(--title-font-size);
-  --logo-width: auto; }
+  --logo-width: auto;
+  --el-gta: "l . r" "e . d";
+  --email-border-radius: 500px 0px 0px 500px;
+  --pim-border-radius: 0px 500px 500px 0px;
+  --email-width: auto;
+  --pim-width: auto; }
 
 .top .content span, .middle .content span, .bottom .top-content span, .bottom .left-content span, .even-lower .left span, .even-lower .right span {
   display: block; }
@@ -71,7 +76,17 @@
     --top-content-height: 40%; }
   :root {
     --top-button-font-size: 2vw;
-    --top-button-padding: 5px 20px; } }
+    --top-button-padding: 5px 20px; }
+  :root {
+    --el-gta: "l . r" "e e e" "d d d"; }
+  :root {
+    --email-border-radius: 500px;
+    --pim-border-radius: 500px; }
+  :root {
+    --email-width: 100%;
+    --pim-width: 100%; }
+  :root {
+    --pim-margin-top: 10px; } }
 
 @media (min-width: 400px) and (max-width: 600px) {
   :root {
@@ -251,7 +266,7 @@ body {
   padding: 10%;
   display: grid;
   grid-template-columns: 5fr 20px 4fr;
-  grid-template-areas: "l . r" "e . d"; }
+  grid-template-areas: var(--el-gta); }
   .even-lower .left {
     grid-area: l;
     text-align: right; }
@@ -267,24 +282,25 @@ body {
     grid-area: e;
     text-align: right; }
     .even-lower .email input {
-      border-top-left-radius: 500px;
-      border-bottom-left-radius: 500px;
+      border-radius: var(--email-border-radius);
       padding: 15px;
       border: none;
       background: #e2f4fe;
       font-style: italic;
       color: #333;
-      min-width: 20vw; }
+      min-width: 30vw;
+      width: calc(var(--email-width) - 12%); }
   .even-lower .pim {
     grid-area: d; }
     .even-lower .pim button {
-      border-top-right-radius: 500px;
-      border-bottom-right-radius: 500px;
+      border-radius: var(--pim-border-radius);
       padding: 15px;
       border: none;
       background: linear-gradient(180deg, #5AF6D2 0%, #50CBE5 100%);
       font-weight: bold;
-      color: white; }
+      color: white;
+      width: var(--pim-width);
+      margin-top: var(--pim-margin-top); }
 
 .footer {
   padding: 40px;

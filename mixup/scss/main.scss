@@ -10,6 +10,14 @@
   @include logo(50px);
   @include top-content-height(40%);
   @include top-button(2vw, 5px 20px);
+  @include el-gta(
+    "l . r"
+    "e e e"
+    "d d d"
+  );
+  @include bottom-button-border-radius(500px, 500px);
+  @include bottom-buttons-width(100%);
+  @include pim-margin-top(10px);
 }
 @media (min-width: $bp-l-1) and (max-width: $bp-u-1) {
   // 400 - 600
@@ -198,9 +206,7 @@ body {
   padding: 10%;
   display: grid;
   grid-template-columns: 5fr 20px 4fr;
-  grid-template-areas:
-  "l . r"
-  "e . d";
+  grid-template-areas: var(--el-gta);
   .left {
     grid-area: l;
     text-align: right;
@@ -223,27 +229,28 @@ body {
     grid-area: e;
     text-align: right;
     input {
-      border-top-left-radius: 500px;
-      border-bottom-left-radius: 500px;
+      border-radius: var(--email-border-radius);
       padding: 15px;
       border: none;
       background: rgb(226, 244, 254);
       font-style: italic;
       color: #333;
-      min-width: 20vw;
-      @extend .tiny
+      min-width: 30vw;
+      width: calc(var(--email-width) - 12%);
+      @extend .tiny;
     }
   }
   .pim {
     grid-area: d;
     button {
-      border-top-right-radius: 500px;
-      border-bottom-right-radius: 500px;
+      border-radius: var(--pim-border-radius);
       padding: 15px;
       border: none;
       background: linear-gradient(180deg, #5AF6D2 0%, #50CBE5 100%);
       font-weight: bold;
       color: white;
+      width: var(--pim-width);
+      margin-top: var(--pim-margin-top);
     }
   }
 }

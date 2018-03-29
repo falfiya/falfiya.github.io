@@ -53,6 +53,13 @@ $cyan: rgb(7, 181, 218);
     --color-title-font: 'Contrail One', cursive;
     --color-title-font-size: var(--title-font-size);
     --logo-width: auto;
+    --el-gta:
+      "l . r"
+      "e . d";
+    --email-border-radius: 500px 0px 0px 500px;
+    --pim-border-radius: 0px 500px 500px 0px;
+    --email-width: auto;
+    --pim-width: auto;
 }
 @mixin title-font-size($size) {
   :root {
@@ -115,6 +122,28 @@ $cyan: rgb(7, 181, 218);
 @mixin bottom-gta($gta) {
   :root {
     --bottom-gta: $gta;
+  }
+}
+@mixin el-gta($gta) {
+  :root {
+    --el-gta: $gta;
+  }
+}
+@mixin bottom-button-border-radius($email, $pim) {
+  :root {
+    --email-border-radius: $email;
+    --pim-border-radius: $pim;
+  }
+}
+@mixin bottom-buttons-width($width) {
+  :root {
+    --email-width: $width;
+    --pim-width: $width;
+  }
+}
+@mixin pim-margin-top($height) {
+  :root {
+    --pim-margin-top: $height;
   }
 }
 %span-block {

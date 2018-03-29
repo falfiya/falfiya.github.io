@@ -17,7 +17,12 @@
   --bottom-gta: ".  .  bt" ".  .  . " "bl .  . ";
   --color-title-font: 'Contrail One', cursive;
   --color-title-font-size: var(--title-font-size);
-  --logo-width: auto; }
+  --logo-width: auto;
+  --el-gta: "l . r" "e . d";
+  --email-border-radius: 500px 0px 0px 500px;
+  --pim-border-radius: 0px 500px 500px 0px;
+  --email-width: auto;
+  --pim-width: auto; }
 
 .tiny {
   font-size: var(--button-font-size); }
