@@ -38,11 +38,12 @@ What do you like about this app?
 
 What would your ideal video conferencing app look like?
 - Since I only use video conferencing when my friends say that I should, I'd like it to be simple and easy to use.
-- I like to have a lot of control and flexibility when I use an application. It should be well build but also have many options.
+- I like to have a lot of control and flexibility when I use an application. It should be well built but also have many options.
 - I think that I like the way that discord does it because it's got more control over everything, rather than the application assuming that you like these settings.
 - Like a YouTube live-steam but both ways. Smart compression. Choose what video feed you're sending. Camera Screen etc...
 - I want a lot of features IF I WANT IT. Like MacOS.
 - I want easy to use and a lot of features.
+
 hello world
 Myspanish lab
 and

@@ -78,7 +78,7 @@ button[name="I want it!"] {
   font-size: var(--subtext-font-size);
 }
 .top {
-  background: url('assets/backgrounds/bg_top.jpg');
+  background: url('../assets/backgrounds/bg_top.jpg');
   height: var(--top-height);
   grid-template-columns: 3fr 2fr;
 }
@@ -88,7 +88,7 @@ button[name="I want it!"] {
   text-align: right;
 }
 .middle {
-  background: url('assets/backgrounds/bg_middle.jpg');
+  background: url('../assets/backgrounds/bg_middle.jpg');
   height: var(--middle-height);
   grid-template-columns: var(--middle-collum-layout);
   grid-template-rows: 60px 1fr 40px;
@@ -146,7 +146,7 @@ button[name="I want it!"] {
   width: 35vw;
 }
 .bottom {
-  background: url('assets/backgrounds/bg_bottom.jpg');
+  background: url('../assets/backgrounds/bg_bottom.jpg');
   height: var(--middle-height);
   grid-template-columns: var(--middle-collum-layout);
   grid-template-rows: 1fr 3fr 2fr;

@@ -1,0 +1,25 @@
+%color-title {
+  font-size: var(--color-title-font-size);
+  font-weight: bold;
+  font-style: italic;
+  font-family: var(--color-title-font);
+}
+.pink-title {
+  @extend %color-title;
+  color: $pink;
+}
+.blue-title {
+  @extend %color-title;
+  color: $blue;
+  margin-bottom: 5px;
+}
+.yellow-title {
+  @extend %color-title;
+  color: $yellow;
+  margin-bottom: 5px;
+}
+.cyan-title {
+  @extend %color-title;
+  color: $cyan;
+  margin-bottom: 5px;
+}
