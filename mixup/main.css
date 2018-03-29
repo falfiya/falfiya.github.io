@@ -62,6 +62,10 @@
   color: #07b5da;
   margin-bottom: 5px; }
 
+@media (max-width: 300px) {
+  :root {
+    --middle-gtr: 10px 100px 10px !important; } }
+
 @media (max-width: 400px) {
   :root {
     --hero-width: 20vw;
@@ -86,7 +90,9 @@
     --email-width: 100%;
     --pim-width: 100%; }
   :root {
-    --pim-margin-top: 10px; } }
+    --pim-margin-top: 10px; }
+  :root {
+    --top-button-visibility: hidden; } }
 
 @media (min-width: 400px) and (max-width: 600px) {
   :root {
@@ -135,20 +141,10 @@
 @media (min-width: 1200px) and (max-width: 1800px) {
   :root {
     --hero-width: 20%;
-    --hero-right: 20%; }
+    --hero-right: 18%; }
   :root {
     --title-font-size: 40px; } }
 
-/*
-@media min-width: $bp-l-5) and (max-width: $bp-u-5) {
-
-}
-*/
-/*
-* {
-  transition: all .3s;
-}
-*/
 html, body {
   margin: 0;
   height: 100%;
@@ -183,7 +179,8 @@ body {
         padding: var(--top-button-padding);
         border: var(--top-button-border);
         font-weight: 700;
-        font-size: var(--top-button-font-size); }
+        font-size: var(--top-button-font-size);
+        visibility: var(--top-button-visibility); }
     .top .content .logo-container {
       position: relative;
       height: var(--logo-height);

@@ -103,6 +103,11 @@ $cyan: rgb(7, 181, 218);
     --top-content-height: $height;
   }
 }
+@mixin top-button-visibility($thing) {
+  :root {
+    --top-button-visibility: $thing;
+  }
+}
 // middle
 @mixin middle-gtc($gtc) {
   :root {
@@ -112,6 +117,11 @@ $cyan: rgb(7, 181, 218);
 @mixin middle-gtr($gtr) {
   :root {
     --middle-gtr: $gtr;
+  }
+}
+@mixin middle-gtr-override($gtr) {
+  :root {
+    --middle-gtr: $gtr !important;
   }
 }
 @mixin middle-gta($gta) {
