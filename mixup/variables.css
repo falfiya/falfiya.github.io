@@ -14,6 +14,7 @@
   --middle-gtc: 3fr 2fr 6fr;
   --middle-gtr: 60px 1fr 40px;
   --middle-gta: ".  .  mp" "mc .  mp" ".  .  mb";
+  --bottom-gta: ".  .  bt" ".  .  . " "bl .  . ";
   --color-title-font: 'Contrail One', cursive;
   --color-title-font-size: var(--title-font-size);
   --logo-width: auto; }

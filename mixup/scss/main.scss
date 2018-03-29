@@ -4,7 +4,7 @@
 // Media
 @media (max-width: $bp-u-0) {
   // 0 - 400
-  @include tophero(80px, 16%);
+  @include tophero(20vw, 16%);
   @include title-font-size(5vw);
   @include subtext-font-size(3vw);
   @include logo(50px);
@@ -19,6 +19,20 @@
   @include logo(70px);
   @include top-content-height(40%);
   @include top-button(3vw, 10px 40px);
+}
+@media (max-width: 700px) {
+  @include middle-gtc(2fr 10px 3fr);
+  @include middle-gtr(10px 1fr 40px);
+  @include middle-gta(
+    ".  . mp"
+    "mc mc mp"
+    ".  .  mb"
+  );
+  @include bottom-gta(
+    ".  .  bt"
+    ".  .  . "
+    "bl .  . "
+  );
 }
 @media (min-width: $bp-l-2) and (max-width: $bp-u-2) {
   // 600 - 900
@@ -155,10 +169,7 @@ body {
   height: $bottom-height;
   grid-template-columns: var(--middle-gtc);
   grid-template-rows: 1fr 3fr 2fr;
-  grid-template-areas:
-    ".  .  bt"
-    ".  .  . "
-    "bl .  . ";
+  grid-template-areas: var(--bottom-gta);
   .top-content {
     grid-area: bt;
     @extend %span-block;

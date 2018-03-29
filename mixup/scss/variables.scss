@@ -46,7 +46,10 @@ $cyan: rgb(7, 181, 218);
     ".  .  mp"
     "mc .  mp"
     ".  .  mb";
-
+  --bottom-gta:
+    ".  .  bt"
+    ".  .  . "
+    "bl .  . ";
     --color-title-font: 'Contrail One', cursive;
     --color-title-font-size: var(--title-font-size);
     --logo-width: auto;
@@ -94,7 +97,26 @@ $cyan: rgb(7, 181, 218);
   }
 }
 // middle
-
+@mixin middle-gtc($gtc) {
+  :root {
+    --middle-gtc: $gtc;
+  }
+}
+@mixin middle-gtr($gtr) {
+  :root {
+    --middle-gtr: $gtr;
+  }
+}
+@mixin middle-gta($gta) {
+  :root {
+    --middle-gta: $gta;
+  }
+}
+@mixin bottom-gta($gta) {
+  :root {
+    --bottom-gta: $gta;
+  }
+}
 %span-block {
   span {
     display: block;
