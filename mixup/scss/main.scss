@@ -70,7 +70,8 @@ html, body {
   font-family: 'Open Sans', sans-serif;
 }
 body {
-  & > div {
+
+    & > div {
     background-size: cover !important;
     display: grid;
     position: relative;
