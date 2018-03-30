@@ -12,7 +12,7 @@
   --logo-height: 98px;
   --top-content-height: 50%;
   --middle-gtc: 3fr 2fr 6fr;
-  --middle-gtr: 60px 1fr 40px;
+  --middle-gtr: 60px 1fr 50px;
   --middle-gta: ".  .  mp" "mc .  mp" ".  .  mb";
   --bottom-gta: ".  .  bt" ".  .  . " "bl .  . ";
   --color-title-font: 'Contrail One', cursive;
@@ -62,25 +62,30 @@
   color: #07b5da;
   margin-bottom: 5px; }
 
-@media (max-width: 300px) {
+@media (max-width: 330px) {
   :root {
     --middle-gtr: 10px 100px 10px !important; } }
 
 @media (max-width: 400px) {
   :root {
     --hero-width: 20vw;
-    --hero-right: 16%; }
+    --hero-right: 10%; }
+  :root {
+    --top-gtc: 2fr 1fr; }
   :root {
     --title-font-size: 5vw; }
   :root {
-    --subtext-font-size: 3vw; }
+    --subtext-font-size: 2.2vw; }
   :root {
-    --logo-height: 50px; }
+    --logo-height: 40px; }
   :root {
     --top-content-height: 40%; }
   :root {
-    --top-button-font-size: 2vw;
-    --top-button-padding: 5px 20px; }
+    --top-button-visibility: hidden; }
+  :root {
+    --middle-gtr: 10px 1fr 20px; } }
+
+@media (max-width: 520px) {
   :root {
     --el-gta: "l . r" "e e e" "d d d"; }
   :root {
@@ -90,31 +95,30 @@
     --email-width: 100%;
     --pim-width: 100%; }
   :root {
-    --pim-margin-top: 10px; }
-  :root {
-    --top-button-visibility: hidden; } }
+    --pim-margin-top: 10px; } }
 
 @media (min-width: 400px) and (max-width: 600px) {
   :root {
-    --hero-width: 100px;
-    --hero-right: 16%; }
+    --hero-width: 90px;
+    --hero-right: 15%; }
   :root {
     --title-font-size: 5vw; }
   :root {
-    --subtext-font-size: 3vw; }
+    --subtext-font-size: 2vw; }
   :root {
     --logo-height: 70px; }
   :root {
     --top-content-height: 40%; }
   :root {
-    --top-button-font-size: 3vw;
-    --top-button-padding: 10px 40px; } }
+    --top-button-visibility: hidden; }
+  :root {
+    --middle-gtr: 10px 1fr 25px; } }
 
 @media (max-width: 700px) {
   :root {
     --middle-gtc: 2fr 10px 3fr; }
   :root {
-    --middle-gtr: 10px 1fr 40px; }
+    --middle-gtr: 10px 1fr 30px; }
   :root {
     --middle-gta: ".  . mp" "mc mc mp" ".  .  mb"; }
   :root {
@@ -123,22 +127,28 @@
 @media (min-width: 600px) and (max-width: 900px) {
   :root {
     --hero-width: 20%;
-    --hero-right: 20%; }
+    --hero-right: 18%; }
   :root {
     --title-font-size: 5vw; }
   :root {
-    --subtext-font-size: 3vw; } }
+    --subtext-font-size: 2vw; }
+  .top .content .top-subtext {
+    padding-left: 3vw; } }
 
 @media (min-width: 900px) and (max-width: 1200px) {
   :root {
     --hero-width: 20%;
-    --hero-right: 20%; }
+    --hero-right: 18%; }
   :root {
     --title-font-size: 40px; }
   :root {
-    --subtext-font-size: 18px; } }
+    --subtext-font-size: 2vw; }
+  .top .content .top-subtext {
+    padding-left: 5vw; } }
 
 @media (min-width: 1200px) and (max-width: 1800px) {
+  .top .content .top-subtext {
+    padding-left: 10vw; }
   :root {
     --hero-width: 20%;
     --hero-right: 18%; }
@@ -146,15 +156,19 @@
     --title-font-size: 40px; } }
 
 html, body {
+  position: relative;
   margin: 0;
   height: 100%;
   width: 100%;
-  font-family: 'Open Sans', sans-serif; }
+  font-family: 'Open Sans', sans-serif;
+  overflow: hidden; }
 
-body > div {
-  background-size: cover !important;
-  display: grid;
-  position: relative; }
+body {
+  overflow-y: visible; }
+  body > div {
+    background-size: cover !important;
+    display: grid;
+    position: relative; }
 
 .top {
   background: url("assets/backgrounds/bg_top.jpg");
@@ -195,7 +209,8 @@ body > div {
   position: absolute;
   z-index: 1;
   width: var(--hero-width);
-  right: var(--hero-right); }
+  right: var(--hero-right);
+  top: 10px; }
 
 .multi {
   position: absolute;
