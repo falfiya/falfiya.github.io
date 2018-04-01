@@ -1,0 +1,15 @@
+{
+  "name": "nava",
+  "version": "1.0.0",
+  "description": "",
+  "main": "maeyn.js",
+  "scripts": {
+    "test": "echo \"n0\" && exit 1",
+    "start": "node-sass -w scss -o styles --output-style compressed"
+  },
+  "author": "Cole Gannon",
+  "license": "ISC",
+  "devDependencies": {
+    "node-sass": "^4.7.2"
+  }
+}
