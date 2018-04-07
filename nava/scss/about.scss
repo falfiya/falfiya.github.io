@@ -1,0 +1,24 @@
+body {
+  display: grid;
+  grid-template:
+  "logo info" 1fr
+  "simg info" 1fr / 2fr  3fr
+}
+.logo {
+  padding: 20px;
+  grid-area: logo;
+  img {
+    border-bottom: 2px solid #707070;
+  }
+}
+.side-image {
+  padding: 20px;
+  grid-area: simg;
+  img {
+    filter: grayscale(97%);
+  }
+}
+.info {
+  grid-area: info;
+  word-wrap: normal;
+}

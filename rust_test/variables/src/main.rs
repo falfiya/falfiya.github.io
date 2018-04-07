@@ -3,7 +3,7 @@ fn main() {
     let result = add1(3);
     println!("1 plus 3 is {}", result);
 }
-fn add(a: i32) -> fn() {
+fn add(a: u32) -> fn() {
     return fn(b: i32) -> i32 {
         return a + b;
     }
