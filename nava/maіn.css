@@ -17,6 +17,7 @@ body {
 #O {
   grid-column: 1 / 5;
   font-size: 2vw;
+  padding: 20px;
 }
 #I {
   height: calc(90% - 40px);
