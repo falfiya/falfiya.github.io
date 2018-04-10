@@ -1,0 +1,74 @@
+const englishToNavajo = {
+  apple: "Áká'át'įįł",
+  artist: "na'ach'ąąhí",
+  bee: "tsís'ná",
+  chestnut: "neeshch'ííłchíí'",
+  cat: 'Mósí',
+  caterpillar: "ch'osh-ditł'ooí",
+  catholic: "Éé'danineezi",
+  dog: "łééchąą'í",
+  dolphin: 'tábąąstiin',
+  even: 'bla',
+  execute: 'a-do-nil',
+  frog: "ch'ał",
+  grandaunt: 'análí',
+  grass: "tł'oh",
+  gourd: "adee'",
+  governor: "naat'áanii",
+  hoarse: 'bizhítsoh',
+  intestine: 'a-chi', // Running a bit thin on english to navajo stuff
+  jump: 'yiiyah',
+  jungle: "hodíłch'il",
+  kettle: 'jad-ho-loni',
+  kidney: "achą́'áshk'azhí",
+  kindling: 'chizh',
+  locust: "wóóneeshch'įįdii",
+  mole: "naadooboo'íinii",
+  money: 'béeso',
+  moon: "ooljéé'",
+  long: 'nineez',
+  nose: 'a-chin', // Heh, how's that for a false cognate?
+  orange: "ooljéé'",
+  order: 'be-eh-ho-zini',
+  ouch: 'ayáo',
+  owl: "né'éshjaa'",
+  pain: 'diniih',
+  pancake: "abe'neesmaasi'",
+  panic: "ił-hóóyéé'",
+  quail: 'díłdánii',
+  queen: 'kwį́į́n', // It basically reads that way too
+  rest: 'hanályį́į́h', // The bad version of graphQL
+  retreat: 'ji-din-nes-chanh',
+  riga: 'Wiiga', // Rhotacism
+  rice: 'alóós',
+  situate: 'a-ho-tay',
+  shark: 'ca-lo',
+  tree: 'tsin',
+  trap: 'bee-ódleehi', // It's a trap!
+  umbrella: "bee-chaha'ohí",
+  udder: "abe'-astse'",
+  veitnam: "bi'ednam",
+  wound: 'cah-da-khi',
+  worm: "ch'osh",
+  'x-ray': "bee'agháda'dildlaadí",
+  yak: "béégashii'ilí",
+  'yeah, uh huh, as in agreement while another talks': 'ąą’',
+  zeebra: 'ádin',
+  ' ': '_',
+  '.': '.',
+  '!': '?', // Just cuz
+  '?': '!',
+};
+const englishIndex = {};
+const navajoIndex = {};
+const pushIfCan = (o, k, v) => Array.isArray(o[k]) ? o[k].push(v) : o[k] = [v];
+const pickRandomFromArray = ary => ary[0 | Math.random() * ary.length];
+Object.keys(englishToNavajo).forEach((englishDefinition) => {
+  const firstLetter = englishDefinition[0];
+  const respectiveNavajoWord = englishToNavajo[englishDefinition]
+  pushIfCan(englishIndex, firstLetter, respectiveNavajoWord);
+  navajoIndex[respectiveNavajoWord] = firstLetter;
+});
+const toNavaCode = inp => inp.split``.map(char => pickRandomFromArray(englishIndex[char.toLowerCase()])).join` `;
+const fromNavaCode = inp => inp.split` `.map(word => navajoIndex[word]).join``;
+// .join` `.replace(/ ([.!?])/g, '$1')

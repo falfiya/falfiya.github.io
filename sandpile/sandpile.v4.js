@@ -144,9 +144,4 @@
       dropp = !dropp;
     }
   };
-  window.addEventListener('devtoolschange', (e) => {
-    if (e.detail.open) {
-      window.location = 'https://rick.caseif.net';
-    }
-  });
 }

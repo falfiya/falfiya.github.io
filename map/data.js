@@ -431,8 +431,57 @@ const areaSchedule = {
       staff: staff.Unknown,
       title: 'Skyline Spanish 122 / FIT',
     },
-    7: {
-      title: 'The forbidden math class',
+  },
+  108: {
+    1: {
+      staff: staff.Unknown,
+      title: '1D Overflow',
+    },
+    2: {
+      staff: staff.Fannie,
+      title: '9th FIT',
+    },
+    3: {
+      staff: staff.Quincy,
+      title: 'Photography',
+    },
+    4: {
+      staff: staff.Rachel,
+      title: 'English 4',
+    },
+    5: {
+      staff: staff.Marcus,
+      title: '9th & 10th FIT',
+    },
+    6: {
+      staff: staff.Rachel,
+      title: 'English 4',
+    },
+  },
+  127: {
+    1: {
+      staff: staff.Wade,
+      title: 'DTUSH',
+    },
+    2: {
+      staff: staff.Unknown,
+      title: 'FIT?',
+    },
+    3: {
+      staff: staff.Wade,
+      title: 'DTUSH',
+    },
+    4: {
+      staff: staff.Wade,
+      title: 'DTUSH',
+    },
+    5: {
+      staff: staff.Wade,
+      title: 'The best DTUSH class',
+    },
+    6: {
+      staff: staff.Wade,
+      title: 'DTUSH',
     },
   },
 };
