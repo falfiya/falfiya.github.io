@@ -2,6 +2,8 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: auto 1fr 1fr;
+  font-family: "Times New Roman", Times, serif;
+  font-weight: 800;
 }
 #N {
   width: 20vw;
@@ -17,15 +19,17 @@ body {
   font-size: 2vw;
 }
 #I {
-  height: 90%;
-  width: 98vw;
+  height: calc(90% - 40px);
+  width: calc(98vw - 40px);
+  padding: 20px;
+  font-size: 2vw;
+  font-family: "Times New Roman", Times, serif;
+  font-weight: 800;
 }
 body > div {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Times New Roman", Times, serif;
-  font-weight: 800;
   font-size: 4vw;
   color: #333;
 }
