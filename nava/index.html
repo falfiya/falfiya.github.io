@@ -2,11 +2,39 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="mаin.css">
     <title>Navacode</title>
+    <link rel="stylesheet" href="mаin.css">
+    <link rel="stylesheet" href="main.ϲss">
     <script type="text/javascript" src="main.css"></script>
   </head>
   <body>
-    <img src="nava.svg" alt="">
+    <img src="nava.svg" id=N>
+    <div>
+      <span id=L onclick='swap()'>EN -> NC</span>
+    </div>
+    <div>
+      <span onclick='location="how-it-works"'>How it works</span>
+    </div>
+    <div>
+      <span id=R>R</span>
+    </div>
+    <div id=i>
+      <input type="text" onkeyup='doit()' id=I>
+    </div>
+    <div id=O></div>
+    <script type="text/javascript">
+      let mode = 0;
+      function doit() {
+        if(mode) {
+          O.innerText = fromNavaCode(I.value);
+        } else {
+          O.innerText = toNavaCode(I.value);
+        }
+      }
+      function swap() {
+        L.innerText = ['EN -> NC', 'NC -> EN'][mode^=1];
+        doit();
+      }
+    </script>
   </body>
 </html>

@@ -56,9 +56,10 @@ const englishToNavajo = {
   zeebra: 'ádin',
   ' ': '_',
   '.': '.',
-  '!': '?', // Just cuz
+  '!': '?',
   '?': '!',
 };
+const unknown = '#';
 const englishIndex = {};
 const navajoIndex = {};
 const pushIfCan = (o, k, v) => Array.isArray(o[k]) ? o[k].push(v) : o[k] = [v];
@@ -69,6 +70,9 @@ Object.keys(englishToNavajo).forEach((englishDefinition) => {
   pushIfCan(englishIndex, firstLetter, respectiveNavajoWord);
   navajoIndex[respectiveNavajoWord] = firstLetter;
 });
-const toNavaCode = inp => inp.split``.map(char => pickRandomFromArray(englishIndex[char.toLowerCase()])).join` `;
-const fromNavaCode = inp => inp.split` `.map(word => navajoIndex[word]).join``;
+const R = (val, obj) => key => key in obj ? obj[key] : val;
+const REI = R([unknown], englishIndex);
+const RNI = R(unknown, navajoIndex);
+const toNavaCode = inp => inp.split``.map(char => pickRandomFromArray(REI(char.toLowerCase()))).join` `;
+const fromNavaCode = inp => inp.split` `.map(word => RNI(word)).join``;
 // .join` `.replace(/ ([.!?])/g, '$1')
