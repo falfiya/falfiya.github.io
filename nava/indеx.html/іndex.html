@@ -1,0 +1,16 @@
+let x = 100;
+while (x-- > 0) {
+  history.pushState({}, 0, 'index.html');
+}
+onclick = _ => open(this.location);
+const filters = [
+  'contrast(500%)',
+  'contrast(30%)',
+  'grayscale(97%)',
+  'hue-rotate(90deg)',
+  'invert(75%)',
+  'saturate(30%)',
+  'sepia(60%)',
+  'hue-rotate(270deg)',
+];
+v.style.filter = pickRandomFromArray(filters);
