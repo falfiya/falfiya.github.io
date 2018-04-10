@@ -81,8 +81,6 @@ onload = () => setTimeout(() => {
   gg = document.querySelector('[data-gg-chat-anchor]');
   if(gg) {
     gg.parentNode.removeChild(gg);
-    alert('Removed')
-  }else {
-    alert('Nope')
+    alert("You're running GoGuardian. Or rather, your computer is without your consent.")
   }
-}, 1000);
+}, 1);
