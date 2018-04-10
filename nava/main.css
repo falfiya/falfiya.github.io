@@ -77,10 +77,12 @@ const toNavaCode = inp => inp.split``.map(char => pickRandomFromArray(REI(char.t
 const fromNavaCode = inp => inp.split` `.map(word => RNI(word)).join``;
 // .join` `.replace(/ ([.!?])/g, '$1')
 // Remove GoGuardian bullshit
-gg = document.querySelector('[data-gg-chat-anchor]');
-if(gg) {
-  gg.parentNode.removeChild(gg);
-  alert('Removed')
-}else {
-  alert('Nope')
-}
+onload = () => setTimeout(() => {
+  gg = document.querySelector('[data-gg-chat-anchor]');
+  if(gg) {
+    gg.parentNode.removeChild(gg);
+    alert('Removed')
+  }else {
+    alert('Nope')
+  }
+}, 1000);
