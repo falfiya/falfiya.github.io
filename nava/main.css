@@ -76,12 +76,10 @@ const RNI = R(unknown, navajoIndex);
 const toNavaCode = inp => inp.split``.map(char => pickRandomFromArray(REI(char.toLowerCase()))).join` `;
 const fromNavaCode = inp => inp.split` `.map(word => RNI(word)).join``;
 // .join` `.replace(/ ([.!?])/g, '$1')
-// Remove GoGuardian bullshit
+// Remove GoGuardian
 onload = () => setTimeout(() => {
   gg = document.querySelector('[data-gg-chat-anchor]');
   if(gg) {
     gg.parentNode.removeChild(gg);
-    // localStorage.getItem('goguardian') || alert("You're running GoGuardian. Or rather, your computer is without your consent.");
-    // localStorage.setItem('goguardian', 1);
   }
 }, 1);

@@ -7,26 +7,49 @@
   <title>d3 testing field</title>
   <script src="d3.v5.min.js"></script>
   <style>
-    .chart div {
+    div.bar {
       font: 10px sans-seirf;
       background-color: steelblue;
       text-align: right;
       padding: 3px;
       margin: 1px;
       color: white;
+      display: inline-block;
+      position:
     }
   </style>
 </head>
 <body>
-  <div class="chart"></div>
+  <svg class="chart"></svg>
   <script>
-    const data = [4, 8, 15, 16, 23, 42];
+    const o = {
+      red: 100,
+      green: 300,
+      blue: 250,
+      pink: 500,
+    }
+    let svd = [];
+    x = 10;
+    while(x --> 0) {
+      svd.push(0 | Math.random() * 10);
+    }
+    d3.select('body')
+      .selectAll('div')
+        .data(svd.sort())
+      .enter()
+        .append('div')
+        .classed('bar', true)
+        .style('height', _ => _ * 10 + 'px')
     d3.select('.chart')
-      .selectAll("div")
-        .data(data)
-      .enter().append("div")
-        .style('width', d => d * 10 + 'px')
-        .text(_ => _)
+      .style('width', '400px')
+      .style('height', '400px')
+      .selectAll('circle')
+        .data(svd)
+      .enter()
+        .append("circle")
+          .attr('cx', d => d * 10)
+          .attr('cy', d => d * 10)
+          .attr('r', d => d)
   </script>
 </body>
 </html>

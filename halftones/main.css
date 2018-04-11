@@ -1,0 +1,7 @@
+html, body {
+  margin: 0;
+}
+#i {
+  display: none;
+  filter: grayscale(100%);
+}
