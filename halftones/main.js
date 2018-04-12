@@ -9,7 +9,7 @@ const svg = d3.select('#s');
 let data;
 
 const img = new Image();
-img.src = 'image_pain.png';
+img.src = 'image.png';
 img.onload = () => {
   const w = img.naturalWidth;
   const h = img.naturalHeight;
@@ -41,6 +41,30 @@ const Matrix = {
   fillNeew(xlength, ylength, v = 0) {
     return Array(xlength).fill(0).map(V => Array(ylength).fill(v));
   },
+  slowmap(matrix, fn, cb, ms = 50, xlength = matrix[0].length, ylength = matrix.length) {
+    let cx = 0;
+    let cy = 0;
+    const m = Matrix.neew(xlength, ylength);
+    const i = setInterval(() => {
+      if (cx === xlength) {
+        // cx has gone beyond what it should be
+        console.log('cx is too big!');
+        if (cy + 1 === ylength) {
+          console.log('clearing interval');
+          // then we can't incriment it
+          clearInterval(i);
+          cb(m);
+        } else {
+          console.log('incrimenting cy');
+          cy++;
+          cx = 0;
+        }
+      } else {
+        m[cy][cx] = fn(matrix[cy][cx], cx, cy, matrix);
+        cx++;
+      }
+    }, ms);
+  }
 };
 const getImageData = (x, y) => ctx.getImageData(x, y, settings.size, settings.size);
 const collectColors = (imageData) => {
@@ -52,10 +76,16 @@ const meanColor = pipes(Matrix.switchAxis, 0, R.map(d3.mean));
 const computeBrightness = ary => ary.reduce((a, v) => a + v, 0) / ary.length;
 const meanOfChunk = pipes(getImageData, collectColors, meanColor, computeBrightness, Math.round);
 function init() {
-  data = Matrix.fillNeew(100, 10).map((v, i) => v.map((V, I) => {
-    console.log(`Getting data from x:${I * 10} , y:${i * 10}`);
-    return meanOfChunk(I * 10, i * 10);
-  }));
+  data = Matrix.fillNeew(timesY, timesX);
+  Matrix.slowmap(data, (v, x, y) => {
+    const m = meanOfChunk(x * settings.size, y * settings.size);
+    data[y][x] = m;
+    svg.append('circle')
+      .attr('cx', x * settings.size + settings.size / 2)
+      .attr('cy', y * settings.size + settings.size / 2)
+      .attr('r', (settings.size * m / 255) / 2);
+  }, console.log, 5);
+  /*
   const g = svg.selectAll('g')
     .data(data)
     .enter()
@@ -71,4 +101,5 @@ function init() {
       return (settings.size / 2) + this.parentNode.id * settings.size;
     })
     .attr('r', brightness => (settings.size * brightness / 255) / 2);
+  */
 }
