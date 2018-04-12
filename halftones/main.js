@@ -9,7 +9,7 @@ const svg = d3.select('#s');
 let data;
 
 const img = new Image();
-img.src = 'image.png';
+img.src = 'image_pain.png';
 img.onload = () => {
   const w = img.naturalWidth;
   const h = img.naturalHeight;
@@ -74,7 +74,8 @@ const collectColors = (imageData) => {
 };
 const meanColor = pipes(Matrix.switchAxis, 0, R.map(d3.mean));
 const computeBrightness = ary => ary.reduce((a, v) => a + v, 0) / ary.length;
-const meanOfChunk = pipes(getImageData, collectColors, meanColor, computeBrightness, Math.round);
+const computeDarknessFromBrightness = n => 255 - n;
+const meanOfChunk = pipes(getImageData, collectColors, meanColor, computeBrightness, computeDarknessFromBrightness, Math.round);
 function init() {
   data = Matrix.fillNeew(timesY, timesX);
   Matrix.slowmap(data, (v, x, y) => {
