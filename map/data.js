@@ -159,16 +159,31 @@ const staff = {
     lastName: 'Cooley',
     role: 'Math Teacher',
   },
-  Henry: {
-    firstName: 'Henry',
-    lastName: 'Lonnemann',
-    roll: 'Government Teacher',
+  Carolina: {
+    firstName: 'Carolina',
+    lastName: 'Moroder',
+    role: 'Spanish Teacher',
+  },
+  Christopher: {
+    firstName: 'Christopher',
+    lastName: 'Wall',
+    role: 'Physics Teacher',
+  },
+  Alexis: {
+    firstName: 'Alexis',
+    lastName: 'Frost',
+    role: 'Math Teacher',
+  },
+  Teri: {
+    firstName: 'Teri',
+    lastName: 'Hu',
+    role: 'English Teacher',
   },
   Unknown: {
     firstName: 'Unknown',
     lastName: 'Null',
     role: null,
-  },
+  }
 };
 
 /*
@@ -210,6 +225,7 @@ const areaData = {
   },
   '2B': {
     type: 0,
+    desc: '2B or not 2B, I guess the former',
   },
   '2C': {
     type: 0,
@@ -225,7 +241,7 @@ const areaData = {
   },
   103: {
     type: 1,
-    staff: null,
+    staff: staff.Carolina,
     desc: 'One does not simply walk into Moroder',
   },
   105: {
@@ -253,7 +269,7 @@ const areaData = {
   },
   129: {
     type: 1,
-    staff: null,
+    staff: staff.Teri,
     desc: "Hu's classroom is this?",
   },
   130: {
@@ -263,7 +279,7 @@ const areaData = {
   },
   132: {
     type: 1,
-    staff: null,
+    staff: staff.Alexis,
     desc: 'A chill learning enviornment',
   },
   203: {
@@ -295,7 +311,7 @@ const areaData = {
   },
   229: {
     type: 1,
-    staff: null,
+    staff: staff.Christopher,
     desc: 'The phyisics room: now with walls!',
   },
   230: {
