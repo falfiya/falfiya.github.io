@@ -1,16 +1,90 @@
-const settings = {
-  size: 10,
-};
-let timesX = 0;
-let timesY = 0;
+// Vars
+const settings = {};
 const canvas = d3.select('#c');
 const ctx = canvas.node().getContext`2d`;
 const svg = d3.select('#s');
-let data;
+const file = d3.select('#file');
+const num = d3.select('#number');
+// Functions
+const Matrix = {
+  switchAxis(matrix, xlength = matrix[0].length, ylength = matrix.length) {
+    const m = Matrix.neew(ylength, xlength);
+    Array(xlength).fill``.forEach((v, x) => {
+      Array(ylength).fill``.forEach((V, y) => {
+        m[x][y] = matrix[y][x];
+      });
+    });
+    return m;
+  },
+  neew(xlength, ylength) {
+    return Array(ylength).fill``.map(v => Array(xlength));
+  },
+  fillNeew(xlength, ylength, v = 0) {
+    return Array(ylength).fill(0).map(V => Array(xlength).fill(v));
+  },
+  slowmap(matrix, fn, ms = 50, xlength = matrix[0].length, ylength = matrix.length) {
+    let cx = 0;
+    let cy = 0;
+    const m = Matrix.neew(xlength, ylength);
+    const i = setInterval(() => {
+      if (cx === xlength) {
+        // cx has gone beyond what it should be
+        if (cy + 1 === ylength) {
+          // then we can't incriment it
+          clearInterval(i);
+          cb(m);
+        } else {
+          cy++;
+          cx = 0;
+        }
+      } else {
+        m[cy][cx] = fn(matrix[cy][cx], cx, cy, matrix);
+        cx++;
+      }
+    }, ms);
+  },
+};
 
-const img = new Image();
-img.src = 'image_pain.png';
+const getImageData = (x, y) => ctx.getImageData(x, y, settings.size, settings.size);
+const collectColors = (imageData) => {
+  const data = imageData.data;
+  const colorCount = data.length / 4;
+  return Array(colorCount).fill``.map((v, i) => data.slice(i * 4, i * 4 + 4));
+};
+const map = fn => ary => ary.map(v => fn(v));
+const meanColor = pipes(Matrix.switchAxis, 0, map(d3.mean));
+const computeBrightness = ary => ary.reduce((a, v) => a + v, 0) / ary.length;
+const computeDarknessFromBrightness = n => 255 - n;
+const clearRect = (x, y) => ctx.clearRect(x, y, settings.size, settings.size);
+const meanOfChunk = pipes([getImageData, clearRect], 0, collectColors, meanColor, computeBrightness, computeDarknessFromBrightness, Math.round);
+
+// Globals
+let timesX = 0;
+let timesY = 0;
+let img = new Image();
+
+d3.select('#download').on('click', function () {
+  d3.select(this)
+    .attr('href', `data:application/octet-stream;base64,${btoa(d3.select('#svgcontainer').html())}`)
+    .attr('download', 'images.svg');
+});
+file.on('change', () => {
+  const file = d3.select('input[type=file]').node().files[0];
+  const reader = new FileReader();
+
+  reader.addEventListener('load', () => {
+    img.src = reader.result;
+  }, false);
+
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+});
+
+// Async Stuff
+// Choose Image --> Wait for it to load --> Slowmap
 img.onload = () => {
+  settings.size = num.node().value;
   const w = img.naturalWidth;
   const h = img.naturalHeight;
   timesX = 0 | w / settings.size;
@@ -20,87 +94,19 @@ img.onload = () => {
     .attr('height', h);
   svg
     .attr('width', w)
-    .attr('height', h);
+    .attr('height', h)
+    .attr('xmlns', 'http://www.w3.org/2000/svg');
   ctx.drawImage(img, 0, 0);
   init();
+  img = null;
 };
-Array.roundAll = ary => ary.map(Math.round);
-const Matrix = {
-  switchAxis(matrix, xlength = matrix[0].length, ylength = matrix.length) {
-    const m = Matrix.neew(xlength, ylength);
-    Array(xlength).fill``.forEach((v, x) => {
-      Array(ylength).fill``.forEach((V, y) => {
-        m[x][y] = matrix[y][x];
-      });
-    });
-    return m;
-  },
-  neew(xlength, ylength) {
-    return Array(xlength).fill``.map(v => Array(ylength));
-  },
-  fillNeew(xlength, ylength, v = 0) {
-    return Array(xlength).fill(0).map(V => Array(ylength).fill(v));
-  },
-  slowmap(matrix, fn, cb, ms = 50, xlength = matrix[0].length, ylength = matrix.length) {
-    let cx = 0;
-    let cy = 0;
-    const m = Matrix.neew(xlength, ylength);
-    const i = setInterval(() => {
-      if (cx === xlength) {
-        // cx has gone beyond what it should be
-        console.log('cx is too big!');
-        if (cy + 1 === ylength) {
-          console.log('clearing interval');
-          // then we can't incriment it
-          clearInterval(i);
-          cb(m);
-        } else {
-          console.log('incrimenting cy');
-          cy++;
-          cx = 0;
-        }
-      } else {
-        m[cy][cx] = fn(matrix[cy][cx], cx, cy, matrix);
-        cx++;
-      }
-    }, ms);
-  }
-};
-const getImageData = (x, y) => ctx.getImageData(x, y, settings.size, settings.size);
-const collectColors = (imageData) => {
-  const data = imageData.data;
-  const colorCount = data.length / 4;
-  return Array(colorCount).fill``.map((v, i) => data.slice(i * 4, i * 4 + 4));
-};
-const meanColor = pipes(Matrix.switchAxis, 0, R.map(d3.mean));
-const computeBrightness = ary => ary.reduce((a, v) => a + v, 0) / ary.length;
-const computeDarknessFromBrightness = n => 255 - n;
-const meanOfChunk = pipes(getImageData, collectColors, meanColor, computeBrightness, computeDarknessFromBrightness, Math.round);
+
 function init() {
-  data = Matrix.fillNeew(timesY, timesX);
-  Matrix.slowmap(data, (v, x, y) => {
+  Matrix.slowmap(Matrix.fillNeew(timesX, timesY), (v, x, y) => {
     const m = meanOfChunk(x * settings.size, y * settings.size);
-    data[y][x] = m;
     svg.append('circle')
-      .attr('cx', x * settings.size + settings.size / 2)
+      .attr('cx', x * settings.size + settings.size / 2) // YOu may n0w fixx
       .attr('cy', y * settings.size + settings.size / 2)
       .attr('r', (settings.size * m / 255) / 2);
-  }, console.log, 5);
-  /*
-  const g = svg.selectAll('g')
-    .data(data)
-    .enter()
-    .append('g')
-    .attr('id', (v, i) => i)
-    .selectAll('circle')
-    .data(R.identity)
-    .enter()
-    .append('circle')
-    .attr('id', (v, i) => i)
-    .attr('cx', (v, i) => (i * settings.size) + settings.size / 2)
-    .attr('cy', function() {
-      return (settings.size / 2) + this.parentNode.id * settings.size;
-    })
-    .attr('r', brightness => (settings.size * brightness / 255) / 2);
-  */
+  }, 1);
 }

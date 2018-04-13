@@ -1,6 +1,17 @@
 html, body {
   margin: 0;
 }
-#i {
-  /* display: none; */
+.container {
+  position: relative;
+}
+.header * {
+  display: inline-block;
+}
+.header br {
+  display: none;
+}
+#svgcontainer {
+  position: absolute;
+  top: 0;
+  left: 0;
 }

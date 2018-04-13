@@ -159,6 +159,11 @@ const staff = {
     lastName: 'Cooley',
     role: 'Math Teacher',
   },
+  Henry: {
+    firstName: 'Henry',
+    lastName: 'Lonnemann',
+    roll: 'Government Teacher',
+  },
   Unknown: {
     firstName: 'Unknown',
     lastName: 'Null',
@@ -482,6 +487,239 @@ const areaSchedule = {
     6: {
       staff: staff.Wade,
       title: 'DTUSH',
+    },
+  },
+  129: {
+    1: {
+      staff: staff.Unknown,
+      title: 'English 2',
+    },
+    2: {
+      staff: staff.Unknown,
+      title: 'English 2',
+    },
+    3: {
+      staff: staff.Unknown,
+      title: 'English 2',
+    },
+    4: {
+      staff: staff.Fannie,
+      title: '10th FIT',
+    },
+    5: {
+      staff: staff.Unknown,
+      title: 'English 2',
+    },
+    6: {
+      staff: staff.Unknown,
+      title: 'English 2',
+    },
+  },
+  130: {
+    1: {
+      staff: staff.Freedom,
+      title: 'Beginners Statistics',
+    },
+    2: {
+      staff: staff.Freedom,
+      title: 'Algebra 2',
+    },
+    3: {
+      staff: staff.Freedom,
+      title: 'Algebra 2',
+    },
+    4: {
+      staff: staff.Freedom,
+      title: 'Algebra 2',
+    },
+    5: {
+      staff: staff.Unknown,
+      title: '9th FIT',
+    },
+    6: {
+      staff: staff.Freedom,
+      title: 'Algebra 2',
+    },
+  },
+  132: {
+    1: {
+      staff: staff.Alexis,
+      title: 'Geometry',
+    },
+    2: {
+      staff: staff.Alexis,
+      title: 'Geometry',
+    },
+    3: {
+      staff: staff.Alexis,
+      title: 'Algebra 1',
+    },
+    4: {
+      staff: staff.Alexis,
+      title: 'Algebra 1',
+    },
+    5: {
+      staff: staff.Unknown,
+      title: '9th FIT',
+    },
+    6: {
+      staff: staff.Alexis,
+      title: 'Algebra 1',
+    },
+  },
+  203: {
+    2: {
+      staff: staff.Unknown
+    },
+    3: {
+
+    },
+    4: {
+
+    },
+    6: {
+      staff: staff.Fannie,
+      title: 'Enviornmental Science',
+    },
+  },
+  205: {
+    1: {
+      staff: staff.Mathew,
+      title: 'Pre-Calculus',
+    },
+    2: {
+      staff: staff.Mathew,
+      title: 'Geometry',
+    },
+    3: {
+      staff: staff.Mathew,
+      title: 'Geometry',
+    },
+    4: {
+      staff: staff.Mathew,
+      title: 'Geometry',
+    },
+    5: {
+      staff: staff.Mathew,
+      title: 'Geometry',
+    },
+  },
+  206: {
+    1: {
+      staff: staff.Patrick,
+      title: 'English 1',
+    },
+    2: {
+      staff: staff.Patrick,
+      title: 'English 1',
+    },
+    3: {
+      staff: staff.Patrick,
+      title: 'English 1',
+    },
+    4: {
+      staff: staff.Patrick,
+      title: 'English 1',
+    },
+    5: {
+      staff: staff.Ken,
+      title: '10th FIT',
+    },
+    6: {
+      staff: staff.Patrick,
+      title: 'English 1',
+    },
+  },
+  208: {
+    1: {
+      staff: staff.Kirstie,
+      title: 'World History',
+    },
+    2: {
+      staff: staff.Kirstie,
+      title: 'World History',
+    },
+    3: {
+      staff: staff.Kirstie,
+      title: 'World History',
+    },
+    4: {
+      staff: staff.Kirstie,
+      title: 'World History',
+    },
+    6: {
+      staff: staff.Kirstie,
+      title: 'World History',
+    },
+  },
+  227: {
+    1: {
+      staff: staff.David,
+      title: 'Calculus',
+    },
+    3: {
+      staff: staff.David,
+      title: 'Advanced Statistics',
+    },
+    4: {
+      staff: staff.David,
+      title: 'Geometry',
+    },
+    5: {
+      staff: staff.David,
+      title: 'Advanced Statistics',
+    },
+    6: {
+      staff: staff.David,
+      title: 'Calculus',
+    },
+  },
+  229: {
+    1: {
+      staff: staff.Unknown,
+      title: 'Physics',
+    },
+    2: {
+      staff: staff.Unknown,
+      title: 'Physics',
+    },
+    3: {
+      staff: staff.Unknown,
+      title: 'Physics',
+    },
+    4: {
+      staff: staff.Unknown,
+      title: 'Physics',
+    },
+    5: {
+      staff: staff.Unknown,
+      title: 'Physics',
+    },
+    6: {
+      staff: staff.Unknown,
+      title: 'Physics',
+    },
+  },
+  230: {
+    1: {
+      staff: staff.Lessley,
+      title: 'English Three',
+    },
+    2: {
+      staff: staff.Lessley,
+      title: 'English Three',
+    },
+    3: {
+      staff: staff.Lessley,
+      title: 'English Three',
+    },
+    5: {
+      staff: staff.Lessley,
+      title: 'WW?',
+    },
+    6: {
+      staff: staff.Ian,
+      title: 'FIT',
     },
   },
 };

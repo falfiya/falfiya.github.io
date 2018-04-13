@@ -4,14 +4,22 @@
     <meta charset="utf-8">
     <title>Halftone Thingy</title>
     <link rel="stylesheet" href="main.css">
-    <script src="ramda.min.js" charset="utf-8"></script>
     <script src="d3.v5.min.js"></script>
     <script src="pipes.js" charset="utf-8"></script>
   </head>
   <body>
     <div class="app">
-      <canvas id=c></canvas>
-      <svg id=s></svg>
+      <div class="header">
+        <input type="file" id=file><br>
+        <input id=number type="number" min="5" value="20">
+        <a href="#" id=download>Download</a>
+      </div>
+      <div class="container">
+        <canvas id=c></canvas>
+        <div id=svgcontainer>
+          <svg id=s></svg>
+        </div>
+      </div>
     </div>
     <script src="main.js" charset="utf-8"></script>
   </body>

@@ -28,7 +28,7 @@ body {
   grid-template-rows: 1fr 2fr;
   grid-column-gap: 5vw;
   grid-row-gap: 5vw;
-  grid-template-areas: 
+  grid-template-areas:
   "m i"
   "m s";
 }
@@ -96,4 +96,7 @@ body {
 }
 #current span {
   display: block;
+}
+[data-gg-chat-anchor] {
+  display: none;
 }
