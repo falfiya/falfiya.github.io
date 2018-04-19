@@ -4,9 +4,7 @@ function transmute(str) {
   const map = Array(size).fill().map(v => []);
   const b = str.split``.map((c, i) => {
     const number = '' + str.charCodeAt(i);
-    const prefixedNumber = '0'.repeat(4 - number.length) + number;
-    const chars = prefixedNumber.split``.map(v => n[v]).join``;
-    return chars;
+    return ('0'.repeat(4 - number.length) + number).split``.map(v => n[v]).join``;
   }).join``;
   const sliceLength = -b.length % size
   return b.match(new RegExp(`.{${size}}`, 'g')).concat(sliceLength ? b.slice(sliceLength) : '').join`\n`;
