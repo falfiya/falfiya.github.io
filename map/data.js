@@ -1,4 +1,4 @@
-const intersession = true;
+const intersession = false;
 /*
 staffInstance {
   prefix: (undefined, str),
@@ -83,6 +83,7 @@ const staff = {
     firstName: 'Galen',
     lastName: 'McAndrew',
     role: 'Person',
+    composition: 'NaCl',
   },
   Richard: {
     firstName: 'Richard',
@@ -183,7 +184,7 @@ const staff = {
     firstName: 'Unknown',
     lastName: 'Null',
     role: null,
-  }
+  },
 };
 
 /*
@@ -204,7 +205,7 @@ const areaData = {
   '1B': {
     type: 0,
     staff: staff.Christy,
-    desc: "Christy's @d.tech; Knott a bad place to hang out",
+    desc: "Christy's @d.tech; Knott a bad place to hang out. Also, the whiteboards are usually filled with math or code.",
   },
   '1C': {
     type: null,
@@ -351,7 +352,7 @@ schdleInstance {
 */
 const schoolPeriodScheduleTypes = {
   normal: {
-    '8:45': 0,
+    '8:44': "School hasn't started yet.",
     '9:41': 1,
     '10:34': 2,
     '10:46': 'Break',
@@ -362,22 +363,28 @@ const schoolPeriodScheduleTypes = {
     '14:37': 5,
     '15:35': 6,
     '22:00': "School's out: Get out.",
+    '23:00': 'Go to sleep.',
+    '1:00': 'Staying up this late is bad for your health.',
   },
   lab: {
+
   },
   early: {
 
   },
   late: 'Cole Gannon',
+  wknd: {
+    '24:00': "You know it's the weekend right?",
+  },
 };
 const schoolPeriodSchedule = {
   Mon: schoolPeriodScheduleTypes.normal,
   Tue: schoolPeriodScheduleTypes.normal,
-  Wed: schoolPeriodScheduleTypes.early,
-  Thu: schoolPeriodScheduleTypes.lab,
+  Wed: schoolPeriodScheduleTypes.normal,
+  Thu: schoolPeriodScheduleTypes.normal,
   Fri: schoolPeriodScheduleTypes.normal,
-  Sat: schoolPeriodScheduleTypes.normal,
-  Sun: schoolPeriodScheduleTypes.normal,
+  Sat: schoolPeriodScheduleTypes.wknd,
+  Sun: schoolPeriodScheduleTypes.wknd,
 };
 const areaSchedule = {
   103: {
@@ -585,7 +592,7 @@ const areaSchedule = {
   },
   203: {
     2: {
-      staff: staff.Unknown
+      staff: staff.Unknown,
     },
     3: {
 
@@ -735,6 +742,135 @@ const areaSchedule = {
     },
     6: {
       staff: staff.Ian,
+      title: 'FIT',
+    },
+  },
+  232: {
+    1: {
+      staff: staff.Nathan,
+      title: 'English 3',
+    },
+    2: {
+      staff: staff.Nathan,
+      title: 'English 3',
+    },
+    3: {
+      staff: staff.Nathan,
+      title: 'English 3',
+    },
+    4: {
+      staff: staff.Marcus,
+      title: 'FIT',
+    },
+    5: {
+      staff: staff.Nathan,
+      title: 'English 4',
+    },
+    6: {
+      staff: staff.Nathan,
+      title: 'English 4',
+    },
+  },
+  214: {
+    1: {
+      staff: staff.Galen,
+      title: 'Studio Time',
+      // At the time of writing this, studio time doesn't even exist.
+    },
+  },
+  114: {
+    1: {
+      staff: staff.Wayne,
+      title: 'Studio Time',
+    },
+    2: {
+      staff: staff.Wayne,
+      title: 'Engineering',
+    },
+    3: {
+      staff: staff.Wayne,
+      title: 'Studio Time',
+    },
+    4: {
+      staff: staff.Wayne,
+      title: 'Engineering',
+    },
+    5: {
+      staff: staff.Wayne,
+      title: 'Engineering',
+    },
+    6: {
+      staff: staff.Wayne,
+      title: 'Robotics',
+    },
+  },
+  120: {
+    1: {
+      staff: staff.Unknown,
+      title: '9th FIT',
+    },
+    2: {
+      staff: staff.Greg,
+      title: 'Chemestry',
+    },
+    3: {
+      staff: staff.Greg,
+      title: 'Chemestry',
+    },
+    4: {
+      staff: staff.Greg,
+      title: 'Chemestry',
+    },
+    5: {
+      staff: staff.Greg,
+      title: 'Chemestry',
+    },
+    6: {
+      staff: staff.Greg,
+      title: 'Chemestry',
+    },
+  },
+  220: {
+    1: {
+      staff: staff.Neal,
+      title: 'Biology',
+    },
+    2: {
+      staff: staff.Neal,
+      title: 'Biology',
+    },
+    3: {
+      staff: staff.Christy,
+      title: '9th FIT',
+    },
+    4: {
+      staff: staff.Neal,
+      title: 'Biology',
+    },
+    5: {
+      staff: staff.Neal,
+      title: 'Biology',
+    },
+    6: {
+      staff: staff.Neal,
+      title: 'Biology',
+    },
+  },
+  '1D': {
+    1: {
+      staff: staff.Fannie,
+      title: 'FIT (Probably)',
+    },
+  },
+  '1B': {
+    6: {
+      staff: staff.Unknown,
+      title: 'FIT independant time',
+    },
+  },
+  '2F': {
+    5: {
+      staff: staff.Melissa,
       title: 'FIT',
     },
   },

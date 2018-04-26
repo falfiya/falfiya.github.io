@@ -1,5 +1,7 @@
 // Author: Cole Gannon / Falfa
 // I really like how I wrote this and I'm proud of it
+// Also, if you don't know the concepts behind functional
+// programming, you're in for a really really fun ride
 // Helper functions
 let globalVariable = null;
 const dot = R.curry((str, obj) => str.split`.`.reduce((acc, val) => acc[val], obj));
@@ -7,7 +9,6 @@ const wrap = R.curry((fn, arg) => () => fn(arg));
 const wrapFn = R.curry((fn, arg) => () => fn(arg()));
 const ignore = () => undefined;
 const invoke = R.curry((prop, args, obj) => obj[prop].bind(obj)(args));
-function foobar() {}
 // str => * => obj
 const list = R.unapply(R.identity);
 const kariN = R.pipe(R.uncurryN, R.curry);
@@ -200,33 +201,42 @@ const getMapFrom = geti('map');
   var timeIslessthan = R.curry((t0, t1) => t0.split`:`.map((v, i, m, M) => (v === (M = t1.split`:`)[i] ? null : +v < +M[i])).find(isBool));
   // You know your code is good when eslint flags the whole thing as bad
   // Here's where I start giving up on purely functional
-  const todayIsA = usefulDate => schoolPeriodSchedule[usefulDate.day];
+  const defaultRoomThingy = '';
+  const todayIsA = usefulDate => usefulDate.day;
   var getTodayMasterScheduleFrom = R.pipe(getUsefulDate, dot('day'), R.prop)();
+  const cpname = document.getElementById('cpname');
+  const title = document.getElementById('ctitle');
+  const staff = document.getElementById('cstaff');
+  const firstKey = obj => obj[Object.keys(obj)[0]];
+  const periodNames = int => Number.isInteger(+int) ? `${["Zero'th", 'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth'][int]} Period` : int;
+  const functionalProgrammingStopsBeingFunWhenYourFunctionNamesGetAsLongAsThis = R.pipe(firstKey, periodNames);
   function writeCurrents() {
     if (globalVariable) {
+      console.log('The classroom selected is');
       console.log(globalVariable);
       const date = getUsefulDate();
-      const title = document.getElementById('ctitle');
-      const staff = document.getElementById('cstaff');
       const today = todayIsA(date);
+      console.log('Today is a');
       console.log(today);
       const beforeTime = Object.keys(today).find(timeIslessthan(`${date.hours}:${date.minutes}`));
-      const period = today[beforeTime];
+      const period = schoolPeriodSchedule[today];
+      console.log('The period is');
+      console.log(period);
       title.innerText = staff.innerText = '';
       let room = null;
-      if (+period) {
-        if (room = areaSchedule[globalVariable]) {
-          const roomPeriod = room[period];
-          console.log(roomPeriod);
-          if (roomPeriod) {
-            title.innerText = roomPeriod.title;
-            staff.innerText = staffString(roomPeriod);
-          } else {
-            title.innerText = "There's nothing going on in here right now";
-          }
+      cpname.innerText = functionalProgrammingStopsBeingFunWhenYourFunctionNamesGetAsLongAsThis(period);
+      console.log('Fo');
+      if (room = areaSchedule[globalVariable]) {
+        const roomPeriod = room[period];
+        console.log(roomPeriod);
+        if (roomPeriod) {
+          console.log('Foobar');
+          console.log(roomPeriod.title);
+          title.innerText = roomPeriod.title || defaultRoomThingy;
+          staff.innerText = staffString(roomPeriod);
+        } else {
+          title.innerText = "There's nothing going on in here right now";
         }
-      } else {
-        title.innerText = period;
       }
     }
   }
@@ -238,6 +248,8 @@ function asyncLoad() {
   dimMapElementsFrom(document, areaData);
   calibrateFontSize(document);
   window.addEventListener('resize', wrap(calibrateFontSize, document));
+  // eslint, why do you think I'm using "var" instead of "const"?
+  // It's so it's not block scoped, dummy
   setTimeInnerTextToTimeFrom(document);
   setIntervalWithArgument(setTimeInnerTextToTimeFrom, document, 999);
   setInterval(writeCurrents, 9999);

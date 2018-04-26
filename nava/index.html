@@ -8,33 +8,35 @@
     <script type="text/javascript" src="main.css"></script>
   </head>
   <body>
-    <img src="nava.svg" id=N>
-    <div>
-      <span id=L onclick='swap()'>EN -> NC</span>
-    </div>
-    <div>
-      <span onclick='location="how-it-works"'>How it works</span>
-    </div>
-    <div>
-      <span id=R onclick='location="indеx.html"'>R</span>
-    </div>
-    <div id=i>
-      <input type="text" onkeyup='doit()' id=I>
-    </div>
-    <div id=O></div>
-    <script type="text/javascript">
-      let mode = 0;
-      function doit() {
-        if(mode) {
-          O.innerText = fromNavaCode(I.value);
-        } else {
-          O.innerText = toNavaCode(I.value);
+    <div class="app">
+      <img src="nava.svg" id=N>
+      <div>
+        <span id=L onclick='swap()'>EN -> NC</span>
+      </div>
+      <div>
+        <span onclick='location="how-it-works"'>How it works</span>
+      </div>
+      <div>
+        <span id=R onclick='location="indеx.html"'>R</span>
+      </div>
+      <div id=i>
+        <input type="text" onkeyup='doit()' id=I>
+      </div>
+      <div id=O></div>
+      <script type="text/javascript">
+        let mode = 0;
+        function doit() {
+          if(mode) {
+            O.innerText = fromNavaCode(I.value);
+          } else {
+            O.innerText = toNavaCode(I.value);
+          }
         }
-      }
-      function swap() {
-        L.innerText = ['EN -> NC', 'NC -> EN'][mode^=1];
-        doit();
-      }
-    </script>
+        function swap() {
+          L.innerText = ['EN -> NC', 'NC -> EN'][mode^=1];
+          doit();
+        }
+      </script>
+    </div>
   </body>
 </html>

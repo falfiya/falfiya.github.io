@@ -4448,7 +4448,7 @@ function init(e, info) {
   formats.forEach(format => {
     const t = `${format.container} using ${format.encoding} with quality ${format.quality} | ${format.resolution} :: audio @ ${format.audioBitrate} using ${format.audioEncoding}`;
     const a = document.createElement('a');
-    a.onclick = location = format.url;
+    a.href = format.url;
     a.innerText = t;
     document.body.appendChild(a);
   });

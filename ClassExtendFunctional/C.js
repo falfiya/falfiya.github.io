@@ -1,22 +1,33 @@
-// instanceof and C.js don't get along
-const C = {};
+const C = {
+  __: ['Placeholder'],
+};
 C.curry = (fn) => {
   const argnames = fn.toString().match(/([.\w]+,*\s*)+/)[0].split`,`.map(v => v.replace(/\s/, ''));
-  // Marcus code
+  // Gets the parameter names from the provided function
   const len = argnames.length;
+  // How many arguments the function takes
   const args = [];
+  // The list of arguments
   let rest = [];
-  let rcvd = 0;
-  const obj = function (...args) {
-    return fn(...args);
+  // If there's a "...", these are where the arguments will go
+  const obj = function (...sgra) {
+    sgra.forEach((arg) => {
+      if (arg !== C.__) {
+
+      }
+    });
   };
-  // Now you can call it normally
-  const mayberun = (argname) => {
-    if ((obj.__length__ = ++rcvd) === len) {
+  obj.displayName = fn.displayName || fn.displayName;
+  // Allows interchange between method chaining and normal function calls
+  const mayberun = () => {
+    if (args.length === len) {
+      // if there are enough arguments
       return fn.apply(0, args.concat(rest));
+      // run the function with the arguments and the rest arguments
     }
     return obj;
   };
+  // checks each time wether or not the provided function should be run
   argnames.forEach((argname, idx) => {
     let a = argname;
     if (argname[0] === '.') {
@@ -26,6 +37,8 @@ C.curry = (fn) => {
       Object.defineProperty(obj, a, {
         value: (...a) => {
           rest = a;
+          // there's only one gather allowed per arrow function
+          // it's okay to set rest with "="
           return mayberun(argname);
         },
       });
@@ -38,6 +51,7 @@ C.curry = (fn) => {
       });
     }
     obj[a].displayName = argname;
+    // Make it nice and easy to debug
   });
   return obj;
 };
@@ -52,38 +66,20 @@ C.class = C.curry((name, proto) => {
       // this return blocks all further code
     }
     if (proto.hasOwnProperty('constructor')) {
+      // if there's a constructor in proto we want to run it
       proto.constructor.apply(this, args);
     }
   };
+  classInstance.prototype = proto;
+  // make instanceof work properly
   classInstance.displayName = name;
-  // assign some properties to the classInstance
+  // make debug nice
   classInstance.extend = (nam, nproto) => C.class(nam, Object.setPrototypeOf(nproto, proto));
+  // extend: str => obj => fn
   classInstance.static = obj => Object.assign(classInstance, obj);
+  // static: obj => obj
+  // assign some properties to the classInstance
   return classInstance;
 });
-const Animal = C.class('Animal', {
-  constructor(a, b) {
-    this.v = a + b;
-  },
-  speak(str) {
-    console.log(str);
-  },
-});
-const Cat = Animal.extend('Cat', {
-  meow() {
-    this.speak('Meow!');
-  },
-});
-const Human = C.class.name('Human')
-  .proto({
-    isStupid: true,
-    constructor(iq) {
-      if (iq > 300) {
-        this.inStupid = false;
-      }
-    },
-    icceAnother() {
-      console.log('Someone got icced');
-      return this;
-    },
-  });
+C.class.displayName = 'class';
+// class: str => obj => fn
