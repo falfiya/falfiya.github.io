@@ -14,6 +14,9 @@ const s = {
   mince() {
     return this.split``;
   },
+  reverse() {
+    return this.mince().reverse().join``;
+  },
   every: Array.prototype.every,
   filter: Array.prototype.filter,
   find: Array.prototype.find,
@@ -33,7 +36,7 @@ const a = {
   },
   mRemoveIndex(i) {
     this.splice(i, i);
-    return a;
+    return this;
   },
   mRotate(n) {
     const r = this.slice(-n);
@@ -52,10 +55,7 @@ const a = {
   },
   // Pure
   copy() {
-    return Object.assign([], this);
-  },
-  fuse() {
-    return this.join``;
+    return this.slice();
   },
   shove(...args) {
     return this.copy().mShove(...args);
@@ -95,7 +95,7 @@ const as = {
     return this[this.length - 1];
   },
   remove(i) {
-    return this.mince().removeIndex(i).fuse();
+    return this.mince().removeIndex(i).join``;
   },
   forEachIndex(...args) {
     this.keysArray().forEach(...args);
