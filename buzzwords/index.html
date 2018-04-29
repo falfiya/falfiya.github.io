@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Buzzwords</title>
+    <link rel="preload" href="words.json">
+  </head>
+  <body>
+    <script type="text/javascript">
+    const getWords = async () => {
+      const J = JSON.parse(await fetch('words.json').then(json => j = json.json()));
+      console.log(J[~~(Math.random() * J.length)], J[~~(Math.random() * J.length)], J[~~(Math.random() * J.length)], J[~~(Math.random() * J.length)]);
+    }
+    getWords();
+    </script>
+  </body>
+</html>
