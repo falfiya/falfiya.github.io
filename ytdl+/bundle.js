@@ -4444,6 +4444,7 @@ function te() {
   ytdl.getInfo(t.value, {}, init);
 }
 function init(e, info) {
+  console.log(info);
   const formats = info.formats;
   formats.forEach(format => {
     const t = `${format.container} using ${format.encoding} with quality ${format.quality} | ${format.resolution} :: audio @ ${format.audioBitrate} using ${format.audioEncoding}`;

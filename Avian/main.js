@@ -50,6 +50,9 @@ A._curryN = (n, fn, name) => {
     const tlen = previousArguments.filter(v => v !== A.__).length;
     // number of arguments recieved for non-optional argument values
     const afn = A._arity(n - len, (...newArguments) => {
+      if (!newArguments.length) {
+        newArguments.push(A._);
+      }
       let c = 0;
       // a counter variable
       const args = previousArguments.map(v => v === A.__ && c < newArguments.length ? newArguments[c++] : v).concat(newArguments.slice(c));
@@ -85,6 +88,7 @@ A.uncurryN = (n, fn) => A._arity(n, (...args) => {
 A.kariN = A.curry((n, fn) => A.curry(A.uncurryN(n, fn)));
 A.arity = A.curry(A._arity);
 A.nAry = A.curry((n, fn, name) => (...b) => A.arity(n, fn, name)(...b.slice(0, n)), 'nAry');
+A.pipe = (...fns) => v => fns.reduce((a, fn) => fn(v), v);
 A.array = {
   keys: A.curry(ary => Object.keys(ary), 'keys'),
 };

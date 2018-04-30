@@ -1,26 +1,32 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Halftone Thingy</title>
-    <link rel="stylesheet" href="main.css">
-    <script src="d3.v5.min.js"></script>
-    <script src="pipes.js" charset="utf-8"></script>
-  </head>
-  <body>
-    <div class="app">
-      <div class="header">
-        <input type="file" id=file><br>
-        <input id=number type="number" min="5" value="20">
-        <a href="#" id=download>Download</a>
-      </div>
-      <div class="container">
-        <canvas id=c></canvas>
-        <div id=svgcontainer>
-          <svg id=s></svg>
+<head>
+  <meta charset="utf-8">
+  <title>Halftone Thingy</title>
+  <link rel="stylesheet" href="main.css">
+  <script src="d3.v5.min.js"></script>
+  <script src="pipes.js" charset="utf-8"></script>
+</head>
+<body>
+  <div class="app">
+    <input type="file" id=file>
+    <div class="header">
+      <div class="left">
+        <div class="right">
+          <input type="button" id=filebutton value="Browse">
+          <input id=number value="20">
+          <button type="button" id=start>Start!</button>
         </div>
+        <a href="#" id=download>Save</a>
       </div>
     </div>
-    <script src="main.js" charset="utf-8"></script>
-  </body>
+    <div class="container">
+      <canvas id=c></canvas>
+      <div id=svgcontainer>
+        <svg id=s></svg>
+      </div>
+    </div>
+  </div>
+  <script src="main.js" charset="utf-8"></script>
+</body>
 </html>

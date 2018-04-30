@@ -4,7 +4,10 @@ const canvas = d3.select('#c');
 const ctx = canvas.node().getContext`2d`;
 const svg = d3.select('#s');
 const file = d3.select('#file');
+const filebutton = d3.select('#filebutton');
 const num = d3.select('#number');
+const start = d3.select('#start');
+const svgc = d3.select('.container');
 // Functions
 const Matrix = {
   switchAxis(matrix, xlength = matrix[0].length, ylength = matrix.length) {
@@ -32,7 +35,7 @@ const Matrix = {
         if (cy + 1 === ylength) {
           // then we can't incriment it
           clearInterval(i);
-          cb(m);
+          // cb(m);
         } else {
           cy++;
           cx = 0;
@@ -62,23 +65,26 @@ const meanOfChunk = pipes([getImageData, clearRect], 0, collectColors, meanColor
 let timesX = 0;
 let timesY = 0;
 let img = new Image();
-
 d3.select('#download').on('click', function () {
   d3.select(this)
     .attr('href', `data:application/octet-stream;base64,${btoa(d3.select('#svgcontainer').html())}`)
     .attr('download', 'images.svg');
 });
-file.on('change', () => {
+filebutton.on('click', () => {
+  file.node().click();
+});
+file.on('click', () => {
   const file = d3.select('input[type=file]').node().files[0];
   const reader = new FileReader();
-
-  reader.addEventListener('load', () => {
-    img.src = reader.result;
-  }, false);
-
-  if (file) {
-    reader.readAsDataURL(file);
-  }
+  start.style('opacity', 1);
+  start.on('click', () => {
+    reader.addEventListener('load', () => {
+      img.src = reader.result;
+    }, false);
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  });
 });
 
 // Async Stuff
@@ -92,6 +98,9 @@ img.onload = () => {
   canvas
     .attr('width', w)
     .attr('height', h);
+  svgc
+    .style('width', w + 'px')
+    .style('background', 'white');
   svg
     .attr('width', w)
     .attr('height', h)
@@ -99,6 +108,9 @@ img.onload = () => {
   ctx.drawImage(img, 0, 0);
   init();
   img = null;
+  const l = d3.select('.right');
+  l.style('opacity', 0);
+  setTimeout(() => l.style('display', 'none'), 400);
 };
 
 function init() {
