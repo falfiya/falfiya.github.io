@@ -28,13 +28,13 @@ const Matrix = {
   slowmap(matrix, fn, ms = 50, xlength = matrix[0].length, ylength = matrix.length) {
     let cx = 0;
     let cy = 0;
-    const m = Matrix.neew(xlength, ylength);
-    const i = setInterval(() => {
+    const f = () => {
       if (cx === xlength) {
         // cx has gone beyond what it should be
         if (cy + 1 === ylength) {
           // then we can't incriment it
           clearInterval(i);
+          return 0;
           // cb(m);
         } else {
           cy++;
@@ -44,6 +44,11 @@ const Matrix = {
         m[cy][cx] = fn(matrix[cy][cx], cx, cy, matrix);
         cx++;
       }
+      return 1;
+    }
+    const m = Matrix.neew(xlength, ylength);
+    const i = setInterval(() => {
+      f() && f() && f();
     }, ms);
   },
 };
