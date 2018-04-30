@@ -36,15 +36,16 @@ const Matrix = {
           clearInterval(i);
           return 0;
           // cb(m);
+        } else {
+          cy++;
+          cx = 0;
         }
-        cy++;
-        cx = 0;
       } else {
         m[cy][cx] = fn(matrix[cy][cx], cx, cy, matrix);
         cx++;
       }
       return 1;
-    };
+    }
     const m = Matrix.neew(xlength, ylength);
     const i = setInterval(() => {
       f() && f() && f();
@@ -63,7 +64,7 @@ const meanColor = pipes(Matrix.switchAxis, 0, map(d3.mean));
 const computeBrightness = ary => ary.reduce((a, v) => a + v, 0) / ary.length;
 const computeDarknessFromBrightness = n => 255 - n;
 const clearRect = (x, y) => ctx.clearRect(x, y, settings.size, settings.size);
-const meanOfChunk = pipes([getImageData, clearRect], 0, collectColors, meanColor, [computeBrightness, 0], [[0, computeDarknessFromBrightness], 1], [[0, Math.round], 1], (...a) => a);
+const meanOfChunk = pipes([getImageData, clearRect], 0, collectColors, meanColor, computeBrightness, computeDarknessFromBrightness, Math.round);
 
 // Globals
 let timesX = 0;
@@ -103,7 +104,7 @@ img.onload = () => {
     .attr('width', w)
     .attr('height', h);
   svgc
-    .style('width', `${w}px`)
+    .style('width', w + 'px')
     .style('background', 'white');
   svg
     .attr('width', w)
@@ -118,18 +119,11 @@ img.onload = () => {
 };
 
 function init() {
-  const circleSquareDifference = ~~((1 - ((Math.PI) * (0.5 ** 2))) * 255);
-  console.log(circleSquareDifference);
   Matrix.slowmap(Matrix.fillNeew(timesX, timesY), (v, x, y) => {
-    const M = meanOfChunk(x * settings.size, y * settings.size);
-    const brightness = M[0];
-    const color = M[1];
-    const percentOfSize = brightness / 255;
-    const adjustedColor = color.slice(0, 3).map(v => Math.ceil(v - (circleSquareDifference / 3)));
+    const m = meanOfChunk(x * settings.size, y * settings.size);
     svg.append('circle')
       .attr('cx', x * settings.size + settings.size / 2) // YOu may n0w fixx
       .attr('cy', y * settings.size + settings.size / 2)
-      .attr('r', (settings.size * 1) / 2)
-      .attr('fill', `rgb(${adjustedColor})`);
+      .attr('r', (settings.size * m / 255) / 2);
   }, 1);
 }
