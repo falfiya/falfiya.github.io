@@ -14,4 +14,5 @@ const calibrateC = () => {
   canvas.width = width;
 };
 calibrateC(); // Running it just to make sure
-// const fillText = str => 
+
+// const fillText = str =>
