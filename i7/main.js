@@ -14,5 +14,11 @@ const calibrateC = () => {
   canvas.width = width;
 };
 calibrateC(); // Running it just to make sure
-
+let currentFillStyle = ctx.fillStyle;
+const setFillStyleTo = (v) => {
+  if (v !== currentFillStyle) {
+    ctx.fillStyle = v;
+    currentFillStyle = v;
+  }
+}
 // const fillText = str =>

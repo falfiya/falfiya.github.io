@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const ytdl = require('ytdl-core');
-const sanitize = require('sanitize-filename');
 const minimist = require('minimist');
 const ffmpeg = require('fluent-ffmpeg')
 
