@@ -19,16 +19,17 @@
   },
   "homepage": "https://github.com/Coalpha/coalpha.github.io#readme",
   "devDependencies": {
-    "eslint": "^4.17.0",
+    "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-babel": "^4.1.2",
-    "eslint-plugin-import": "^2.8.0",
-    "express": "^4.16.2"
+    "eslint-plugin-import": "^2.12.0",
+    "express": "^4.16.3"
+  },
+  "_dependencies": {
+    "vue-cli": "^2.9.3",
+    "ytdl-core": "^0.20.4"
   },
   "dependencies": {
-    "chrome-devtools-frontend": "^1.0.548690",
-    "vue-cli": "^2.9.3",
-    "ytdl-core": "^0.20.2"
   },
   "directories": {
     "lib": "lib"

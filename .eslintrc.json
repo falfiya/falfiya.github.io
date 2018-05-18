@@ -10,7 +10,6 @@
     "no-underscore-dangle": 0,
     "no-return-assign": 0,
     "no-confusing-arrow": 0,
-    "I like confusing stuff": true,
     "func-names": "off",
     "no-var": "off",
     "vars-on-top": "off",
@@ -19,8 +18,5 @@
     "max-len": "off",
     "no-unused-expressions": "off",
     "no-shadow": "warn"
-  },
-  "parserOptions": {
-
   }
 }

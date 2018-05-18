@@ -15,4 +15,4 @@ function delay(ms) {
   };
   xhr.send(null);
 }
-delay=(m,x=new XMLHttpRequest())=>(x.open('GET',`/query/?ms=${m}&time=${new Date().getTime()}`,false),x.send());
+// delay = (m, x = new XMLHttpRequest()) => (x.open('GET', `/query/?ms=${m}&time=${new Date().getTime()}`, false), x.send());
