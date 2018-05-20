@@ -1,17 +1,17 @@
-:root {
-  --header-height: 1px;
-}
 html, body {
   margin: 0;
   height: 100%;
   width: 100%;
   overflow: hidden;
 }
-#header {
-  background: black;
-  height: var(--header-height)
-}
 #calculator {
-  height: calc(100% - var(--header-height));
+  height: calc(100%);
   width: 100%;
+}
+.dcg-icon-desmos {
+  font-size: inherit !important;
+}
+.dcg-icon-desmos::before {
+  content: "yer mom" !important;
+  font-size: 16px !important;
 }
