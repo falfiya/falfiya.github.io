@@ -5,17 +5,20 @@
 // The displayName is only for the user
 
 const A = v => new Proxy(v, A._getHandler(A.type(v)));
-A._arity = (n, fn, displayName, name) => {
-  const newFn = function (...a) { return fn.apply(this, a); };
+A._arity = (n, fn, displayName, name, binding = null) => {
+  const newFn = function (...a) { return fn.apply(binding, a); };
   Object.defineProperty(newFn, 'length', { value: n, writable: false });
   A._setFnName(newFn, name || fn.name);
   newFn.displayName = displayName || name || fn.name;
   return newFn;
 };
-A._curryN = (n, fn, name, types = []) => {
+A._curryN = (n, fn, name = fn ? fn.name : '', types = [], binding = null) => {
+  if (n === 0) {
+    return A._arity(0, fn, name, name, binding);
+  }
   if (!Number.isInteger(n) || !(Math.sign(n) + 1)) {
-    throw new Error(`The first argument to _curryN must be a non-negative integer!${n}`);
-  } else if (n > 1000) {
+    throw new Error(`${name}: The first argument to _curryN must be a non-negative integer!`);
+  } else if (n > 30) {
     throw new Error(`${n} is a pretty big number. Are you sure you wanted to do that?`);
   }
   if (A.type(fn) !== 'function') {
@@ -24,7 +27,7 @@ A._curryN = (n, fn, name, types = []) => {
   function prepare(previousArguments = Array(n).fill(A.__)) {
     const p = previousArguments.map((v, i) => {
       const ptype = types[i];
-      let type = A._isPlaceholder(v) ? `__:${ptype}` || 'A.__' : A.type(v);
+      let type = A._isPlaceholder(v) ? ptype ? `__:${ptype}` : 'A.__' : A.type(v);
       if (v === A.$) {
         type = '';
       } else if (type === 'number') {
@@ -37,7 +40,7 @@ A._curryN = (n, fn, name, types = []) => {
     const len = previousArguments.slice(0, n).filter(v => v !== A.__).length;
     const tlen = previousArguments.filter(v => v !== A.__).length;
     // number of arguments recieved for non-optional argument values
-    const displayName = `${name || fn.name}(${p} : ${tlen} / ${n})`;
+    const displayName = `${name}(${p} : ${tlen} / ${n})`;
     const afn = A._arity(n - len, (...newArguments) => {
       let c = 0;
       // a counter variable
@@ -47,10 +50,15 @@ A._curryN = (n, fn, name, types = []) => {
     }, displayName, name);
     afn.previousArguments = previousArguments;
     afn._isCurried = true;
-    return (len === n) ? (previousArguments.forEach((v, i) => v === A.$ && delete previousArguments[i]), fn(...previousArguments)) : afn;
+    if (len === n) {
+      previousArguments.forEach((v, i) => v === A.$ && delete previousArguments[i]);
+      return fn.apply(binding, previousArguments);
+    }
+    return afn;
   }
   return prepare();
 };
+A._invokerN = (n, str, obj, types) => A._curryN(n, obj[str], str, types, obj);
 A._isPlaceholder = v => v === A.__;
 A._propsy = v => new Proxy(v, {
   get: (f, key) => {
@@ -115,37 +123,48 @@ A.divide = A.curry((a, b) => a / b, 'divide', ['int', 'int']);
 
 // Extend
 // Look, verbs are hard. Come up with your own.
-const s = {
-  diceNoRemainder(n) {
-    return this.match(new RegExp(`[\\s\\S]{${n}}`, 'g'));
-  },
-  dice(n) {
-    let d = this.diceNoRemainder(n);
-    const xs = -this.length % n;
-    if (xs) {
-      d = d.shove(this.slice(xs));
-    }
-    return d;
-  },
+/*
+A._addProtoFn = (fn, types) => {
+  fn.displayName =
+};
+*/
+A._addProtoFn = (fn, obj, types = [], name = fn.name) => {
+  A._setFnName(fn, name);
+  fn.displayName = name + (types.length ? `(${types.map(v => `__:${v}`)})` : '');
+  Object.defineProperty(fn, 'length', { value: types.length });
+  obj[name] = fn;
+};
+A._String = {
   mince() {
     return this.split``;
   },
   reverse() {
     return this.mince().reverse().join``;
   },
-  prefix(v, l) {
-    const count = l - this.length;
-    return `${v}`.repeat(count > 0 && count).concat(this);
-  },
-  every: Array.prototype.every,
-  filter: Array.prototype.filter,
-  find: Array.prototype.find,
-  forEach: Array.prototype.forEach,
-  includes: Array.prototype.includes,
-  map: Array.prototype.map,
-  reduce: Array.prototype.reduce,
-};
-const a = {
+}
+A._addProtoFn(function diceNoRemainder(n) {
+  return this.match(new RegExp(`[\\s\\S]{${n}}`, 'g'));
+}, A._String, ['int']);
+A._addProtoFn(function dice(n) {
+  let d = this.diceNoRemainder(n);
+  const xs = -this.length % n;
+  if (xs) {
+    d = d.shove(this.slice(xs));
+  }
+  return d;
+}, A._String, ['int']);
+A._addProtoFn(function prefix(v, l) {
+  const count = l - this.length;
+  return `${v}`.repeat(count > 0 && count).concat(this);
+}, A._String, ['str', 'int']);
+A._addProtoFn(Array.prototype.every, A._String, ['fn']);
+A._addProtoFn(Array.prototype.filter, A._String, ['fn']);
+A._addProtoFn(Array.prototype.find, A._String, ['fn']);
+A._addProtoFn(Array.prototype.forEach, A._String, ['fn']);
+A._addProtoFn(Array.prototype.includes, A._String, ['fn']);
+A._addProtoFn(Array.prototype.map, A._String, ['fn']);
+A._addProtoFn(Array.prototype.reduce, A._String, ['fn', 'acc']);
+A._Array = {
   // Pure
   copy() {
     return this.slice();
@@ -167,42 +186,41 @@ const a = {
     return this.copy().splice(...args);
   },
 };
-const o = {
+A._Object = {
   copy() {
     return Object.assign({}, this);
-  },
-  log() {
-    console.log(this);
-    return this;
   },
   keysArray() {
     return Object.keys(this);
   },
-  forEachKeys(fn) {
-    this.keysArray().forEach(fn);
+  identity() {
     return this;
   },
-  mapKeys(fn) {
-    return this.keysArray().map(fn);
-  },
-  map(fn) {
-    const temp = {};
-    this.forEach((v, k) => temp[k] = fn(v, k, this));
-    return temp;
-  },
-  forEach(fn) {
-    this.keysArray().forEach((k, i) => fn(this[k], k, this));
-  },
-  count(fn) {
-    return this.filter(fn).length;
-  },
 };
-const n = {
+A._addProtoFn(function forEachKeys(fn) {
+  this.keysArray().forEach(fn);
+  return this;
+}, A._Object, ['fn']);
+A._addProtoFn(function mapKeys(fn) {
+  return this.keysArray().map(fn);
+}, A._Object, ['fn']);
+A._addProtoFn(function map(fn) {
+  const temp = {};
+  this.forEach((v, k) => temp[k] = fn(v, k, this));
+  return temp;
+}, A._Object, ['fn']);
+A._addProtoFn(function forEach(fn) {
+  this.keysArray().forEach((k, i) => fn(this[k], k, this));
+}, A._Object, ['fn']);
+A._addProtoFn(function count(fn) {
+  return this.filter(fn).length;
+}, A._Object, ['fn']);
+A._Number = {
   times(fn) {
     return Array(+this).fill(0).map((v, i) => fn(i));
   },
 };
-const as = {
+A._ArrayLike = {
   last() {
     return this[this.length - 1];
   },
@@ -216,11 +234,7 @@ const as = {
     return [this.slice(0, n), this.slice(n)];
   },
 };
-Object.defineProperty(this, 'maybe', { get: () => Math.random() > 0.5 });
-Object.assign(String.prototype, s);
-Object.assign(Number.prototype, n);
-Object.assign(String.prototype, as);
-// snas?
-Object.assign(Object.prototype, o);
-Object.assign(Array.prototype, a);
-Object.assign(Array.prototype, as);
+Object.assign(String.prototype, A._String, A._ArrayLike);
+Object.assign(Array.prototype, A._Array, A._ArrayLike);
+Object.assign(Number.prototype, A._Number);
+Object.assign(Object.prototype, A._Object);
