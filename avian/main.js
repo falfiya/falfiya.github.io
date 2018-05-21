@@ -94,7 +94,3 @@ A.kariN = A._curryN(2, (n, fn, name) => A.curry(A.uncurryN(n, fn)));
 A.arity = A._curryN(2, A._arity);
 A.nAry = A.curry((n, fn, name) => (...b) => A.arity(n, fn, name)(...b.slice(0, n)), 'nAry');
 A.pipe = (...fns) => v => fns.reduce((a, fn) => fn(v), v);
-A.array = {
-  keys: A.curry(ary => Object.keys(ary), 'keys'),
-};
-const sum = A.kariN(5, (a, b) => c => (d, e) => a + b + c + d + e);

@@ -29,8 +29,7 @@
     "vue-cli": "^2.9.3",
     "ytdl-core": "^0.20.4"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "directories": {
     "lib": "lib"
   }
