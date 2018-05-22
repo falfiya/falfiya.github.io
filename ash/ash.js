@@ -75,7 +75,8 @@ A._annotateFn = (fn, options) => {
     const descriptorsArray = [];
     const pastDescriptors = fn[Symbol.for('descriptors')] || {};
     const currentDescriptors = Object.assign({}, pastDescriptors, o.descriptors);
-    Object.keys(currentDescriptors).forEach((key) => {
+    Object.keys(currentDescriptors).reverse().forEach((key) => {
+      // reverse it so it makes more sense
       if (currentDescriptors[key]) {
         // if the descriptor is active
         descriptorsArray.push(key);
