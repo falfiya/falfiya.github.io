@@ -13,9 +13,8 @@ A._arity = (n, fn) => {
     throw new Error(`The first argument to _arity must be a non-negative integer instead of ${n}!`);
     // I mean, why would you want negative arguments amirite
   }
-  const mari = (...a) => fn(...a);
-  Object.defineProperty(mari, 'length', { value: n, writable: false });
-  return mari;
+  Object.defineProperty(fn, 'length', { value: n, writable: false });
+  return fn;
 };
 A._annotateFn = (fn, options) => {
   if (typeof fn !== 'function') {
@@ -26,10 +25,10 @@ A._annotateFn = (fn, options) => {
     arity: fn.length,
     name: fn.name,
     autoName: true,
+    valueTypesOnly: false,
+    showCounter: false,
     names: [],
     values: [],
-    valueTypesOnly: false,
-    showCounter: true,
   }, options);
   const displayArgs = [];
   o.values.forEach((v, i) => {
@@ -56,7 +55,8 @@ A._annotateFn = (fn, options) => {
     }
     displayArgs[i] = val;
   });
-  if (o.autoName) {
+  if (o.autoName && !o.names.length) {
+    // if argument names are provided, it's implied that it's not automatic
     o.names = A._argnames(fn);
   }
   o.names.forEach((v, i) => displayArgs[i] = `${displayArgs[i] || ''}:${v}`);
@@ -64,9 +64,6 @@ A._annotateFn = (fn, options) => {
   if (o.showCounter) {
     counter = `, @ ${o.values.filter(v => v !== A.__).length} / ${o.arity}`;
   }
-  // fn(#, $, 2, :int  )()
-  // value annotations
-  // value display
   const newFn = A._arity(o.arity, fn);
   A._setFnName(newFn, o.name);
   // just to make sure
@@ -80,10 +77,15 @@ A._annotateFn = (fn, options) => {
   return newFn;
   // set the .length property of the function and return it
 };
-A._curryN = (n, fn, name = fn ? fn.name : '', aO = {}) => {
-  // curry n
-  aO.name = name;
-  aO.arity = n;
+A._curryN = (n, fn, name, argnames = [], o = {}) => {
+  name === undefined && (name = fn ? fn.name : '');
+  const aO = Object.assign({
+    name,
+    arity: n,
+    showCounter: true,
+    autoName: true,
+    names: argnames,
+  }, o);
   if (n === 0) {
     aO.showCounter = false;
     aO.autoName = false;
@@ -161,10 +163,10 @@ A.type = (v) => {
   }
 };
 A._ = A._propsy(v => v);
-A.curryN = A._curryN(2, A._curryN, 'curryN', ['int', 'fn']);
+A.curryN = A._curryN(2, A._curryN, 'curryN');
 A.curry = A._curryN(1, (...a) => A._curryN(a[0].length, ...a), 'curry', ['fn']);
 // The name is optional so no need to curry
-A.uncurryN = A._curryN(2, (n, fn, name = fn.name) => A._arity(n, (...args) => {
+A.uncurryN = A._curryN(2, (n, fn) => A._arity(n, (...args) => {
   let argpos = 0;
   let fnp = fn;
   while (argpos !== n) {
@@ -173,31 +175,18 @@ A.uncurryN = A._curryN(2, (n, fn, name = fn.name) => A._arity(n, (...args) => {
     argpos = len;
   }
   return fnp;
-}, name), 'uncurryN', ['int', 'fn']);
-A.kariN = A._curryN(2, (...a) => A.curry(A.uncurryN(...a)), 'kariN', ['int', 'fn']);
-A.arity = A._curryN(2, A._arity, 'arity', ['int', 'fn']);
-A.nAry = A._curryN(2, (n, fn, name) => (...b) => A.arity(n, fn, name)(...b.slice(0, n)), 'nAry', ['int', 'fn']);
+}), 'uncurryN');
+A.kariN = A._curryN(2, (n, fn) => A.curry(A.uncurryN(n, fn)), 'kariN');
+A.arity = A._curryN(2, A._arity, 'arity');
+A.nAry = A._curryN(2, (n, fn) => (...b) => A.arity(n, fn)(...b.slice(0, n)), 'nAry');
 A.pipe = (...fns) => v => fns.reduce((a, fn) => fn(v), v);
 // Helper functions
 A.add = A.curry((a, b) => a + b, 'add', ['int', 'int']);
-foobar = A._curryN(2, (a, b) => a + b);
 A.subtract = A.curry((a, b) => a - b, 'subtract', ['int', 'int']);
 A.multiply = A.curry((a, b) => a * b, 'multiply', ['int', 'int']);
 A.divide = A.curry((a, b) => a / b, 'divide', ['int', 'int']);
 
-// Extend
 // Look, verbs are hard. Come up with your own.
-/*
-A._addProtoFn = (fn, types) => {
-  fn.displayName =
-};
-*/
-A._addProtoFn = (fn, obj, types = [], name = fn.name) => {
-  A._setFnName(fn, name);
-  fn.displayName = name + (types.length ? `(${types.map(v => `__:${v}`)})` : '');
-  Object.defineProperty(fn, 'length', { value: types.length });
-  obj[name] = fn;
-};
 A._String = {
   mince() {
     return this.split``;
@@ -205,29 +194,29 @@ A._String = {
   reverse() {
     return this.mince().reverse().join``;
   },
+  diceNoRemainder(n) {
+    return this.match(new RegExp(`[\\s\\S]{${n}}`, 'g'));
+  },
+  dice(n) {
+    let d = this.diceNoRemainder(n);
+    const xs = -this.length % n;
+    if (xs) {
+      d = d.shove(this.slice(xs));
+    }
+    return d;
+  },
+  prefix(v, l) {
+    const count = l - this.length;
+    return `${v}`.repeat(count > 0 && count).concat(this);
+  },
+  every: Array.prototype.every,
+  filter: Array.prototype.filter,
+  find: Array.prototype.find,
+  forEach: Array.prototype.forEach,
+  includes: Array.prototype.includes,
+  map: Array.prototype.map,
+  reduce: Array.prototype.reduce,
 };
-A._addProtoFn(function diceNoRemainder(n) {
-  return this.match(new RegExp(`[\\s\\S]{${n}}`, 'g'));
-}, A._String, ['int']);
-A._addProtoFn(function dice(n) {
-  let d = this.diceNoRemainder(n);
-  const xs = -this.length % n;
-  if (xs) {
-    d = d.shove(this.slice(xs));
-  }
-  return d;
-}, A._String, ['int']);
-A._addProtoFn(function prefix(v, l) {
-  const count = l - this.length;
-  return `${v}`.repeat(count > 0 && count).concat(this);
-}, A._String, ['str', 'int']);
-A._addProtoFn(Array.prototype.every, A._String, ['fn']);
-A._addProtoFn(Array.prototype.filter, A._String, ['fn']);
-A._addProtoFn(Array.prototype.find, A._String, ['fn']);
-A._addProtoFn(Array.prototype.forEach, A._String, ['fn']);
-A._addProtoFn(Array.prototype.includes, A._String, ['fn']);
-A._addProtoFn(Array.prototype.map, A._String, ['fn']);
-A._addProtoFn(Array.prototype.reduce, A._String, ['fn', 'acc']);
 A._Array = {
   // Pure
   copy() {
@@ -260,25 +249,29 @@ A._Object = {
   identity() {
     return this;
   },
+  forEachKeys(fn) {
+    this.keysArray().forEach(fn);
+    return this;
+  },
+  mapKeys(fn) {
+    return this.keysArray().map(fn);
+  },
+  map(fn) {
+    const temp = {};
+    this.forEach((v, k) => temp[k] = fn(v, k, this));
+    return temp;
+  },
+  forEach(fn) {
+    this.keysArray().forEach((k, i) => fn(this[k], k, this));
+  },
+  reduce(fn, acc) {
+    this.forEach((v, i, a) => acc = fn(acc, v, i, a));
+    return acc;
+  },
+  count(fn) {
+    return this.filter(fn).length;
+  },
 };
-A._addProtoFn(function forEachKeys(fn) {
-  this.keysArray().forEach(fn);
-  return this;
-}, A._Object, ['fn']);
-A._addProtoFn(function mapKeys(fn) {
-  return this.keysArray().map(fn);
-}, A._Object, ['fn']);
-A._addProtoFn(function map(fn) {
-  const temp = {};
-  this.forEach((v, k) => temp[k] = fn(v, k, this));
-  return temp;
-}, A._Object, ['fn']);
-A._addProtoFn(function forEach(fn) {
-  this.keysArray().forEach((k, i) => fn(this[k], k, this));
-}, A._Object, ['fn']);
-A._addProtoFn(function count(fn) {
-  return this.filter(fn).length;
-}, A._Object, ['fn']);
 A._Number = {
   times(fn) {
     return Array(+this).fill(0).map((v, i) => fn(i));
@@ -298,10 +291,9 @@ A._ArrayLike = {
     return [this.slice(0, n), this.slice(n)];
   },
 };
-Object.assign(String.prototype, A._String, A._ArrayLike);
-Object.assign(Array.prototype, A._Array, A._ArrayLike);
-Object.assign(Number.prototype, A._Number);
-Object.assign(Object.prototype, A._Object);
-function testProto(fn, args) {
-  return fn(...args);
-}
+Object.keys(A._ArrayLike).forEach(key => Object.defineProperty(String.prototype, key, { value: A._ArrayLike[key] }));
+Object.keys(A._ArrayLike).forEach(key => Object.defineProperty(Array.prototype, key, { value: A._ArrayLike[key] }));
+Object.keys(A._String).forEach(key => Object.defineProperty(String.prototype, key, { value: A._String[key] }));
+Object.keys(A._Array).forEach(key => Object.defineProperty(Array.prototype, key, { value: A._Array[key] }));
+Object.keys(A._Number).forEach(key => Object.defineProperty(Number.prototype, key, { value: A._Number[key] }));
+Object.keys(A._Object).forEach(key => Object.defineProperty(Object.prototype, key, { value: A._String[key] }));
