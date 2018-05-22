@@ -4,7 +4,7 @@
 const A = v => new Proxy(v, A._getHandler(A.type(v)));
 A.$ = Symbol('Blank');
 A.__ = Symbol('Placeholder');
-A._argnames = fn => fn[Symbol.for('argnames')] || fn.toString().match(/([.\w]+,*\s*)+/)[0].split`,`.map(v => v.replace(/\s/, ''));
+A.argnames = fn => fn[Symbol.for('argnames')] || fn.toString().match(/([.\w]+,*\s*)+/)[0].split`,`.map(v => v.replace(/\s/, ''));
 A._arity = (n, fn) => {
   if (!Number.isInteger(n) || !(Math.sign(n) + 1)) {
     throw new Error(`The first argument to _arity must be a non-negative integer instead of ${n}!`);
@@ -22,10 +22,13 @@ A._annotateFn = (fn, options) => {
     arity: fn.length,
     name: fn.name,
     autoName: true,
+    showArgnames: true,
     valueTypesOnly: false,
     showCounter: false,
-    names: [],
+    argnames: [],
     values: [],
+    descriptors: {},
+    showDescriptors: true,
   }, options);
   const displayArgs = [];
   o.values.forEach((v, i) => {
@@ -47,16 +50,19 @@ A._annotateFn = (fn, options) => {
         array: '[]',
         symbol: 'sym',
         boolean: 'bool',
+        function: 'fn',
         // haha get it? Symbool?
       })[type];
     }
     displayArgs[i] = val;
   });
-  if (o.autoName && !o.names.length) {
+  if (o.autoName && !o.argnames.length) {
     // if argument names are provided, it's implied that it's not automatic
-    o.names = A._argnames(fn);
+    o.argnames = A.argnames(fn);
   }
-  o.names.forEach((v, i) => displayArgs[i] = `${displayArgs[i] || ''}:${v}`);
+  if (o.showArgnames) {
+    o.argnames.forEach((v, i) => displayArgs[i] = `${displayArgs[i] || ''}:${v}`);
+  }
   let counter = '';
   if (o.showCounter) {
     counter = `, @ ${o.values.filter(v => v !== A.__).length} / ${o.arity}`;
@@ -64,13 +70,29 @@ A._annotateFn = (fn, options) => {
   const newFn = A._arity(o.arity, fn);
   A._setFnName(newFn, o.name);
   // just to make sure
+  let descriptorsString = '';
+  if (o.showDescriptors) {
+    const descriptorsArray = [];
+    const pastDescriptors = fn[Symbol.for('descriptors')] || {};
+    const currentDescriptors = Object.assign({}, pastDescriptors, o.descriptors);
+    Object.keys(currentDescriptors).forEach((key) => {
+      if (currentDescriptors[key]) {
+        // if the descriptor is active
+        descriptorsArray.push(key);
+      }
+    });
+    descriptorsString = `${descriptorsArray.join` `} `;
+    newFn[Symbol.for('descriptors')] = currentDescriptors;
+  }
   if (displayArgs.length && o.showCounter) {
-    newFn.displayName = `${o.name}(${displayArgs.join(', ')}${counter})`;
+    newFn.displayName = `${descriptorsString}${o.name}(${displayArgs.join(', ')}${counter})`;
   } else {
     newFn.displayName = o.name;
   }
   newFn[Symbol.for('values')] = o.values;
-  newFn[Symbol.for('argnames')] = o.names;
+  if (o.showArgnames) {
+    newFn[Symbol.for('argnames')] = o.argnames;
+  }
   return newFn;
   // set the .length property of the function and return it
 };
@@ -79,9 +101,9 @@ A._curryN = (n, fn, name, argnames = [], o = {}) => {
   const aO = Object.assign({
     name,
     arity: n,
+    argnames,
     showCounter: true,
     autoName: true,
-    names: argnames,
   }, o);
   if (n === 0) {
     aO.showCounter = false;
@@ -114,10 +136,14 @@ A._curryN = (n, fn, name, argnames = [], o = {}) => {
       // run the function
     }
     // otherwise just annotate the function and return it
-    mari[Symbol.for('argnames')] = A._argnames(fn);
+    mari[Symbol.for('argnames')] = A.argnames(fn);
     // make sure that the function annotator gets the right argument names
+    const d = fn[Symbol.for('descriptors')] || {};
+    d.curried = true;
+    d.uncurried = false;
+    mari[Symbol.for('descriptors')] = d;
+    // and descriptors
     const newFn = A._annotateFn(mari, Object.assign(aO, { values: previousArguments }));
-    newFn[Symbol('isCurried')] = true;
     return newFn;
     // and return it
   }
@@ -150,7 +176,7 @@ A._propsy = v => new Proxy(v, {
     return A._propsy(argsGetter);
   },
 });
-A._setFnName = (fn, name) => Object.defineProperty(fn, 'name', { value: name });
+A._setFnName = (fn, name) => Object.defineProperty(fn, 'name', { value: name === undefined ? '' : name });
 A.type = (v) => {
   const t = typeof v;
   switch (t) {
@@ -163,22 +189,57 @@ A._ = A._propsy(v => v);
 A.curryN = A._curryN(2, A._curryN, 'curryN');
 A.curry = A._curryN(1, (...a) => A._curryN(a[0].length, ...a), 'curry', ['fn']);
 // The name is optional so no need to curry
-A.uncurryN = A._curryN(2, (n, fn) => A._arity(n, (...args) => {
-  let argpos = 0;
-  let fnp = fn;
-  while (argpos !== n) {
-    const len = fnp.length + argpos;
-    fnp = fnp(...args.slice(argpos, len));
-    argpos = len;
-  }
-  return fnp;
-}), 'uncurryN');
+A.uncurryN = A._curryN(2, (n, fn) => {
+  const mari = (...a) => {
+    let argpos = 0;
+    let fnp = fn;
+    while (argpos !== n) {
+      const len = fnp.length + argpos;
+      fnp = fnp(...a.slice(argpos, len));
+      argpos = len;
+    }
+    return fnp;
+  };
+  const newFn = A._annotateFn(mari, {
+    arity: n,
+    name: fn.name,
+    showCounter: false,
+    showArgnames: false,
+  });
+  const d = newFn[Symbol.for('descriptors')];
+  d.curried = false;
+  d.uncurried = true;
+  // not that it would be set anyways
+  return newFn;
+}, 'uncurryN');
 A.kariN = A._curryN(2, (n, fn) => A.curry(A.uncurryN(n, fn)), 'kariN');
 A.arity = A._curryN(2, A._arity, 'arity');
 A.nAry = A._curryN(2, (n, fn) => (...b) => A.arity(n, fn)(...b.slice(0, n)), 'nAry');
 // Flow
 A.pipe = (...fns) => v => fns.reduce((a, fn) => fn(v), v);
-A.flip = fn => (...a) => fn(a[1], a[0], a.slice(2));
+A.flip = (fn) => {
+  const n = fn.length;
+  const { name } = fn;
+  const o = {};
+  let oargnames;
+  let nargnames;
+  const fnargs = fn[Symbol.for('argnames')];
+  if (fnargs) {
+    oargnames = fnargs;
+  } else {
+    oargnames = A.argnames(fn);
+  }
+  if (oargnames.length < 2) {
+    o.showArgnames = false;
+    // Something didn't work. Don't show the argnames
+  } else {
+    nargnames = [oargnames[1], oargnames[0], ...oargnames.slice(2)];
+  }
+  o.descriptors = {
+    flipped: true,
+  };
+  return A._curryN(n, (...a) => fn(a[1], a[0], a.slice(2)), name, nargnames, o);
+};
 
 // Helper functions
 A.add = A.curry((a, b) => a + b, 'add', ['int', 'int']);
