@@ -178,7 +178,7 @@ A.arity = A._curryN(2, A._arity, 'arity');
 A.nAry = A._curryN(2, (n, fn) => (...b) => A.arity(n, fn)(...b.slice(0, n)), 'nAry');
 // Flow
 A.pipe = (...fns) => v => fns.reduce((a, fn) => fn(v), v);
-A.dag =
+A.flip = fn => (...a) => fn(a[1], a[0], a.slice(2));
 
 // Helper functions
 A.add = A.curry((a, b) => a + b, 'add', ['int', 'int']);
