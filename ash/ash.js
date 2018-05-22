@@ -1,9 +1,6 @@
-// ash is because the ash character is ae and this is avian-extend
-// newFn.name = arg name || fn.name
-// The name of the function is for the code to understand
-// newFn.displayName = arg displayName || arg name || newFn.name
-// The displayName is only for the user
-
+// ash.js
+// Cole Gannon
+// Copywrong 2018
 const A = v => new Proxy(v, A._getHandler(A.type(v)));
 A.$ = Symbol('Blank');
 A.__ = Symbol('Placeholder');
@@ -179,7 +176,10 @@ A.uncurryN = A._curryN(2, (n, fn) => A._arity(n, (...args) => {
 A.kariN = A._curryN(2, (n, fn) => A.curry(A.uncurryN(n, fn)), 'kariN');
 A.arity = A._curryN(2, A._arity, 'arity');
 A.nAry = A._curryN(2, (n, fn) => (...b) => A.arity(n, fn)(...b.slice(0, n)), 'nAry');
+// Flow
 A.pipe = (...fns) => v => fns.reduce((a, fn) => fn(v), v);
+A.dag =
+
 // Helper functions
 A.add = A.curry((a, b) => a + b, 'add', ['int', 'int']);
 A.subtract = A.curry((a, b) => a - b, 'subtract', ['int', 'int']);
