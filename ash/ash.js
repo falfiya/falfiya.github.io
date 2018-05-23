@@ -13,6 +13,16 @@ A._arity = (n, fn) => {
   Object.defineProperty(fn, 'length', { value: n, writable: false });
   return fn;
 };
+A._annotateFnDefaults = {
+  autoName: true,
+  showArgnames: true,
+  valueTypesOnly: false,
+  showCounter: false,
+  argnames: [],
+  values: [],
+  descriptors: {},
+  showDescriptors: true,
+};
 A._annotateFn = (fn, options) => {
   if (typeof fn !== 'function') {
     throw new Error('To annotate a function, you need a function');
@@ -21,15 +31,7 @@ A._annotateFn = (fn, options) => {
   const o = Object.assign({
     arity: fn.length,
     name: fn.name,
-    autoName: true,
-    showArgnames: true,
-    valueTypesOnly: false,
-    showCounter: false,
-    argnames: [],
-    values: [],
-    descriptors: {},
-    showDescriptors: true,
-  }, options);
+  }, A._annotateFnDefaults, options);
   const displayArgs = [];
   o.values.forEach((v, i) => {
     let val;
@@ -217,7 +219,8 @@ A.kariN = A._curryN(2, (n, fn) => A.curry(A.uncurryN(n, fn)), 'kariN');
 A.arity = A._curryN(2, A._arity, 'arity');
 A.nAry = A._curryN(2, (n, fn) => (...b) => A.arity(n, fn)(...b.slice(0, n)), 'nAry');
 // Flow
-A.pipe = (...fns) => v => fns.reduce((a, fn) => fn(v), v);
+A.annotateFn = A._curryN(2, A._annotateFn, 'annotateFn', ['fn', 'config']);
+A.pipe = (...fns) => v => fns.reduce((a, fn) => fn(a), v);
 A.flip = (fn) => {
   const n = fn.length;
   const { name } = fn;
@@ -241,7 +244,7 @@ A.flip = (fn) => {
   };
   return A._curryN(n, (...a) => fn(a[1], a[0], a.slice(2)), name, nargnames, o);
 };
-
+A.wrapFn = A._curryN(2, (fn, args) => () => fn(...args), 'wrapFn');
 // Helper functions
 A.add = A.curry((a, b) => a + b, 'add', ['int', 'int']);
 A.subtract = A.curry((a, b) => a - b, 'subtract', ['int', 'int']);
@@ -311,7 +314,7 @@ A._Object = {
   identity() {
     return this;
   },
-  forEachKeys(fn) {
+  forEachKey(fn) {
     this.keysArray().forEach(fn);
     return this;
   },
@@ -332,6 +335,9 @@ A._Object = {
   },
   count(fn) {
     return this.filter(fn).length;
+  },
+  pairs() {
+    return
   },
 };
 A._Number = {
@@ -358,4 +364,4 @@ Object.keys(A._ArrayLike).forEach(key => Object.defineProperty(Array.prototype, 
 Object.keys(A._String).forEach(key => Object.defineProperty(String.prototype, key, { value: A._String[key] }));
 Object.keys(A._Array).forEach(key => Object.defineProperty(Array.prototype, key, { value: A._Array[key] }));
 Object.keys(A._Number).forEach(key => Object.defineProperty(Number.prototype, key, { value: A._Number[key] }));
-Object.keys(A._Object).forEach(key => Object.defineProperty(Object.prototype, key, { value: A._String[key] }));
+Object.keys(A._Object).forEach(key => Object.defineProperty(Object.prototype, key, { value: A._Object[key] }));
