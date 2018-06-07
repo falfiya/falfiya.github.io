@@ -119,4 +119,4 @@ module.exports = class AssocGraph {
     const min = minArrayLength(kary);
     return keys.reduce((a, v) => a.filter(o => o[v] === obj[v]), min[0]);
   }
-}
+};
