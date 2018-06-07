@@ -1,3 +1,8 @@
+// Well, I think my code makes sense but I'm half awake
+// I would leave comments but I don't care enough right now
+// I'm super going to regret that
+// Things named with one letter generally mean a word that starts with the letter
+// a = apple, o = orange, v = violium etc...
 const forcePush = (o, k, v) => {
   if (Array.isArray(o[k])) {
     return o[k].push(v);
@@ -5,15 +10,35 @@ const forcePush = (o, k, v) => {
   o[k] = [v];
   return 1;
 };
+const forcePushMap = (o, k, v) => {
+  const a = o.get(k);
+  if (Array.isArray(a)) {
+    return a.push(v);
+  }
+  o.set(k, [v]);
+  return 1;
+}
 const minArrayLength = ary => ary.reduce((a, v) => v.length < a.length ? v : a, ary[0]);
+const flatten = ary => [].concat(...ary);
+const dedupe = (ary) => {
+  const tracker = new WeakMap();
+  const aryn = [];
+  ary.forEach((v) => {
+    if (!tracker.has(v)) {
+      tracker.set(v, true);
+      aryn.push(v);
+    }
+  });
+  return aryn;
+};
 class AssocGraph {
-  constructor(...o) {
+  constructor(i = []) {
     this.reg = new Map();
     this.data = {
       keys: {},
-      values: {},
+      values: new Map(),
     };
-    this.assocAll(...o);
+    this.assocAll(...i);
   }
   getReg(key) {
     this.reg.get(key);
@@ -31,20 +56,20 @@ class AssocGraph {
       Object.keys(obj).forEach((key) => {
         const val = obj[key];
         reg.keys[key] = forcePush(this.data.keys, key, obj) - 1;
-        reg.values[val] = forcePush(this.data.values, val, obj) - 1;
+        reg.values[val] = forcePushMap(this.data.values, val, obj) - 1;
       });
     }
     return this;
   }
-  assocAll(...o) {
-    o.forEach(this.assoc);
+  assocAll(...a) {
+    a.forEach(this.assoc);
   }
   getKey(k) {
     const res = this.data.keys[k];
     return res ? res.filter(v => v) : [];
   }
   getValue(v) {
-    const res = this.data.values[v];
+    const res = this.data.values.get(v);
     return res ? res.filter(e => e) : [];
   }
   deassoc(obj) {
@@ -56,31 +81,38 @@ class AssocGraph {
       });
       Object.keys(reg.values).map((value) => {
         const idx = reg.values[value];
-        delete this.data.values[value][idx];
+        delete this.data.values.get(value)[idx];
       });
       this.reg.delete(obj);
       return this;
     }
     return false;
   }
-  queryKeys(obj) {
+  orQueryKeys(obj) {
+    let keyAry;
+    if (Array.isArray(obj)) {
+      keyAry = obj;
+    } else {
+      keyAry = Object.keys(obj);
+    }
+    return dedupe(flatten(keyAry.map(this.getKey.bind(this))));
+  }
+  orQueryValues(obj) {
+    let valAry;
+    if (Array.isArray(obj)) {
+      valAry = obj;
+    } else {
+      valAry = Object.keys(obj).map(key => obj[key]);
+    }
+    return dedupe(flatten(valAry.map(this.getValue.bind(this))));
+  }
+  andQueryKeys(obj) {
     const res = [];
-    const kary = Object.keys(obj).map(this.getKey);
+    const keys = Object.keys(obj);
+    const kary = keys.map(this.getKey);
     const min = minArrayLength(kary);
   }
-  query(keyObj, valObj) {
-    const res = [];
-    const kary = Object.keys(keyObj).map(key => this.getKey);
-    const vary = Object.keys(valObj).map();
-  }
-  mixedQuery(obj, kval) {
-
-  }
 }
-query({
-  id: 0,
-  lastName: 0,
-});
 const x = new AssocGraph();
 const c = {
   firstName: 'cole',
@@ -90,6 +122,7 @@ const c = {
 const g = {
   firstName: 'gail',
   lastName: 'gannon',
+  company: 'ensante',
 };
 x.assoc(c);
 x.assoc(g);
