@@ -23,8 +23,5 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0"
   },
-  "dependencies": {},
-  "directories": {
-    "lib": "lib"
-  }
+  "dependencies": {}
 }

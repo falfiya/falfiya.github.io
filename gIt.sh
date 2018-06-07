@@ -1,1 +1,0 @@
-git add . && git commit -m'"Auto" Commit by gIt.sh' && git push
