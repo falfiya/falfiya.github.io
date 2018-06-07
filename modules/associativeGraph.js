@@ -17,10 +17,10 @@ const forcePushMap = (o, k, v) => {
   }
   o.set(k, [v]);
   return 1;
-}
-const minArrayLength = ary => ary.reduce((a, v) => v.length < a.length ? v : a, ary[0]);
+};
+const minArrayLength = ary => ary.reduce((a, v, i) => v.length < a[0].length ? [v, i] : a, [ary[0], 0]);
 const flatten = ary => [].concat(...ary);
-const dedupe = (ary) => {
+const specialDedupe = (ary) => {
   const tracker = new WeakMap();
   const aryn = [];
   ary.forEach((v) => {
@@ -31,7 +31,7 @@ const dedupe = (ary) => {
   });
   return aryn;
 };
-class AssocGraph {
+module.exports = class AssocGraph {
   constructor(i = []) {
     this.reg = new Map();
     this.data = {
@@ -88,41 +88,35 @@ class AssocGraph {
     }
     return false;
   }
-  orQueryKeys(obj) {
-    let keyAry;
-    if (Array.isArray(obj)) {
-      keyAry = obj;
-    } else {
-      keyAry = Object.keys(obj);
-    }
-    return dedupe(flatten(keyAry.map(this.getKey.bind(this))));
+  queryPair(key, val) {
+    return this.getKey(key).filter(o => o[key] === val);
   }
-  orQueryValues(obj) {
-    let valAry;
-    if (Array.isArray(obj)) {
-      valAry = obj;
-    } else {
-      valAry = Object.keys(obj).map(key => obj[key]);
-    }
-    return dedupe(flatten(valAry.map(this.getValue.bind(this))));
+  queryAllKeys(keys) {
+    return specialDedupe(flatten(keys.map(this.getKey.bind(this))));
   }
-  andQueryKeys(obj) {
-    const res = [];
-    const keys = Object.keys(obj);
-    const kary = keys.map(this.getKey);
+  queryAllValues(vals) {
+    return specialDedupe(flatten(vals.map(this.getValue.bind(this))));
+  }
+  queryAllPairs(obj) {
+    return specialDedupe(flatten(Object.keys(obj).map(key => this.queryPair(key, obj[key]))));
+  }
+  queryKeys(keys) {
+    const kary = keys.map(this.getKey.bind(this));
     const min = minArrayLength(kary);
+    keys.splice(min[1], 1);
+    return keys.reduce((a, v) => a.filter(o => Object.prototype.hasOwnProperty.call(o, v)), min[0]);
+  }
+  queryValues(vals) {
+    const kary = vals.map(this.getValue.bind(this));
+    const min = minArrayLength(kary);
+    vals.splice(min[1], 1);
+    const valary = min[0].map(obj => [Object.values(obj), obj]);
+    return vals.reduce((a, v) => a.filter(ary => ary[0].includes(v)), valary).map(res => res[1]);
+  }
+  queryPairs(obj) {
+    const keys = Object.keys(obj);
+    const kary = keys.map(this.getKey.bind(this));
+    const min = minArrayLength(kary);
+    return keys.reduce((a, v) => a.filter(o => o[v] === obj[v]), min[0]);
   }
 }
-const x = new AssocGraph();
-const c = {
-  firstName: 'cole',
-  lastName: 'gannon',
-  id: 10380,
-};
-const g = {
-  firstName: 'gail',
-  lastName: 'gannon',
-  company: 'ensante',
-};
-x.assoc(c);
-x.assoc(g);
