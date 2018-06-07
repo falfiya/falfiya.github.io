@@ -1,8 +1,3 @@
-// Well, I think my code makes sense but I'm half awake
-// I would leave comments but I don't care enough right now
-// I'm super going to regret that
-// Things named with one letter generally mean a word that starts with the letter
-// a = apple, o = orange, v = violium etc...
 const forcePush = (o, k, v) => {
   if (Array.isArray(o[k])) {
     return o[k].push(v);
