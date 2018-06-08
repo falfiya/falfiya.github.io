@@ -1,10 +1,7 @@
-const forcePush = (o, k, v) => {
-  if (Array.isArray(o[k])) {
-    return o[k].push(v);
-  }
-  o[k] = [v];
-  return 1;
-};
+const flatten = require('./flatten');
+const dedupe = require('./dedupe');
+const forcePush = require('./forcePush');
+
 const forcePushMap = (o, k, v) => {
   const a = o.get(k);
   if (Array.isArray(a)) {
@@ -14,18 +11,6 @@ const forcePushMap = (o, k, v) => {
   return 1;
 };
 const minArrayLength = ary => ary.reduce((a, v, i) => v.length < a[0].length ? [v, i] : a, [ary[0], 0]);
-const flatten = ary => [].concat(...ary);
-const specialDedupe = (ary) => {
-  const tracker = new WeakMap();
-  const aryn = [];
-  ary.forEach((v) => {
-    if (!tracker.has(v)) {
-      tracker.set(v, true);
-      aryn.push(v);
-    }
-  });
-  return aryn;
-};
 module.exports = class AssocGraph {
   constructor(i = []) {
     this.reg = new Map();
@@ -87,13 +72,13 @@ module.exports = class AssocGraph {
     return this.getKey(key).filter(o => o[key] === val);
   }
   queryAllKeys(keys) {
-    return specialDedupe(flatten(keys.map(this.getKey.bind(this))));
+    return dedupe(flatten(keys.map(this.getKey.bind(this))));
   }
   queryAllValues(vals) {
-    return specialDedupe(flatten(vals.map(this.getValue.bind(this))));
+    return dedupe(flatten(vals.map(this.getValue.bind(this))));
   }
   queryAllPairs(obj) {
-    return specialDedupe(flatten(Object.keys(obj).map(key => this.queryPair(key, obj[key]))));
+    return dedupe(flatten(Object.keys(obj).map(key => this.queryPair(key, obj[key]))));
   }
   queryKeys(keys) {
     const kary = keys.map(this.getKey.bind(this));
