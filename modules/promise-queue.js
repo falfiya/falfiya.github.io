@@ -49,4 +49,5 @@ module.exports = class PromiseQueue {
     attachListener.call(this);
     return p;
   }
+  // push a promise returning function to the queue
 };
