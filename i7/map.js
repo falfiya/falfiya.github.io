@@ -1,9 +1,7 @@
-const maps = [
-  `
-Hello world
-Foobar Baz
-  `,
-  `
-  `,
-];
-maps[0].split`\n`.slice(1 , -1);
+import Maytrisk from '../modules/maytrisk.js';
+
+export default class Map {
+  constructor(ary) {
+    this.m = new Maytrisk(ary);
+  }
+}
