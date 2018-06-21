@@ -10,3 +10,4 @@ alias trr2='tr -R -L 2'
 alias lsa="ls -a"
 alias code="cdd && cd coalpha.github.io"
 alias cdS="cds && cd steamapps/common/Starbound"
+alias open="explorer.exe"
