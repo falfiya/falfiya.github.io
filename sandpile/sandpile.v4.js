@@ -29,7 +29,7 @@
   const centerx = Math.round(adjustedWidth / 2); // Try to place it in the center of the screen, ish
   const centery = Math.round(adjustedHeight / 2);
   const ctx = c.getContext('2d', { alpha: false });
-  const bg = 'steelblue';
+  const bg = 'black';
   ctx.fillStyle = bg; // This is the background color
   ctx.fillRect(0, 0, width, height); // Since alpha is false, fill the background
   const pixelAt = (x, y, color) => {
