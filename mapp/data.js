@@ -1,4 +1,10 @@
 const intersession = false;
+class Staff {
+  constructor(first, last) {
+    this.first = first;
+    this.last = last;
+  }
+}
 /*
 staffInstance {
   prefix: (undefined, str),
