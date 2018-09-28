@@ -1,1 +1,1 @@
-export default ary => [...new Set(ary)];
+export default (ary => [...new Set(ary)]);

@@ -115,4 +115,3 @@ Object.keys(proto.String).forEach(key => Object.defineProperty(String.prototype,
 Object.keys(proto.Array).forEach(key => Object.defineProperty(Array.prototype, key, { value: proto.Array[key] }));
 Object.keys(proto.Number).forEach(key => Object.defineProperty(Number.prototype, key, { value: proto.Number[key] }));
 Object.keys(proto.Object).forEach(key => Object.defineProperty(Object.prototype, key, { value: proto.Object[key] }));
-export default proto;

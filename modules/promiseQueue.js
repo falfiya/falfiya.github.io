@@ -26,7 +26,7 @@ function attachListener() {
     .catch(promiseFailure.bind(this))
     .finally(next.bind(this));
 }
-export default class PromiseQueue {
+module.exports = class PromiseQueue {
   constructor() {
     this.fns = [];
     this.res = [];
