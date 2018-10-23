@@ -851,7 +851,7 @@ function drawMap() {
     cy += size + 1;
   }
   cy = 50;
-  cx = 75 + (size / 2 + 1) * floor[Math.min(floor.length / 2)].length;
+  cx = 75 + (size / 2 + 1) * floor.reduce((acc, v) => v.length > acc.length ? v : acc).length;
   ctx.fillStyle = getRandomColor();
   if (p.health <= 50) ctx.fillStyle = '#0f0';
   if (p.health <= 25) ctx.fillStyle = '#ff0';
