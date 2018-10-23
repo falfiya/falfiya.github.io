@@ -857,15 +857,15 @@ function drawMap() {
   if (p.health <= 25) ctx.fillStyle = '#ff0';
   if (p.health <= 10) ctx.fillStyle = '#f00';
   cy += 50;
-  ctx.fillText(`You have ${Math.floor(p.health)} health.`, 10, cy);
+  ctx.fillText(`You have ${Math.floor(p.health)} health.`, cx, cy);
   ctx.fillStyle = '#00f';
   cy += 50;
-  ctx.fillText(`Your attack is ${p.stats.attack} and your defense is ${p.stats.defense}.`, 10, cy);
+  ctx.fillText(`Your attack is ${p.stats.attack} and your defense is ${p.stats.defense}.`, cx, cy);
   for (var i in log) {
     cy += size + 5;
     txt = log[i].split(':');
     ctx.fillStyle = txt.shift();
-    ctx.fillText(txt.join(':'), 10, cy);
+    ctx.fillText(txt.join(':'), cx, cy);
   }
 }
 drawMap();
