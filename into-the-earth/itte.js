@@ -323,7 +323,7 @@ var c = document.body.appendChild(document.createElement('canvas')),
       if (!use) return true;
       for (var i in floor) {
         for (var j in floor[i]) {
-          if (floor[i][j] == ' (') {
+          if (floor[i][j] == '(') {
             floor[y][x] = ')';
             p.objectOn = '(';
             p.x = +j;
@@ -353,7 +353,7 @@ var c = document.body.appendChild(document.createElement('canvas')),
       return true;
     },
     P(x, y) {
-      push('portal ');
+      push('portal');
       floor[y][x] = '.';
       return true;
     },
