@@ -850,6 +850,8 @@ function drawMap() {
     }
     cy += size + 1;
   }
+  cy = 50;
+  cx = 75 + (size / 2 + 1) * floor[0].length;
   ctx.fillStyle = getRandomColor();
   if (p.health <= 50) ctx.fillStyle = '#0f0';
   if (p.health <= 25) ctx.fillStyle = '#ff0';
@@ -1021,7 +1023,7 @@ document.onkeydown = function (evt) {
   if (K('r') && evt.shiftKey) p.health = 0; else
   if (K('m'))rms(); else
   if (K('h'))window.location = 'https://docs.google.com/document/d/1Uty66vE0If5Wf77W96-OPQHObU_8emDNxXugbN1TJQY/edit?usp=sharing'; else
-  if (K('º'))cmode = (cmode === false);
+  if (K('8'))cmode = (cmode === false);
   else if (K('f') && p.equip.Sec && p.equip.Sec.use) {
     p.equip.Sec.use(() => {
       for (var i in p.inven) {
