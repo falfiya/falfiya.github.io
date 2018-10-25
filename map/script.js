@@ -1,4 +1,3 @@
-
 const mutate = R.curry((object, key, value) => object[key] = value);
 const impure = fn => (...args) => {
   fn(...args);
