@@ -1,5 +1,3 @@
-import 
-
 const BarePlayer = {
   hp: 20,
   mp: 20,

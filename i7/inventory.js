@@ -5,12 +5,14 @@ class Item {
   }
 }
 class Inventory {
+  constructor() {
+    this.items = [];
+  }
   addItem(item) {
     if (!(item instanceof Item)) {
       throw TypeError('The first argumentto addItem must be an Item');
     }
-  }
-  generateMatrix() { 
-
+    this.items.push();
+    this.items.sort();
   }
 }

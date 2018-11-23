@@ -1,6 +1,4 @@
-import { PlayerData } from './player';
-
-export default class Mut_Change {
+export class Mut_Change {
   constructor(bool, val) {
     this.bool = bool;
     this.val = val;
@@ -10,18 +8,17 @@ export default class Map {
   constructor(sizex, sizey, defaultTile = 0) {
     this.sizex = sizex;
     this.sizey = sizey;
-    this.row = Array(sizey).fill(0).map(
-      row => Array(sizex).fill(defaultTile)
-    ));
+    this.row = Array(sizey).fill(0).map(() => Array(sizex).fill(defaultTile));
     this.clearDeltas();
-    this.playerData = new PlayerData(this.findPlayer());
+    // this.playerData = new PlayerData(this.findPlayer());
   }
   get(x, y) {
-    this.row[y][x];
+    return this.row[y][x];
   }
   set(x, y, v) {
     this.row[y][x] = v;
     this.deltas.push([x, y]);
+    return v;
   }
   clearDeltas() {
     this.deltas = [];
