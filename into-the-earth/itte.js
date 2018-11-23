@@ -323,7 +323,7 @@ var c = document.body.appendChild(document.createElement('canvas')),
       if (!use) return true;
       for (var i in floor) {
         for (var j in floor[i]) {
-          if (floor[i][j] == ' (') {
+          if (floor[i][j] == '(') {
             floor[y][x] = ')';
             p.objectOn = '(';
             p.x = +j;
@@ -353,7 +353,7 @@ var c = document.body.appendChild(document.createElement('canvas')),
       return true;
     },
     P(x, y) {
-      push('portal ');
+      push('portal');
       floor[y][x] = '.';
       return true;
     },
@@ -850,20 +850,22 @@ function drawMap() {
     }
     cy += size + 1;
   }
+  cy = 50;
+  cx = 75 + (size / 2 + 1) * floor.reduce((acc, v) => v.length > acc.length ? v : acc).length;
   ctx.fillStyle = getRandomColor();
   if (p.health <= 50) ctx.fillStyle = '#0f0';
   if (p.health <= 25) ctx.fillStyle = '#ff0';
   if (p.health <= 10) ctx.fillStyle = '#f00';
   cy += 50;
-  ctx.fillText(`You have ${Math.floor(p.health)} health.`, 10, cy);
+  ctx.fillText(`You have ${Math.floor(p.health)} health.`, cx, cy);
   ctx.fillStyle = '#00f';
   cy += 50;
-  ctx.fillText(`Your attack is ${p.stats.attack} and your defense is ${p.stats.defense}.`, 10, cy);
+  ctx.fillText(`Your attack is ${p.stats.attack} and your defense is ${p.stats.defense}.`, cx, cy);
   for (var i in log) {
     cy += size + 5;
     txt = log[i].split(':');
     ctx.fillStyle = txt.shift();
-    ctx.fillText(txt.join(':'), 10, cy);
+    ctx.fillText(txt.join(':'), cx, cy);
   }
 }
 drawMap();
@@ -1021,7 +1023,7 @@ document.onkeydown = function (evt) {
   if (K('r') && evt.shiftKey) p.health = 0; else
   if (K('m'))rms(); else
   if (K('h'))window.location = 'https://docs.google.com/document/d/1Uty66vE0If5Wf77W96-OPQHObU_8emDNxXugbN1TJQY/edit?usp=sharing'; else
-  if (K('º'))cmode = (cmode === false);
+  if (K('8'))cmode = (cmode === false);
   else if (K('f') && p.equip.Sec && p.equip.Sec.use) {
     p.equip.Sec.use(() => {
       for (var i in p.inven) {
