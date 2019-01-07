@@ -1,10 +1,10 @@
 const proto = {};
 proto.String = {
   mince() {
-    return this.split``;
+    return this.split('');
   },
   reverse() {
-    return this.mince().reverse().join``;
+    return this.mince().reverse().join('');
   },
   diceNoRemainder(n) {
     return this.match(new RegExp(`[\\s\\S]{${n}}`, 'g'));
@@ -41,8 +41,8 @@ proto.Array = {
   removeIndex(i) {
     return this.copy().mRemoveIndex(i);
   },
-  snap(n) {
-    return this.copy().pop(n);
+  snap() {
+    return this.slice(0, -1);
   },
   pureReverse() {
     return this.copy().reverse();
