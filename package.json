@@ -18,11 +18,7 @@
   },
   "homepage": "https://github.com/Coalpha/coalpha.github.io#readme",
   "devDependencies": {
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.14.0"
-  },
-  "dependencies": {
-    "http-server": "^0.11.1"
+    "@coalpha/eslint-config": "latest",
+    "eslint": "^5.14.1"
   }
 }

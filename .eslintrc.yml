@@ -1,0 +1,3 @@
+extends: "@coalpha/eslint-config"
+env:
+  browser: true
