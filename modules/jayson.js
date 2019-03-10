@@ -1,26 +1,26 @@
-const fs = require("fs"),
-  PromiseQueue = require("./promise-queue");
+const fs = require("fs");
+const PromiseQueue = require("./promise-queue");
 
-const fsp = fs.promises,
-  sread = src => JSON.parse(fs.readFileSync(`${src}.json`, "utf8")),
-  read = src => async () => sread(src),
-  write = (src, obj) => () => fsp.writeFile(`${src}.json`, JSON.stringify(obj)),
-  handles = {};
+const fsp = fs.promises;
+const sread = src => JSON.parse(fs.readFileSync(`${src}.json`, "utf8"));
+const read = src => async () => sread(src);
+const write = (src, obj) => () => fsp.writeFile(`${src}.json`, JSON.stringify(obj));
+const handles = {};
 function handle(src, promiseReturningFn) {
   if (!handles[src]) handles[src] = new PromiseQueue();
 
   return handles[src].push(promiseReturningFn);
 }
 module.exports = {
-  // All of the following functions return promises
+  // all of the following functions return promises
   read(src) {
     return handle(src, read(src));
   },
-  // Read a file ending with .json
+  // read a file ending with .json
   write(src, obj) {
     return handle(src, write(src, obj));
   },
-  // Write to a file ending .json
+  // write to a file ending .json
   open(src) {
     let reso;
     const p = new Promise(r => reso = r);
@@ -53,7 +53,7 @@ module.exports = {
     return p;
   },
   /*
-   * Resolves to a proxy where getting, setting, or deleting keys will modify the JSON
+   * resolves to a proxy where getting, setting, or deleting keys will modify the JSON
    * the JSON will be written back to the file system when the return promise is called
    */
 };

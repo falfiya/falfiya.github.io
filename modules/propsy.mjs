@@ -1,31 +1,52 @@
-const _ = new Proxy(Object.create(null), {
-  get(ob, ik) {
-    const op = [[0, ik]];
+function error(msg) {
+  if (typeof window === undefined) {
+    throw new Error(`${__filename}${msg}`);
+  }
+  throw new Error(`propsy${msg}`);
+}
+const notAllowed = what => error(` does not support ${what}`);
+const proxy = new Proxy(Object.create(null), {
+  get(...[, firstKey]) {
+    const operations = [["field", firstKey]];
     const p = new Proxy(class c {}, {
-      get(o, k) {
-        if (k === '_') {
-          return o => op.reduce((A, v, i) => {
-            if (v[0] === 0) {
-              return A[v[1]];
+      get(...[, key]) {
+        if (key === "_") {
+          return datum => operations.reduce((A, [operation, opArgs]) => {
+            switch (operation) {
+              case "field":
+                return A[opArgs];
+              case "call":
+                return A(...opArgs);
+              case "new":
+                return new A(...opArgs);
+              default:
+                return error(": Unknown operation");
             }
-            if (v[0] === 1) {
-              return A(...v[1]);
-            }
-            return new A(...v[i]);
-          }, o);
+          }, datum);
         }
-        op.push([0, k]);
+        operations.push(["field", key]);
         return p;
       },
-      apply(f, ths, args) {
-        op.push([1, args]);
+      apply(f, self, args) {
+        operations.push(["call", args]);
         return p;
       },
       construct(o, args) {
-        op.push([2, args]);
+        operations.push(["new", args]);
         return p;
       },
     });
     return p;
   },
+  getPrototypeOf() { notAllowed(".getPrototypeOf"); },
+  setPrototypeOf() { notAllowed(".setPrototypeOf"); },
+  isExtensible() { notAllowed(".isExtensible"); },
+  preventExtensions() { notAllowed(".preventExtensions"); },
+  getOwnPropertyDescriptor() { notAllowed(".getOwnPropertyDescriptor"); },
+  defineProperty() { notAllowed(".defineProperty"); },
+  has() { notAllowed('"in"'); },
+  set() { notAllowed("setting values"); },
+  deleteProperty() { notAllowed("deleting values"); },
+  ownKeys() { notAllowed(".getOwnProperty*"); }
 });
+export default proxy;

@@ -1,18 +1,18 @@
 const types = {
   boolean(v) {
-    return typeof v === 'boolean';
+    return typeof v === "boolean";
   },
   NaN: Number.isNan,
   number(v) {
-    return typeof v === 'number' && !this.NaN(v);
+    return typeof v === "number" && !this.NaN(v);
   },
   string(v) {
-    return typeof v === 'string';
+    return typeof v === "string";
   },
   integer: Number.isInteger,
   array: Array.isArray,
   object(v) {
-    return typeof v === 'object';
+    return typeof v === "object";
   },
   positiveNumber(v) {
     return this.number(v) && v > 0;
