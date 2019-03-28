@@ -1,5 +1,5 @@
 const fs = require("fs");
-const PromiseQueue = require("./promise-queue");
+const PromiseQueue = require("./promiseQueue");
 
 const fsp = fs.promises;
 const sread = src => JSON.parse(fs.readFileSync(`${src}.json`, "utf8"));
@@ -8,7 +8,6 @@ const write = (src, obj) => () => fsp.writeFile(`${src}.json`, JSON.stringify(ob
 const handles = {};
 function handle(src, promiseReturningFn) {
   if (!handles[src]) handles[src] = new PromiseQueue();
-
   return handles[src].push(promiseReturningFn);
 }
 module.exports = {
