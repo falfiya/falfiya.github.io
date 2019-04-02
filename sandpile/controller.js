@@ -1,15 +1,16 @@
-const sandbox = {
-  x: 50,
-  y: 30,
-};
+import * as view from "./view.js";
+import * as model from "./model.js";
 
-/**
- * @param {String | Number} key
- * @param {String} color
- */
-export const setColor = (key, color) => colors[key] = color;
+view.init();
+window.addEventListener("resize", view.init);
 
-/** @param {Number} x */
-export const setGrainCountX = x => grainCount.x = x;
-/** @param {Number} y */
-export const setGrainCountY = y => grainCount.y = y;
+Object.assign(window, model); // oof
+model.init(100, 50, 4);
+
+function go() {
+  model.add(50, 25, 1);
+  model.step();
+  view.drawGrains(model.whatChanged());
+}
+var i;
+document.onclick = () => i = i ? (clearInterval(i), null) : setInterval(go, 1);

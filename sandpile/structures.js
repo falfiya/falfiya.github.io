@@ -1,9 +1,11 @@
+/**
+ * @property {Number} x
+ * @property {Number} y
+ */
 export class Point {
   /**
    * @param {Number} x
    * @param {Number} y
-   * 
-   * Makes a point
    */
   constructor(x, y) {
     x = x|0; y = y|0;
@@ -26,10 +28,16 @@ export class Point {
     return `${this.x}, ${this.y}`;
   }
 }
-export class Grain extends Point {
+/** @property {Number} value */
+export class Grain {
+  /**
+   * @param {Number} x
+   * @param {Number} y
+   */
   constructor(x, y, value) {
     x = x|0; y = y|0; value = value|0;
-    super(x, y);
+    this.x = x;
+    this.y = y;
     this.value = value;
   }
 }

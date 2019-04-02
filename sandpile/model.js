@@ -45,10 +45,10 @@ const set = (index, value) => queue.push(Op.set(index, value));
  * @param {Number} value
  */
 const add = (index, value) => {
+  index = index|0; value = value|0;
   _add(index, value);
   changes.add(index);
 };
-/// External
 /**
  * @param {Number} width in *grains*
  * @param {Number} height in *grains*
@@ -84,6 +84,8 @@ export function addToPoint(point, value) {
     add(i, value);
   }
 }
+const addToCoords = (x, y, value) => addToPoint(new Point(x|0, y|0), value);
+export { addToCoords as add };
 /** Computes changes and then tests for overflow */
 export function step() {
   // console.log("step();");
@@ -119,6 +121,69 @@ export function step() {
   });
 }
 
+/**
+ * What changed since I last checked?
+ * 
+ * @returns {Array<Grain>}
+ */
+export function whatChanged() {
+  const out = [];
+  unreadChanges.forEach(index => {
+    const value = sandbox[index];
+    if (readChanges[index] != value) {
+      readChanges[index] = value;
+      /** @type {any} */
+      const grain = pointOf(index);
+      grain.value = value;
+      out.push(/** @type {Grain} */ (grain));
+    }
+  });
+  unreadChanges.clear();
+  return out;
+}
+
+/**
+ * Give me every grain you got
+ * 
+ * @returns {Array<Grain>}
+ */
+export function allGrains() {
+  const out = [];
+  sandbox.forEach((value, index) => {
+    if (readChanges[index] != value) {
+      /** @type {any} */
+      const grain = pointOf(index);
+      grain.value = value;
+      out.push(/** @type {Grain} */ (grain));
+    }
+  });
+  readChanges = sandbox.slice();
+  unreadChanges.clear();
+  return out;
+}
+
+/**
+ * `whatChanged` but tiered into rows
+ * 
+ * @returns {Array<Array<Point>>} a tieredGrainery
+ */
+export function whatChangedTiered() {
+  const out = [];
+  unreadChanges.forEach(index => {
+    const value = sandbox[index];
+    if (readChanges[index] != value) {
+      readChanges[index] = value;
+      if (!out[value]) {
+        out[value] = [];
+      }
+      out.push(pointOf(index));
+    }
+  });
+  unreadChanges.clear();
+  return out;
+}
+// Debugging
+
 /** A `pri(?:nt|m)itive` way of viewing the sandbox. Only meant for debugging */
 export function print() {
   const heightLength = config.height.toString().length;
@@ -142,25 +207,4 @@ export function print() {
 export function go() {
   step();
   print();
-}
-
-/**
- * What changed since I last asked?
- * 
- * @returns {Array<Grain>}
- */
-export function whatChanged() {
-  const out = [];
-  unreadChanges.forEach(index => {
-    const value = sandbox[index];
-    if (readChanges[index] != value) {
-      readChanges[index] = value;
-      /** @type {Grain} */
-      const grain = (pointOf(index));
-      grain.value = value;
-      out.push(grain);
-    }
-  });
-  unreadChanges.clear();
-  return out;
 }
