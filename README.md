@@ -1,5 +1,6 @@
 # coalpha.github.io
-codalpha
+
+This repository is home to many snippets of code
 
 * [Choas Game](//coalpha.github.io/c)
 * [tek](//coalpha.github.io/tek)

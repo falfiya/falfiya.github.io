@@ -1,1 +1,15 @@
-{"name":"coalpha.github.io","version":"0.0.1","repository":{"type":"git","url":"git+https://github.com/Coalpha/coalpha.github.io.git"},"author":"Cole Gannon","license":"ISC","bugs":{"url":"https://github.com/Coalpha/coalpha.github.io/issues"},"homepage":"https://github.com/Coalpha/coalpha.github.io#readme","devDependencies":{"@coalpha/eslint-config":"0.0.3","eslint":"^5.15.0"}}
+{
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Coalpha/coalpha.github.io.git"
+  },
+  "author": "Cole Gannon",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@coalpha/eslint-config": "0.0.3",
+    "eslint": "^5.15.0"
+  },
+  "dependencies": {
+    "http-server": "^0.11.1"
+  }
+}

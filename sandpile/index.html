@@ -2,26 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Sandpile</title>
-  <style>
-    html, body {
-      margin: 0px;
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-    }
-    canvas {
-      height: 100%;
-      width: 100%;
-    }
-  </style>
+  <title>Loading Sandpile</title>
+  <link rel="stylesheet" href="view.css">
 </head>
 <body>
   <canvas id=c>
-    Your browser is very outdated. Consider updating.
+    <span>Your browser doesn't support the canvas element!</span>
   </canvas>
-  <script src="sandpile.v4.js"></script>
+  <script type="module" src="bridge.js"></script>
 </body>
 </html>
