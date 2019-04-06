@@ -42,7 +42,7 @@ bool check(char *line) {
 }
 
 int main(void) {
-  unsigned int line_buffer_size = 256;
+  char line_buffer_size = 256;
   char *line_buffer = malloc(line_buffer_size);
   char c;
   unsigned int i = 0;
