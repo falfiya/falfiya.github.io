@@ -1,5 +1,5 @@
 import { no } from "./util.js";
-import { Op, Point, Grain } from "./structures.js";
+import { Op, Point } from "./structures.js";
 /**
  * @property {Number} width
  * @property {Number} height

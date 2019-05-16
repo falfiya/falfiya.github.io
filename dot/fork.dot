@@ -1,0 +1,12 @@
+digraph fork {
+  subgraph cluster_1 {
+    "hello.elf"
+  }
+  subgraph cluster_0 {
+    label="perl process";
+    stdio -> perl
+    perl -> "run" -> "hello.elf"
+    stdio -> "hello.elf"
+  }
+  "hello.elf" -> stdio
+}

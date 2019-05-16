@@ -3,7 +3,7 @@ section  .text
 
 section  .data
   msg db 'Hello, world!', 0xa
-  len equ $ - msg 
+  len equ $ - msg
 
 _start:
   mov edx, len
