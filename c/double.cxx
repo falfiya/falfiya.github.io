@@ -1,11 +1,9 @@
 #include <iostream>
-using namespace std;
-
 
 int main() {
-  cout << "Double or nothing?\n";
+  std::cout << "Double or nothing?\n";
   int num{};
-  cin >> num;
-  cout << "Hah, you got " << num * 4 << '\n';
+  std::cin >> num;
+  std::cout << "Hah, you got " << num * 4 << '\n';
   return 0;
 }
