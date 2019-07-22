@@ -22,9 +22,9 @@ public:
 };
 
 int main() {
-  TwoInts a { 1, 2 };
-  TwoInts b { 3, 4 };
-  (a + b).print();
-  (a * b).print();
-  return 0;
+   TwoInts a { 1, 2 };
+   TwoInts b { 3, 4 };
+   (a + b).print();
+   (a * b).print();
+   return 0;
 }

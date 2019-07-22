@@ -57,7 +57,9 @@ void* ft_malloc(size_t size) {
       }
       idx++;
    }
-   puts("failed!");
+   #ifdef DEBUG
+   puts("ft_malloc: failed to allocate memory");
+   #endif
    return NULL;
 }
 
@@ -73,6 +75,7 @@ wideptr ft_mallocw(size_t size) {
    } else {
       wptr.len = 0;
    }
+   return wptr;
 }
 
 void ft_free(void* ptr, size_t size) {
