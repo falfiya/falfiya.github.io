@@ -1,35 +1,45 @@
+/**
+ * [[Option]] represents an optional value:
+ * every [[Option]] is either [[Some]] and contains a value,
+ * or [[None]], and does not.
+ * 
+ * This is Rust's [std::option](https://doc.rust-lang.org/std/option/) ported to typescript
+ */
 export interface Option<T> {
-   /** @returns `true` if the option is `Some` */
+   /**
+    * @returns `true` if the option is a [[Some]] value
+    */
    is_some(): boolean;
 
-   /** @returns `true` if the option is `None` */
+   /**
+    * @returns `true` if the option is a [[None]].
+    */
    is_none(): boolean;
 
    /**
-    * @param msg The error message
-    * @throws on `None`
-    * @returns the wrapped value
+    * @returns the wrapped value if the option is a [[Some]].
+    * @throws if the option is [[None]].
     */
    expect(msg: string): T;
 
    /**
-    * @throws on `None`
-    * @returns the wrapped value
+    * See [[Option.expect]].
     */
    unwrap(): T;
 
    /**
-    * If you are passing the result of a function call, use `unwrap_or_else`
-    * @returns the wrapped value or the value passed
+    * Returns the contained value or a default.
     */
-   unwrap_or(v: T): T;
+   unwrap_or(def: T): T;
 
    /** @returns the wrapped value or computes it from a function */
    unwrap_or_else(f: () => T): T;
 
    /**
     * Maps an `Option<T>` to `Option<U>`
-    * If the option is `Some`
+    * ```typescript
+    * echo(1)
+    * ```
     * @returns the result of applying `f` to value wrapped in `Some`
     * @returns `None` if the option is `None`
     */

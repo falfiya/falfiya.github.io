@@ -1,7 +1,0 @@
-[package]
-name = "too-many-lists"
-version = "0.1.0"
-authors = ["Cole Gannon <Arcanehood@gmail.com>"]
-edition = "2018"
-
-[dependencies]

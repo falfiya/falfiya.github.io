@@ -1,6 +1,7 @@
+#include <string>
 #include <iostream>
-using lint = unsigned long long int;
 using namespace std;
+using lint = unsigned long long int;
 
 lint a(0);
 lint b(1);

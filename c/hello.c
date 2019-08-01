@@ -2,4 +2,5 @@
 
 int main() {
    puts("Hello, World!");
+   system("pause");
 }
