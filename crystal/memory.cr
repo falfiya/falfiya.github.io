@@ -96,12 +96,6 @@ class GameBoard
          row.each { print "# " }
          puts
       }
-      puts
-      puts
-      @board.each_with_index { |row, y|
-      row.each { |char| print "#{char} "}
-      puts
-   }
    end
 
    def moveto(x : UInt8, y : UInt8)

@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 using namespace std;
-using lint = unsigned long long int;
+using lint = unsigned long long;
 
 lint a(0);
 lint b(1);
@@ -39,6 +39,6 @@ int main(int argc, char *argv[]) {
          }
       }
    }
-   cout << '\n';
+   cout << endl;
    return 0;
 }

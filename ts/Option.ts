@@ -1,58 +1,59 @@
+/** An object that works as a pseudo rust `match` for Option types */
+export interface Match<T> { Some(v: T): any, None(): any };
+
 /**
- * [[Option]] represents an optional value:
- * every [[Option]] is either [[Some]] and contains a value,
- * or [[None]], and does not.
+ * `Option` represents an optional value:
+ * every `Option` is either `Some` and contains a value,
+ * or is `None`, and does not.
  * 
  * This is Rust's [std::option](https://doc.rust-lang.org/std/option/) ported to typescript
  */
 export interface Option<T> {
    /**
-    * @returns `true` if the option is a [[Some]] value
+    * @returns `true` if the option is a `Some` value
     */
    is_some(): boolean;
 
    /**
-    * @returns `true` if the option is a [[None]].
+    * @returns `true` if `this` is `None`
     */
    is_none(): boolean;
 
    /**
-    * @returns the wrapped value if the option is a [[Some]].
-    * @throws if the option is [[None]].
+    * @returns the wrapped value if `this` is a `Some`
+    * @throws if the option is `None`
     */
    expect(msg: string): T;
-
-   /**
-    * See [[Option.expect]].
-    */
+   
+   /** See `Option.expect` */
    unwrap(): T;
 
-   /**
-    * Returns the contained value or a default.
-    */
+   /** Returns the contained value or a default. */
    unwrap_or(def: T): T;
 
-   /** @returns the wrapped value or computes it from a function */
+   /**
+    * @returns the wrapped value `this` is a `Some`
+    * @returns the result of `f` if the option is a `None`
+    */
    unwrap_or_else(f: () => T): T;
-
+   
    /**
     * Maps an `Option<T>` to `Option<U>`
-    * ```typescript
-    * echo(1)
-    * ```
     * @returns the result of applying `f` to value wrapped in `Some`
-    * @returns `None` if the option is `None`
+    * @returns `None` if `this` is `None`
     */
    map<U>(f: (v: T) => U): Option<U>;
 
    /**
-    * Applies a function to the wrapped value (if any), or returns the provided default (if not).
-    * @param d if `this` option is `None`
+    * @returns the result of applying `f` to the wrapped value
+    * @returns `d` if `this` is `None`
     */
    map_or<U>(d: U, f: (v: T) => U): U;
 
    /**
-    * This function is like `map` except for that the function returns an Option
+    * Maps an `Option<T>` to `Option<U>`
+    * @returns the result of applying `f` to value wrapped in `Some`
+    * @returns `None` if `this` is `None`
     */
    and_then<U>(f: (v: T) => Option<U>): Option<U>;
 
@@ -69,24 +70,97 @@ export interface Option<T> {
    or_else(f: () => Option<T>): Option<T>;
 
    /**
-    * An attempt at Rust matching syntax in JavaScript
+    * Runs `match.Some` with the wrapped value if `this` is `Some`.
+    * If this is `None`, runs `match.None`
     * @example
-    * opt.match {
+    * const optstring = opt.match({
     *    Some(v) {
-    *       console.log(`Got a ${v}!`);
+    *       return `Some(${v})`;
     *    },
     *    None() {
-    *       console.log("Got nothing");
-    *    },
-    * }
+    *      return "None";
+    *    }
+    * });
     */
-   match_void(obj: { Some(v: T): void, None(): void }): void;
-   
-   match_fn(obj: { Some(v: T): Option<T>, None(): Option<T> }): Option<T>;
-}
-/** Some value `T` */
-class Some<T> implements Option<T> {
-   private _data: T;
+   match<R>(match: Match<T>): R;
+};
+
+/** `Some(v)` */
+export interface Some<T> {
+   _data: T;
+
+   /** @returns `true` */
+   is_some(): boolean;
+
+   /** @returns `false` */
+   is_none(): boolean;
+
+   /**
+    * @param msg ignored
+    * @returns the wrapped value
+    */
+   expect(msg?: string): T;
+
+   /** @returns the wrapped value */
+   unwrap(): T;
+
+   /**
+    * @param def ignored
+    * @returns the wrapped value
+    */
+   unwrap_or(def?): T;
+
+   /**
+    * @param f ignored
+    * @returns the wrapped value
+    */
+   unwrap_or_else(f?): T;
+
+   /**
+    * Maps an `Option<T>` to `Option<U>`
+    * @returns the result of applying `f` to value wrapped in `Some`
+    */
+   map<U>(f: (v: T) => U): Option<U>;
+
+   /** Applies a function to the wrapped value */
+   map_or<U>(d: U, f: (v: T) => U): U;
+
+   /**
+    * Maps an `Option<T>` to `Option<U>`
+    * Similar to `Some.map` except that `f` returns an `Option`
+    * @returns the result of applying `f` to value wrapped in `Some`
+    */
+   and_then<U>(f: (v: T) => Option<U>): Option<U>;
+
+   /**
+    * @param opt_b ignored
+    * @returns itself
+    */
+   or(opt_b?): Option<T>;
+
+   /**
+    * @param f ignored
+    * @returns itself
+    */
+   or_else(f?): Option<T>;
+
+   /**
+    * Runs `match.Some` with the wrapped value
+    * @example
+    * const optstring = opt.match({
+    *    Some(v) {
+    *       // always runs
+    *       return `Some(${v})`;
+    *    },
+    *    None() {}
+    * });
+    */
+   match(match: Match<T>);
+};
+
+/** The inner workings of `Some` */
+class SomeImpl<T> implements Option<T> {
+   _data: T;
 
    constructor(v: T) {
       this._data = v;
@@ -98,7 +172,7 @@ class Some<T> implements Option<T> {
 
    expect() { return this._data };
 
-   map<U>(f: (v: T) => U) { return new Some(f(this._data)) };
+   map<U>(f: (v: T) => U) { return new SomeImpl(f(this._data)) };
 
    map_or<U>(d: U, f: (v: T) => U) { return f(this._data) };
 
@@ -108,51 +182,95 @@ class Some<T> implements Option<T> {
 
    or_else() { return this };
 
-   match(obj: { Some(v: T): void, None(): void }) { obj.Some(this._data) }
+   match<R>(obj: { Some(v: T): R, None(): R }): R { return obj.Some(this._data) }
 
    unwrap = this.expect;
 
    unwrap_or = this.expect;
 
    unwrap_or_else = this.expect;
-}
+};
 
-/** No value */
-class None implements Option<any> {
-   is_none() { return true };
+export function Some<T>(v: T): Some<T> {
+   return new SomeImpl<T>(v);
+};
+
+export interface None {
+   /** @returns `false` */
+   is_some(): boolean;
+
+   /** @returns `true` */
+   is_none(): boolean;
+
+   /** @throws "Called unwrap on None!" */
+   expect(msg: string): never;
    
-   is_some() { return false };
+   /** @throws "Called unwrap on None!" */
+   unwrap();
 
-   expect(msg: string): never { throw new Error(msg) };
+   /** @returns `def` */
+   unwrap_or(def);
 
-   unwrap() { return this.expect("Called unwrap on None!") };
+   /** @returns the result of `f` */
+   unwrap_or_else(f: () => any);
+   
+   /** @returns `None` */
+   map(f?): None;
 
-   unwrap_or(v: any) { return v };
+   /**
+    * @param f ignored
+    * @returns `d`
+    */
+   map_or(d: any, f?): any;
 
-   unwrap_or_else = (f: () => any) => f();
+   /**
+    * @param f ignored
+    * @returns `None`
+    */
+   and_then(f?): None;
 
-   map(): None { return this };
+   /** @returns `opt_b` */
+   or(opt_b: Option<any>): Option<any>;
 
-   map_or<U>(d: U) { return d };
+   /** @returns the result of `f` */
+   or_else(f: () => Option<any>): Option<any>;
 
-   and_then(): None { return this };
+   /**
+    * Runs `match.None`
+    * @example
+    * const optstring = opt.match({
+    *    Some(v) {},
+    *    None() {
+    *       // always runs
+    *       return "None";
+    *    }
+    * });
+    */
+   match<R>(match: Match<any>): R;
+};
 
-   or(opt_b: Option<any>) { return opt_b };
+export const None: None = {
+   is_none() { return true },
+   
+   is_some() { return false },
 
-   or_else(f: () => Option<any>) { return f() };
+   expect(msg: string): never { throw new Error(msg) },
 
-   match(obj: { Some(v: any): void, None(): void }) { obj.None() };
-}
+   unwrap() { return this.expect("Called unwrap on None!") },
 
-function Summ<T>(v: T) { return new Some(v) }
+   unwrap_or(v: any) { return v },
 
-const Nunn = new None;
+   unwrap_or_else(f: () => any) { f() },
 
-export function nn(v: any) {
-   return v == null ? Nunn : Summ(v);
-}
+   map(): None { return this },
 
-export {
-   Summ as Some,
-   Nunn as None,
+   map_or(d) { return d },
+
+   and_then(): None { return this },
+
+   or(opt_b: Option<any>) { return opt_b },
+
+   or_else(f: () => Option<any>) { return f() },
+
+   match<R>(obj: { Some(v: any): R, None(): R }): R { return obj.None() },
 };

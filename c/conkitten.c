@@ -1,3 +1,4 @@
+/// Concats several strings
 char* conkitten(char** strings) {
    #ifdef DEBUG
    puts("conkitten");
