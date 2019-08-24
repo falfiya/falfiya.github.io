@@ -6,4 +6,6 @@ int main() {
       write(1, "n\n", 2);
    } while (1);
 }
+#else
+#error "Only platforms with unistd.h can be used"
 #endif

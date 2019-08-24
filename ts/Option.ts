@@ -1,11 +1,37 @@
 /** An object that works as a pseudo rust `match` for Option types */
-export interface Match<T> { Some(v: T): any, None(): any };
+export interface Match<T> {
+   /**
+    * Matches any `Some` values and unwraps them
+    * @example
+    * Some("value").match({
+    *    Some(v) {
+    *       // always runs
+    *       assertEquals(v, "value");
+    *    },
+    *    None() {}
+    * });
+    */
+   Some(v: T): any,
+
+   /**
+    * Matches `None`
+    * @example
+    * None.match({
+    *    Some(v) {},
+    *    None() {
+    *       // always runs
+    *       console.log("None");
+    *    },
+    * });
+    */
+   None(): any
+};
 
 /**
  * `Option` represents an optional value:
  * every `Option` is either `Some` and contains a value,
  * or is `None`, and does not.
- * 
+ *
  * This is Rust's [std::option](https://doc.rust-lang.org/std/option/) ported to typescript
  */
 export interface Option<T> {
@@ -24,7 +50,7 @@ export interface Option<T> {
     * @throws if the option is `None`
     */
    expect(msg: string): T;
-   
+
    /** See `Option.expect` */
    unwrap(): T;
 
@@ -36,7 +62,7 @@ export interface Option<T> {
     * @returns the result of `f` if the option is a `None`
     */
    unwrap_or_else(f: () => T): T;
-   
+
    /**
     * Maps an `Option<T>` to `Option<U>`
     * @returns the result of applying `f` to value wrapped in `Some`
@@ -45,6 +71,7 @@ export interface Option<T> {
    map<U>(f: (v: T) => U): Option<U>;
 
    /**
+    * Map to another value or return a default `d` if `this` is `None`
     * @returns the result of applying `f` to the wrapped value
     * @returns `d` if `this` is `None`
     */
@@ -122,7 +149,10 @@ export interface Some<T> {
     */
    map<U>(f: (v: T) => U): Option<U>;
 
-   /** Applies a function to the wrapped value */
+   /**
+    * Applies a function to the wrapped value
+    * @param d ignored
+    */
    map_or<U>(d: U, f: (v: T) => U): U;
 
    /**
@@ -204,7 +234,7 @@ export interface None {
 
    /** @throws "Called unwrap on None!" */
    expect(msg: string): never;
-   
+
    /** @throws "Called unwrap on None!" */
    unwrap();
 
@@ -213,7 +243,7 @@ export interface None {
 
    /** @returns the result of `f` */
    unwrap_or_else(f: () => any);
-   
+
    /** @returns `None` */
    map(f?): None;
 
@@ -251,7 +281,7 @@ export interface None {
 
 export const None: None = {
    is_none() { return true },
-   
+
    is_some() { return false },
 
    expect(msg: string): never { throw new Error(msg) },
