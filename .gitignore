@@ -1,3 +1,4 @@
-node_modules/
-.vscode/
-.class
+**/node_modules/
+*.class
+*.hi
+*.o

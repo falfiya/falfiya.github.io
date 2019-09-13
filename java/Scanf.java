@@ -9,7 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
- * A hack-of-a BufferedReader which does NOT block indefinately when reading.
+ * A hack-of-a BufferedReader which does NOT block indefinitely when reading.
  */
 class NonblockingBufferedReader {
   // NOTE: LinkedBlockingQueue is threadsafe!

@@ -2,7 +2,7 @@
 
 int main() {
    std::cout << "Enter a number: ";
-   int x{ };
+   int x{};
    std::cin >> x;
    std::cout << "You entered " << x << '\n';
    return 0;

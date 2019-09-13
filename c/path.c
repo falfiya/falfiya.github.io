@@ -31,10 +31,10 @@ bool check(char *line) {
    if (is_delimiter(line[i])) {
       while(1) {
          if(!line[++i]) {
-         return 1;
+            return 1;
          }
          if (is_not_allowed(line[i]) && !is_delimiter(line[i])) {
-         return 0;
+            return 0;
          }
       }
    }
@@ -42,20 +42,20 @@ bool check(char *line) {
 }
 
 int main(void) {
-   char line_buffer_size = 256;
+   char line_buffer_size = 255;
    char *line_buffer = malloc(line_buffer_size);
    char c;
-   unsigned int i = 0;
+   unsigned i = 0;
    while (true) {
       c = (char) getchar();
       while (c != '\n') {
          if (c == EOF) {
-         goto end;
+            goto end;
          }
          line_buffer[i++] = c;
          if (i >= line_buffer_size) {
-         line_buffer_size *= 2;
-         line_buffer = realloc(line_buffer, line_buffer_size);
+            line_buffer_size *= 2;
+            line_buffer = realloc(line_buffer, line_buffer_size);
          }
       }
       line_buffer[i] = 0;
