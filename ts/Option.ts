@@ -38,12 +38,12 @@ export interface Option<T> {
    /**
     * @returns `true` if the option is a `Some` value
     */
-   is_some(): boolean;
+   is_some: boolean;
 
    /**
     * @returns `true` if `this` is `None`
     */
-   is_none(): boolean;
+   is_none: boolean;
 
    /**
     * @returns the wrapped value if `this` is a `Some`
@@ -116,11 +116,9 @@ export interface Option<T> {
 export interface Some<T> {
    _data: T;
 
-   /** @returns `true` */
-   is_some(): boolean;
+   is_some: true;
 
-   /** @returns `false` */
-   is_none(): boolean;
+   is_none: false;
 
    /**
     * @param msg ignored
@@ -196,9 +194,9 @@ class SomeImpl<T> implements Option<T> {
       this._data = v;
    }
 
-   is_some() { return true };
+   is_some: true;
 
-   is_none() { return false };
+   is_none: false;
 
    expect() { return this._data };
 
@@ -226,11 +224,9 @@ export function Some<T>(v: T): Some<T> {
 };
 
 export interface None {
-   /** @returns `false` */
-   is_some(): boolean;
+   is_some: false;
 
-   /** @returns `true` */
-   is_none(): boolean;
+   is_none: true;
 
    /** @throws "Called unwrap on None!" */
    expect(msg: string): never;
@@ -280,13 +276,13 @@ export interface None {
 };
 
 export const None: None = {
-   is_none() { return true },
+   is_none: true,
 
-   is_some() { return false },
+   is_some: false,
 
    expect(msg: string): never { throw new Error(msg) },
 
-   unwrap() { return this.expect("Called unwrap on None!") },
+   unwrap(): never { throw new Error("Called unwrap on None!") },
 
    unwrap_or(v: any) { return v },
 

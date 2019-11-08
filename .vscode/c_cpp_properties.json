@@ -1,7 +1,7 @@
 {
    "configurations": [
       {
-         "name": "Win32",
+         "name": "WIN Clang",
          "includePath": [
             "${workspaceFolder}/**"
          ],
@@ -11,7 +11,7 @@
             "_UNICODE"
          ],
          "windowsSdkVersion": "10.0.18362.0",
-         "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.21.27702/bin/Hostx64/x64/cl.exe",
+         "compilerPath": "C:\\Program Files\\LLVM\\bin\\clang.exe",
          "cStandard": "c11",
          "cppStandard": "c++20",
          "intelliSenseMode": "msvc-x64"
@@ -25,7 +25,7 @@
          ],
          "defines": [],
          "cStandard": "c11",
-         "cppStandard": "c++20"
+         "cppStandard": "c++17"
       },
       {
          "name": "WSL Clang",
@@ -36,7 +36,7 @@
          ],
          "defines": [],
          "cStandard": "c11",
-         "cppStandard": "c++20"
+         "cppStandard": "c++17"
       }
    ],
    "version": 4

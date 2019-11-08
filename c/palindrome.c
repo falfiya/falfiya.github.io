@@ -9,12 +9,13 @@
 /// Half of a size_t
 #define hsize_t __uint32_t
 
+#define ori_bufsize 256
 int main() {
    start:;
    print("> ");
-   unsigned bufsize = 256;
-   size_t length = 0;
+   unsigned bufsize = ori_bufsize;
    char *line = sbrk(bufsize * sizeof(char));
+   size_t length = 0;
    io:
    if (length == bufsize) {
       sbrk(bufsize);
@@ -36,6 +37,7 @@ int main() {
       }
       print("not ");
    }
+   sbrk(ori_bufsize - bufsize);
    puts("a palindrome.\n");
    goto start;
 }
