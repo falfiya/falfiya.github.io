@@ -1,47 +1,47 @@
 const multi = new Proxy((() => {}), {
-  get(o, k) {
-    if (k === Symbol.toPrimitive) {
-      return (hint) => {
-        switch (hint) {
-          case 'number':
-            console.log('Atempted to coerse this to a number');
-            break;
-          case 'string':
-            console.log('You called this using `${this}`');
-            break;
-          default:
-            console.log('Received a default hint');
-        }
-      };
-    } else if (k === Symbol.iterator) {
-      console.log('You called this using [...this], probably');
-      return function* () {
-        yield ':P';
+   get(o, k) {
+      if (k === Symbol.toPrimitive) {
+         return hint => {
+            switch (hint) {
+               case "number":
+                  console.log("Attempted to coerse this to a number");
+                  break;
+               case "string":
+                  console.log("You called this using `${this}`");
+                  break;
+               default:
+                  console.log("Received a default hint");
+            }
+         };
+      } if (k === Symbol.iterator) {
+         console.log("You called this using [...this], probably");
+         return function * () {
+            yield ":P";
+         };
       }
-    }
-    console.log(`You called this using this[${k}]`);
-  },
-  set(o, k, v) {
-    console.log(`You called this using this[${k}] = ${v}`);
-  },
-  apply(f, t, a) {
-    if (a[0].raw) {
-      const T = a.slice(1);
-      const s = a[0];
-      console.log(`You called this using this\`${s.map((v, i) => v + (T[i] ? `\${${T[i]}}` : '')).join``}\``);
-    } else {
-      console.log('You called this using this(args)');
-      console.log(a);
-    }
-  },
-  construct(t, a) {
-    console.log(`You called this using new this(${a})`);
-    return this;
-  },
-  has(t, v) {
-    console.log(`You called this using ${v} in this`);
-  },
-  deleteProperty(t, v) {
-    console.log(`You called this using delete this[${v}]`);
-  },
+      console.log(`You called this using this[${k}]`);
+   },
+   set(o, k, v) {
+      console.log(`You called this using this[${k}] = ${v}`);
+   },
+   apply(f, t, a) {
+      if (a[0].raw) {
+         const T = a.slice(1);
+         const s = a[0];
+         console.log(`You called this using this\`${s.map((v, i) => v + (T[i] ? `\${${T[i]}}` : "")).join``}\``);
+      } else {
+         console.log("You called this using this(args)");
+         console.log(a);
+      }
+   },
+   construct(t, a) {
+      console.log(`You called this using new this(${a})`);
+      return this;
+   },
+   has(t, v) {
+      console.log(`You called this using ${v} in this`);
+   },
+   deleteProperty(t, v) {
+      console.log(`You called this using delete this[${v}]`);
+   },
 });

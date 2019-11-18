@@ -52,7 +52,7 @@ class Cursor
 end
 
 class GameBoard
-   @@sentinal = 'Q'
+   @@sentinel = 'Q'
    @@values = ['A', '&', 'C', '%', '?', '0', '*']
    @@reset = "\033[0m"
    @@default = "\033[34m"
@@ -114,7 +114,7 @@ class GameBoard
       val = @board[y][x]
       moveto(x, y)
       @cursor.key(c)
-      if val == @@sentinal
+      if val == @@sentinel
          print " "
       else
          print "#{@@default}#"
@@ -124,10 +124,10 @@ class GameBoard
          @moves += 1
          print @@valcol + val
          if val == @selectedchar
-            @board[y][x] = @@sentinal
+            @board[y][x] = @@sentinel
             sy = @selected.y
             sx = @selected.x
-            @board[sy][sx] = @@sentinal
+            @board[sy][sx] = @@sentinel
             print " "
             moveto(sx, sy)
             print " "

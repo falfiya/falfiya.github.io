@@ -1,13 +1,9 @@
 {
-   "repository": {
-      "type": "git",
-      "url": "git+https://github.com/Coalpha/coalpha.github.io.git"
-   },
    "author": "Cole Gannon",
    "license": "UNLICENSED",
    "devDependencies": {
-      "@coalpha/eslint-config": "0.0.3",
-      "eslint": "^5.16.0"
+      "@coalpha/eslint-config": "1.0.1",
+      "eslint": "^6.6.0"
    },
    "dependencies": {
       "http-server": "^0.11.1"

@@ -8,14 +8,14 @@ my $reset = $ENV{'reset'};
 my $pink = $ENV{'pink'};
 
 foreach (@ARGV) {
-  my $dir = $_;
-  my @files = glob "$dir/*";
-  foreach my $file (@files) {
-    say "$pink$file$reset:";
-    open FILE, $file;
-    while (my $line = <FILE>) {
-      print "  $orange|$reset  $line";
-    }
-    say "\n";
-  }
+   my $dir = $_;
+   my @files = glob "$dir/*";
+   foreach my $file (@files) {
+      say "$pink$file$reset:";
+      open FILE, $file;
+      while (my $line = <FILE>) {
+         print "  $orange|$reset  $line";
+      }
+      say "\n";
+   }
 }
