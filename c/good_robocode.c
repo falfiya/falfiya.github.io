@@ -11,6 +11,6 @@ void time_keeper() {
    unsigned long *fast_counter = (unsigned long *) &counter;
    while (true) {
       (*fast_counter)++;
-      tick();
+      tick(counter);
    }
 }
