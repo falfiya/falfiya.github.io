@@ -1,3 +1,5 @@
+// This thing only really works on VT100 compliant terminals iirc.
+
 import java.util.Scanner;
 import java.io.IOException;
 
@@ -81,7 +83,7 @@ class Quadratic {
          );
       } else {
          printfl(
-            "%sx %sis in %s{%s, %s}",
+            "%sx %s has two solutions: %s{%s, %s}",
             Colors.grey,
             Colors.reset,
             Colors.purple,

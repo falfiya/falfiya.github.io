@@ -4,13 +4,13 @@ class TwoInts {
    public:
    int one;
    int two;
-   TwoInts operator+(const TwoInts& twoInts) {
+   TwoInts operator+(const TwoInts &twoInts) {
       TwoInts newObj;
       newObj.one = this->one + twoInts.one;
       newObj.two = this->two + twoInts.two;
       return newObj;
    }
-   TwoInts operator*(const TwoInts& twoInts) {
+   TwoInts operator*(const TwoInts &twoInts) {
       TwoInts newObj;
       newObj.one = this->one * twoInts.one;
       newObj.two = this->two * twoInts.two;
@@ -22,8 +22,8 @@ class TwoInts {
 };
 
 int main() {
-   TwoInts a {1, 2};
-   TwoInts b {3, 4};
+   TwoInts a{1, 2};
+   TwoInts b{3, 4};
    (a + b).print();
    (a * b).print();
    return 0;

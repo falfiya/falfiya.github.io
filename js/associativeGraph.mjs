@@ -1,5 +1,5 @@
-import dedupe from './dedupe';
-import forcePush from './forcePush';
+import dedupe from "./dedupe";
+import forcePush from "./forcePush";
 
 const forcePushMap = (o, k, v) => {
    const a = o.get(k);
@@ -32,7 +32,7 @@ export default class AssocGraph {
             values: {},
          };
          this.setReg(obj, reg);
-         Object.keys(obj).forEach((key) => {
+         Object.keys(obj).forEach(key => {
             const val = obj[key];
             reg.keys[key] = forcePush(this.data.keys, key, obj) - 1;
             reg.values[val] = forcePushMap(this.data.values, val, obj) - 1;
@@ -54,11 +54,11 @@ export default class AssocGraph {
    deassoc(obj) {
       if (this.reg.has(obj)) {
          const reg = this.reg.get(obj);
-         Object.keys(reg.keys).map((key) => {
+         Object.keys(reg.keys).map(key => {
             const idx = reg.keys[key];
             delete this.data.keys[key][idx];
          });
-         Object.keys(reg.values).map((value) => {
+         Object.keys(reg.values).map(value => {
             const idx = reg.values[value];
             delete this.data.values.get(value)[idx];
          });
@@ -98,4 +98,4 @@ export default class AssocGraph {
       const min = minArrayLength(kary);
       return keys.reduce((a, v) => a.filter(o => o[v] === obj[v]), min[0]);
    }
-};
+}

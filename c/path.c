@@ -41,7 +41,7 @@ bool check(char *line) {
    return 0;
 }
 
-int main(void) {
+int main() {
    char line_buffer_size = 255;
    char *line_buffer = malloc(line_buffer_size);
    char c;

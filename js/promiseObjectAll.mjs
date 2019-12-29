@@ -1,4 +1,4 @@
-export default async (obj) => {
+module.exports = async (obj) => {
    const keys = Object.keys(obj);
    const nobj = {};
    const ary = await Promise.all(keys.map(key => obj[key]));

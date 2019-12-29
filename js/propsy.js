@@ -4,26 +4,14 @@ function error(msg) {
    }
    throw new Error(`propsy${msg}`);
 }
+
 const notAllowed = what => error(` does not support ${what}`);
+
 const proxy = new Proxy(Object.create(null), {
    get(...[, firstKey]) {
       const operations = [["field", firstKey]];
       const p = new Proxy(class c {}, {
-         get(...[, key]) {
-            if (key === "_") {
-               return datum => operations.reduce((A, [operation, opArgs]) => {
-                  switch (operation) {
-                     case "field":
-                        return A[opArgs];
-                     case "call":
-                        return A(...opArgs);
-                     case "new":
-                        return new A(...opArgs);
-                     default:
-                        return error(": Unknown operation");
-                  }
-               }, datum);
-            }
+         get(_, key) {
             operations.push(["field", key]);
             return p;
          },
@@ -31,9 +19,20 @@ const proxy = new Proxy(Object.create(null), {
             operations.push(["call", args]);
             return p;
          },
+         // new _.thing is how you run it
          construct(o, args) {
-            operations.push(["new", args]);
-            return p;
+            return datum => operations.reduce((A, [operation, opArgs]) => {
+               switch (operation) {
+                  case "field":
+                     return A[opArgs];
+                  case "call":
+                     return A(...opArgs);
+                  case "new":
+                     return new A(...opArgs);
+                  default:
+                     return error(": Unknown operation");
+               }
+            }, datum);
          },
       });
       return p;
@@ -49,4 +48,5 @@ const proxy = new Proxy(Object.create(null), {
    deleteProperty() { notAllowed("deleting values"); },
    ownKeys() { notAllowed(".getOwnProperty*"); }
 });
-export default proxy;
+
+module.exports = proxy;

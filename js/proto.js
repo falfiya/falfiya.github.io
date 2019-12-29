@@ -109,9 +109,15 @@ proto.ArrayLike = {
       return [this.slice(0, n), this.slice(n)];
    },
 };
-Object.keys(proto.ArrayLike).forEach(key => Object.defineProperty(String.prototype, key, { value: proto.ArrayLike[key] }));
-Object.keys(proto.ArrayLike).forEach(key => Object.defineProperty(Array.prototype, key, { value: proto.ArrayLike[key] }));
-Object.keys(proto.String).forEach(key => Object.defineProperty(String.prototype, key, { value: proto.String[key] }));
-Object.keys(proto.Array).forEach(key => Object.defineProperty(Array.prototype, key, { value: proto.Array[key] }));
-Object.keys(proto.Number).forEach(key => Object.defineProperty(Number.prototype, key, { value: proto.Number[key] }));
-Object.keys(proto.Object).forEach(key => Object.defineProperty(Object.prototype, key, { value: proto.Object[key] }));
+
+function patch(prototype, myPrototype) {
+   Object.keys(myPrototype).forEach(key => {
+      Object.defineProperty(prototype, key, { value: myPrototype[key] });
+   });
+}
+patch(String.prototype, proto.ArrayLike);
+patch(Array.prototype, proto.ArrayLike);
+patch(String.prototype, proto.String);
+patch(Array.prototype, proto.Array);
+patch(Number.prototype, proto.Number);
+patch(Object.prototype, proto.Object);
