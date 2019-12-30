@@ -25,20 +25,23 @@
       c.width = width
       c.height = height;
       const ctx = c.getContext("2d");
-      let pxcount = width * height;
+      const size = 4;
       let x = 0;
       let y = 0;
-      let h = 0;
-      let s = 100;
+      let dx = size;
+      let dy = size;
       
-      const i = setInterval(() => {
-         if (pxcount --> 0) {
-            ctx.fillStyle = `hsl(${h++}, ${s++}, 50%)`;
-            ctx.fillRect(x++, y++, 1, 1);
-         } else {
-            clearInterval(i);
+      ctx.fillStyle = "black";
+      (function step() {
+         if (x < 0 || x > width) {
+            dx *= -1;
          }
-      });
+         if (y < 0 || y > height) {
+            dy *= -1;
+         }
+         ctx.fillRect(x += dx, y += dy, size, size);
+         requestAnimationFrame(step);
+      })();
    </script>
 </body>
 </html>

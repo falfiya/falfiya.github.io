@@ -46,7 +46,7 @@ const proxy = new Proxy(Object.create(null), {
    has() { notAllowed('"in"'); },
    set() { notAllowed("setting values"); },
    deleteProperty() { notAllowed("deleting values"); },
-   ownKeys() { notAllowed(".getOwnProperty*"); }
+   ownKeys() { notAllowed(".getOwnProperty*"); },
 });
 
 module.exports = proxy;

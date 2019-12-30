@@ -11,6 +11,7 @@ function promiseFailure(e) {
    this.res.shift();
    if (rej) { rej(e); }
 }
+let attachListener;
 function next() {
    this.promise = null;
    const fn = this.fns.shift();
@@ -19,12 +20,12 @@ function next() {
       attachListener.call(this);
    }
 }
-function attachListener() {
+attachListener = function attachListener() {
    this.promise
       .then(promiseSuccess.bind(this))
       .catch(promiseFailure.bind(this))
       .finally(next.bind(this));
-}
+};
 module.exports = class PromiseQueue {
    constructor() {
       this.fns = [];

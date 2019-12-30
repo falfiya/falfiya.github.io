@@ -1,0 +1,9 @@
+{
+   "name": "advent-of-code",
+   "description": "Solving the puzzles from Advent of Code",
+   "author": "Coalpha",
+   "license": "MIT",
+   "devDependencies": {
+      "eslint": "^6.7.2"
+   }
+}
