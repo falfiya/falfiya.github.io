@@ -1,3 +1,4 @@
+#define UNICODE
 #include <process.h>
 
 static wchar_t *posh = L"C:\\Program Files\\PowerShell\\6\\pwsh.exe";

@@ -7,7 +7,9 @@ const read = src => async () => sread(src);
 const write = (src, obj) => () => fsp.writeFile(`${src}.json`, JSON.stringify(obj));
 const handles = {};
 function handle(src, promiseReturningFn) {
-   if (!handles[src]) handles[src] = new PromiseQueue();
+   if (!handles[src]) {
+      handles[src] = new PromiseQueue;
+   }
    return handles[src].push(promiseReturningFn);
 }
 module.exports = {

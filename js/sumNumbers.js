@@ -1,0 +1,1 @@
+sumNumbers = (n, s = Math.sign(n), N = n * s) => s * [...Array(N + 1)].reduce((a, _, i) => a + i, 0);

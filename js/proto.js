@@ -1,13 +1,13 @@
 const proto = {};
 proto.String = {
    mince() {
-      return this.split('');
+      return this.split("");
    },
    reverse() {
-      return this.mince().reverse().join('');
+      return this.mince().reverse().join("");
    },
    diceNoRemainder(n) {
-      return this.match(new RegExp(`[\\s\\S]{${n}}`, 'g'));
+      return this.match(new RegExp(`[\\s\\S]{${n}}`, "g"));
    },
    dice(n) {
       let d = this.diceNoRemainder(n);
@@ -88,7 +88,7 @@ proto.Object = {
    },
    hasKey(k) {
       return this.hasOwnProperty(k);
-   }
+   },
 };
 proto.Number = {
    times(fn) {

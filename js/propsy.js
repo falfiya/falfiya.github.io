@@ -37,16 +37,16 @@ const proxy = new Proxy(Object.create(null), {
       });
       return p;
    },
-   getPrototypeOf() { notAllowed(".getPrototypeOf"); },
-   setPrototypeOf() { notAllowed(".setPrototypeOf"); },
-   isExtensible() { notAllowed(".isExtensible"); },
-   preventExtensions() { notAllowed(".preventExtensions"); },
-   getOwnPropertyDescriptor() { notAllowed(".getOwnPropertyDescriptor"); },
-   defineProperty() { notAllowed(".defineProperty"); },
-   has() { notAllowed('"in"'); },
-   set() { notAllowed("setting values"); },
-   deleteProperty() { notAllowed("deleting values"); },
-   ownKeys() { notAllowed(".getOwnProperty*"); },
+   getPrototypeOf() { notAllowed(".getPrototypeOf") },
+   setPrototypeOf() { notAllowed(".setPrototypeOf") },
+   isExtensible() { notAllowed(".isExtensible") },
+   preventExtensions() { notAllowed(".preventExtensions") },
+   getOwnPropertyDescriptor() { notAllowed(".getOwnPropertyDescriptor") },
+   defineProperty() { notAllowed(".defineProperty") },
+   has() { notAllowed('"in"') },
+   set() { notAllowed("setting values") },
+   deleteProperty() { notAllowed("deleting values") },
+   ownKeys() { notAllowed(".getOwnProperty*") },
 });
 
 module.exports = proxy;

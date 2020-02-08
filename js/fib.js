@@ -24,5 +24,5 @@ if ((count|0) > 0) {
       }
    }
 }
-process.stdout.write('\n');
+process.stdout.write("\n");
 process.exit(0);

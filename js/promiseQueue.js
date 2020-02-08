@@ -4,12 +4,12 @@
 function promiseSuccess(v) {
    const res = this.res.shift();
    this.rej.shift();
-   if (res) { res(v); }
+   if (res) { res(v) }
 }
 function promiseFailure(e) {
    const rej = this.rej.shift();
    this.res.shift();
-   if (rej) { rej(e); }
+   if (rej) { rej(e) }
 }
 let attachListener;
 function next() {

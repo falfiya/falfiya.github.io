@@ -2,11 +2,11 @@
    "author": "Cole Gannon",
    "license": "UNLICENSED",
    "devDependencies": {
-      "@coalpha/eslint-config": "^1.0.2",
-      "eslint": "^6.7.0"
+      "@coalpha/eslint-config": "^1.0.3",
+      "eslint": "^6.8.0"
    },
-   "dependencies": {
-      "http-server": "^0.11.1"
-   },
-   "scripts": {}
+   "dependencies": {},
+   "scripts": {
+      "lint": "eslint js || cd ."
+   }
 }

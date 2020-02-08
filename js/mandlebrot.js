@@ -1,8 +1,8 @@
 // Not my code, taken from the wrenlang website
 for (let yPixel = 0; yPixel <= 24; ++yPixel) {
-   let y = yPixel / 12 - 1;
+   const y = yPixel / 12 - 1;
    for (let xPixel = 0; xPixel <= 80; ++xPixel) {
-      let x = xPixel / 30 - 2;
+      const x = xPixel / 30 - 2;
       let x0 = x;
       let y0 = y;
       let iter = 0;

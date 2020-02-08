@@ -10,12 +10,12 @@ inline void usage() {
 int main(int argc, char** argv) {
    string line{};
    if (argc == 1) {
+      // no arguments, take input from stdin
       getline(cin, line);
    } else if (argc == 2) {
+      // our input is the argument
       line = *(argv + 1);
    } else {
-      // argc shouldn't be less than one ever
-      // that means it's greater than two
       usage();
       return 1;
    }
