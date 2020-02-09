@@ -2,16 +2,27 @@
 <head>
    <meta charset="UTF-8">
    <style>
-      * {
+      html, body {
          margin: 0;
          padding: 0;
+         height: 100%;
          overflow: hidden;
       }
+      body {
+         background-color: #433;
+         font-family: Menlo, Consolas, monospace;
+         font-size: 3vw;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+      }
+      c {
+         color: #eee;
+      }
    </style>
-   <title>Pixel Canvas Test</title>
+   <title>Click to add text</title>
 </head>
-<body>
-   <canvas id=c></canvas>
-   <script src="index.js"></script>
+<body id="b">
+   <c>There's nothing here...</c>
 </body>
 </html>

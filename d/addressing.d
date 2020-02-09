@@ -1,6 +1,8 @@
+// by [d]fault (haha) dmd produces 32 bit binary
+// compile with -m64 to get a 64 bit binary
 import std.stdio: write, writeln;
+
 void main() {
-   // I've actually got no idea if this works but whatever
    if (uint.max == size_t.max) {
       write("32");
    } else {

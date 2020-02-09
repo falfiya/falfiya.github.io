@@ -3,10 +3,12 @@
    "license": "UNLICENSED",
    "devDependencies": {
       "@coalpha/eslint-config": "^1.0.3",
-      "eslint": "^6.8.0"
+      "eslint": "^6.8.0",
+      "http-server": "latest"
    },
    "dependencies": {},
    "scripts": {
+      "start": "http-server",
       "lint": "eslint js || cd ."
    }
 }
