@@ -8,7 +8,7 @@ const multi = new Proxy(class _ {}, {
          return hint => {
             switch (hint) {
                case "number": {
-                  caught("a coersion to Number");
+                  caught("a coercion to Number");
                   break;
                }
                case "string": {
@@ -26,9 +26,11 @@ const multi = new Proxy(class _ {}, {
       }
       caught(`multi[${k}]`);
    },
+
    set(o, k, v) {
       caught(`multi[${k}] = ${v}`);
    },
+
    apply(f, t, a) {
       if (a[0].raw) {
          const T = a.slice(1);
@@ -38,13 +40,16 @@ const multi = new Proxy(class _ {}, {
          caught(`multi(${a.join(", ")})`);
       }
    },
+
    construct(t, a) {
       caught(`new multi(${a.join(", ")})`);
       return this;
    },
+
    has(t, v) {
       caught(`${v} in multi`);
    },
+
    deleteProperty(t, v) {
       caught(`delete multi[${v}]`);
    },
