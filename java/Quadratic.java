@@ -76,14 +76,14 @@ class Quadratic {
       var plus = (sd - b) / a2;
       if (discriminant == 0) {
          printfl(
-            "%sx %s= %sn",
+            "%sx %s= %s",
             Colors.grey,
             Colors.red,
             Colors.lred + plus
          );
       } else {
          printfl(
-            "%sx %s has two solutions: %s{%s, %s}",
+            "%sx %shas two solutions: %s{%s, %s}",
             Colors.grey,
             Colors.reset,
             Colors.purple,

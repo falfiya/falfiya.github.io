@@ -6,7 +6,6 @@
       "eslint": "^6.8.0",
       "http-server": "latest"
    },
-   "dependencies": {},
    "scripts": {
       "start": "http-server",
       "lint": "eslint js || cd ."
