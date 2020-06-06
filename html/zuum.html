@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Detect Zoom</title>
+   <style>
+      html, body {
+         height: 100%;
+         width: 100%;
+         overflow: hidden;
+      }
+      body {
+         background-color: rgb(56, 40, 36);
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         color: #eef;
+         font-size: 2vw;
+         font-weight: bold;
+      }
+   </style>
+</head>
+<body>
+   <pre id=c></pre>
+   <script>
+      function displayOutput() {
+         const [display, css] = findRationalDPR();
+         c.innerText = `DPR: ${devicePixelRatio.toString().padStart(18, " ")}   ${display} / ${css}\n${new Date}`;
+      }
+      window.addEventListener("resize", displayOutput);
+      displayOutput();
+
+      // taken from based-canvas
+      function findRationalDPR() {
+         const dpr = window.devicePixelRatio;
+         for (let co = 1; co < 100; co++) {
+            if (Number.isInteger(dpr * co)) {
+               return [dpr * co, co];
+            }
+         }
+         return [1, 1];
+      }
+   </script>
+</body>
+</html>

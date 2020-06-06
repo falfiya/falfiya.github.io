@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+   <style>
+      * {
+         overflow: hidden;
+      }
+
+      html, body {
+         margin: 0;
+      }
+
+      body {
+         background-color: #111;
+      }
+
+      #resizable {
+         border: 4px solid slateblue;
+         resize: both;
+         box-sizing: border-box;
+         min-width: 200px;
+         min-height: 400px;
+      }
+   </style>
+</head>
+<body>
+   <div id="resizable"></div>
+   <script>
+      const resizable = document.getElementById("resizable");
+      resizable.onresize = (...args) => console.log("onresize", args);
+      resizable.addEventListener("resize", (...args) => console.log("resize", args));
+   </script>
+</body>
+</html>
