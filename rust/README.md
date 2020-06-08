@@ -1,26 +1,23 @@
 # rust
 
-Not really sure why this got moved out of coalpha.github.io.
-I suspect it had something to do with Cargo complaining about the directory not
-being the root directory when I add it in vscode.
+Alright, after getting a faster computer, the compile times hurt less but they
+still kinda suck. [rust-analyzer](https://github.com/rust-analyzer/rust-analyzer)
+is a godsend. Whatever cursed tool that they had like a year ago is nothing
+compared to this goodness. I think it might even be getting as good as whatever
+tool JetBrains is making for Rust.
 
-Rust feels very heavy.
-The tooling is large and feels slow.
-It's got the dependency hell that NodeJS has with npm except now you have to
-compile everything locally.
-Since that slows down the computer, I actually have to get up and do something
-else while the code's compiling.
-At least with Node, once I download all 120983021938 modules,
-I'm basically done waiting.
-Once the code's been compiled, the large binaries feel sluggish.
-Oh, did you try `--release`?
-No because I just wanted to test a change I made.
-One of the most annoying things for me is the fact that you can't really have a
-file without a project structure.
-Sure, you can have your little `hello.rs` but basically every IDE balks because
-it can't find cargo.
+Error handling sucks in this language. It just sucks way less than any other
+language I've tried so yay. `std::Option` and `std::Result` are the-right-way
+(tm) to do this. It's just that a lot of the time, my code ends up feeling like
+60% error handling and 40% actual code I enjoy. There are so many io related
+things that I didn't know could fail. Rust has shown me that they all can and it
+makes me sad.
+
 This language doesn't feel like a good language to prototype in but I'm told
 that it's one of the best languages to implement production quality code because
 of it's safety guarantees.
+
+In here are some probably wrong solutions to the problems in the Euler Project.
+I did these a while ago so ~~don't~~ judge me.
 
 `cargo run --bin e{n}` where `n` is the problem number.
