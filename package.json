@@ -8,7 +8,6 @@
       "resolve": "^1.17.0"
    },
    "scripts": {
-      "start": "http-server",
-      "lint": "eslint js || cd ."
+      "start": "http-server"
    }
 }
