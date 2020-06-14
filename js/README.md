@@ -1,5 +1,8 @@
 # JavaScript <3
 
+I would enforce `.mjs` naming for es6 modules but vscode doesn't like it.
+They're just gonna be `.js` files for now.
+
 Good God, I love this language.
 It's somewhat of an acquired taste but I've drank so much of it that I can't
 stop now. I'm not sure that it should actually be used in production because I

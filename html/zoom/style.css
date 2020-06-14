@@ -1,0 +1,15 @@
+html, body {
+   height: 100%;
+   width: 100%;
+   margin: 0;
+   overflow: hidden;
+}
+body {
+   background-color: rgb(56, 40, 36);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   color: #eef;
+   font-size: 2vw;
+   font-weight: bold;
+}
