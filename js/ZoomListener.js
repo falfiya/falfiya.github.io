@@ -22,4 +22,4 @@ class ZoomListener {
    }
 }
 
-new ZoomListener(() => console.log("zoom"));
+new ZoomListener(() =>

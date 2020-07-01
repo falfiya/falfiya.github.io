@@ -1,5 +1,5 @@
 function caught(what) {
-   console.log(`The multi-function caught ${what}`);
+
 }
 
 const multi = new Proxy(class _ {}, {
@@ -16,7 +16,7 @@ const multi = new Proxy(class _ {}, {
                   break;
                }
                default: {
-                  console.log("Received a default hint");
+
                }
             }
          };

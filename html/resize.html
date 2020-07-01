@@ -31,7 +31,7 @@
    <div id="resizable"></div>
    <script>
       const resizable = document.getElementById("resizable");
-      new ResizeObserver(([{contentRect: {width, height}}]) => console.log(width, height)).observe(resizable);
+      new ResizeObserver(([{contentRect: {width, height}}]) =>
    </script>
 </body>
 </html>

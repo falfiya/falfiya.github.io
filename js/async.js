@@ -3,5 +3,5 @@ void async function main() {
 }();
 
 void async function main() {
-   console.log("with this file.");
+
 }();

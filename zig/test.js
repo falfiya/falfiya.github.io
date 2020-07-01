@@ -11,5 +11,5 @@ void async function main() {
          },
       },
    );
-   console.log(WASM.instance.exports.add(1, 3));
+
 }();

@@ -24,7 +24,7 @@ q.sort((a, b) => a - b).reverse();
 const res = q.find(isPalindrome);
 
 if (res) {
-   console.log(res);
+
 } else {
-   console.log("guh");
+
 }
