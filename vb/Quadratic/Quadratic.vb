@@ -30,7 +30,7 @@ Module Quadratic
       ' It's faster to allocate once
       Dim sb As New StringBuilder(64)
       sb _
-         .Append($"{a}{x}{Yellow}² ") _
+         .Append($"{a}{x}{Yellow}Â² ") _
          .Append(plus) _
          .Append($"{b}{x}") _
          .Append(plus) _
