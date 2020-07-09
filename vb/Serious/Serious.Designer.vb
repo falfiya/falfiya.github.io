@@ -22,24 +22,26 @@ Partial Class Serious
    'Do not modify it using the code editor.
    <System.Diagnostics.DebuggerStepThrough()> _
    Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Serious))
-        Me.txtInput = New System.Windows.Forms.RichTextBox()
-        Me.btnProcess = New System.Windows.Forms.Button()
-        Me.txtOutput = New System.Windows.Forms.RichTextBox()
+      Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Serious))
+      Me.txtInput = New System.Windows.Forms.RichTextBox()
+      Me.btnProcess = New System.Windows.Forms.Button()
+      Me.txtOutput = New System.Windows.Forms.RichTextBox()
         Me.SuspendLayout()
         '
         'txtInput
         '
-        Me.txtInput.Location = New System.Drawing.Point(20, 14)
+        Me.txtInput.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtInput.Location = New System.Drawing.Point(14, 14)
         Me.txtInput.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtInput.Name = "txtInput"
-        Me.txtInput.Size = New System.Drawing.Size(639, 118)
+        Me.txtInput.Size = New System.Drawing.Size(640, 120)
         Me.txtInput.TabIndex = 0
         Me.txtInput.Text = ""
         '
         'btnProcess
         '
-        Me.btnProcess.Location = New System.Drawing.Point(225, 154)
+        Me.btnProcess.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.btnProcess.Location = New System.Drawing.Point(219, 154)
         Me.btnProcess.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.btnProcess.Name = "btnProcess"
         Me.btnProcess.Size = New System.Drawing.Size(226, 48)
@@ -49,23 +51,24 @@ Partial Class Serious
         '
         'txtOutput
         '
-        Me.txtOutput.Location = New System.Drawing.Point(20, 229)
+        Me.txtOutput.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtOutput.Location = New System.Drawing.Point(14, 225)
         Me.txtOutput.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtOutput.Name = "txtOutput"
-        Me.txtOutput.Size = New System.Drawing.Size(639, 130)
+        Me.txtOutput.Size = New System.Drawing.Size(640, 120)
         Me.txtOutput.TabIndex = 2
         Me.txtOutput.Text = ""
         '
         'Serious
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(120.0!, 120.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.AutoSize = True
-        Me.ClientSize = New System.Drawing.Size(672, 373)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.ClientSize = New System.Drawing.Size(668, 369)
         Me.Controls.Add(Me.txtOutput)
         Me.Controls.Add(Me.btnProcess)
         Me.Controls.Add(Me.txtInput)
+        Me.Cursor = System.Windows.Forms.Cursors.Default
         Me.Font = New System.Drawing.Font("Cascadia Code", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.MaximizeBox = False
