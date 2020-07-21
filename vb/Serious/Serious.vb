@@ -6,8 +6,8 @@
       Next
       Return String.Join(" "c, out)
    End Function
-   Dim strProcess0 = "Process Text"
-   Dim strProcess1 = SpaceOut(strProcess0)
+   ReadOnly strProcess0 As String = "Process Text"
+   ReadOnly strProcess1 As String = SpaceOut(strProcess0)
    Private Sub btnProcess_MouseDown(sender As Object, e As EventArgs) Handles btnProcess.MouseDown
       btnProcess.Text = strProcess1
    End Sub

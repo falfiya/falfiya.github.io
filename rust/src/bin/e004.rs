@@ -11,5 +11,4 @@ fn is_palindrome(i: u32) -> bool {
 
 fn main() {
    let mut a: [u32; 999 * 999] = [];
-   
 }
