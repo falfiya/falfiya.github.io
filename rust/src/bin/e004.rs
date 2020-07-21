@@ -9,6 +9,23 @@ fn is_palindrome(i: u32) -> bool {
    return s == s.chars().rev().collect::<String>();
 }
 
+fn three_d_iter() -> impl Iterator<Item = u32> {
+   return (100u32..999).rev();
+}
+
 fn main() {
-   let mut a: [u32; 999 * 999] = [];
+   let mut longest = 0u32;
+   let mut l_a = 0u32;
+   let mut l_b = 0u32;
+   three_d_iter().for_each(|a| {
+      three_d_iter().for_each(|b| {
+         let c = a * b;
+         if is_palindrome(c) && c > longest {
+            longest = c;
+            l_a = a;
+            l_b = b;
+         }
+      });
+   });
+   println!("{} * {} = {}", l_a, l_b, longest);
 }
