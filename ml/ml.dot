@@ -1,0 +1,17 @@
+digraph {
+   compound=true
+   subgraph cluster_backend {
+      label="backend"
+      ocamlopt
+      ocamlc
+      bucklescript_bsb
+   }
+   reasonml -> bucklescript_internals -> ocaml -> ocaml_frontend
+   NapkinScript -> bucklescript_internals
+   ocaml_frontend -> ocamlopt
+   ocaml_frontend -> ocamlc
+   ocaml_frontend -> bucklescript_bsb
+   bucklescript_bsb -> JavaScript
+   ocamlc -> c_bytecode
+   ocamlopt -> native
+}
