@@ -1,4 +1,7 @@
 **/node_modules/
+**/.vs/
+**/bin/
+**/obj/
 *.class
 *.o
 *.obj
