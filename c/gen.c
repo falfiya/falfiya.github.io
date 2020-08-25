@@ -4,7 +4,7 @@
 #define MAXSIZE 10
 
 int main() {
-   ul *o = calloc(sizeof(ul), MAXSIZE * MAXSIZE / 2);
+   ul *o = calloc(MAXSIZE * MAXSIZE / 2, sizeof(ul));
    for (unsigned y = 0; y < MAXSIZE; ++y) {
       ul *row = o + y;
       for (unsigned x = 0; x < MAXSIZE - y; ++x) {
