@@ -1,0 +1,14 @@
+{
+   "scripts": {
+      "start": "node main"
+   },
+   
+   "dependencies": {
+      "btoa": "^1.2.1",
+      "koa": "^2.13.0",
+      "node-fetch": "^2.6.0"
+   },
+   "devDependencies": {
+      "@types/node-fetch": "^2.5.7"
+   }
+}
