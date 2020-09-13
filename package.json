@@ -10,5 +10,9 @@
    },
    "scripts": {
       "start": "http-server"
+   },
+   "dependencies": {
+      "querystring": "^0.2.0",
+      "sync-request": "^6.1.0"
    }
 }
