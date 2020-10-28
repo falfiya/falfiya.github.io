@@ -21,7 +21,7 @@ class Default implements ProgramName {
       }
 
       try {
-         System.out.println(Default.class.getAnnotation(Hello.class).hello());
+         System.out.println(Default.class.getAnnotation(Hello.class) == Default.class.getAnnotation(Hello.class));
       } catch (Exception e) {};
    }
 }
