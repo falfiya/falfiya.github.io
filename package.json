@@ -1,6 +1,7 @@
 {
    "author": "Cole Gannon",
    "license": "UNLICENSED",
+   "repository": "https://github.com/coalpha/coalpha.github.io",
    "devDependencies": {
       "@coalpha/eslint-config": "^1.0.3",
       "@types/node": "latest",
