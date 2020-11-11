@@ -11,9 +11,9 @@ class Loader {
    }
    public static void main(String a[]) throws IOException, ClassNotFoundException {
       var abspath = Paths.get(".").toAbsolutePath();
-		out.println("Searching for .class files in " + abspath);
-		var paths = Files.walk(abspath);
-		String[] classFiles = paths
+      out.println("Searching for .class files in " + abspath);
+      var paths = Files.walk(abspath);
+      String[] classFiles = paths
          .filter(Files::isRegularFile)
          .map(f -> f.getFileName().toString())
          .filter(f -> f.endsWith(".class"))
