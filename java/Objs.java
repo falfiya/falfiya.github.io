@@ -1,12 +1,12 @@
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class Objs {
    boolean hasProp1 = false;
    boolean hasProp2 = false;
 
    List<Integer> prop1;
    List<String> prop2;
-   @SuppressWarnings("unchecked")
    public Objs(short whichProp, List<?> props) {
       switch (whichProp) {
          case 1: {
