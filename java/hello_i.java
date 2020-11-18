@@ -1,5 +1,5 @@
-public interface hello_i {
-   public static void main(final String[] args) {
+interface hello_i {
+   static void main(final String[] args) {
       System.out.println("Hello, World!");
    }
 }
