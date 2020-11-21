@@ -4,4 +4,9 @@ class NameSpace {
          System.out.println(NameSpace);
       }
    }
+
+   String String;
+   String String(String String) {
+      return (String) String;
+   }
 }
