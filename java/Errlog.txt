@@ -1,0 +1,2 @@
+Exception in thread "main" java.lang.RuntimeException: Let's write this to the file!
+	at Errlog.main(Errlog.java:11)
