@@ -1,9 +1,26 @@
+/*
+This entire adventure started off with me reading about templates in dlang.
+In there, they mentioned something about perfect forwarding and I remembered
+std::forward and I wasn't quite sure what it did.
+Down the rabbit hole!
+https://eli.thegreenplace.net/2014/perfect-forwarding-and-universal-references-in-c
+And there were those mysterious && types so I decided to leaen about them.
+Thankfully, the author linked to a previous post of his:
+https://eli.thegreenplace.net/2011/12/15/understanding-lvalues-and-rvalues-in-c-and-c
+In his code, he used the `explicit` operator and I wasn't really sure what that
+did. Uh oh, we're three layers down now, learning about initialization and
+constructors and oh god this language.
+At least I have a name for what I called "uniform assignment", now.
+a = {b} is actually called copy-list.
+It's not exactly copy-list-initialization but it's close.
+There seems to be an entire matrix of
+{copy, direct} * {list, rvalue, lvalue, nothing} initialization and assignment.
+*/
 #include <initializer_list>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <iomanip>
-#include <variant>
 
 using namespace std;
 
@@ -173,7 +190,7 @@ public:
 int main() {
    // direct
    e_obj tar;
-   e_obj tag{};
+   e_obj tag{}; // direct list initialization
    e_obj pine("pine");
 
    // copy
@@ -194,7 +211,7 @@ int main() {
    i_obj cute("cute");
    i_obj fire("fire");
    i_obj emsi("emsi");
-   i_obj cue{};
+   i_obj cue{}; // direct list initialization
    i_obj sea = {};
 
    // copy lvalue
