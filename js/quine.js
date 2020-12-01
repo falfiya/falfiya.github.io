@@ -1,1 +1,1 @@
-console.log(`${arguments.callee}`.slice(61, -3));
+process.stdout.write(`${arguments.callee}`.slice(61, -3));

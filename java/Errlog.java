@@ -8,6 +8,6 @@ interface Errlog {
          System.setErr(new PrintStream(outfile));
       } catch (Throwable t) {}
 
-      throw new RuntimeException("Let's write this to the file!");
+      throw new Error("Let's write this to the file!");
    }
 }
