@@ -4,7 +4,7 @@ In there, they mentioned something about perfect forwarding and I remembered
 std::forward and I wasn't quite sure what it did.
 Down the rabbit hole!
 https://eli.thegreenplace.net/2014/perfect-forwarding-and-universal-references-in-c
-And there were those mysterious && types so I decided to leaen about them.
+And there were those mysterious && types so I decided to learn about them.
 Thankfully, the author linked to a previous post of his:
 https://eli.thegreenplace.net/2011/12/15/understanding-lvalues-and-rvalues-in-c-and-c
 In his code, he used the `explicit` operator and I wasn't really sure what that

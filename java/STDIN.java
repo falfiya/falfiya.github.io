@@ -20,7 +20,7 @@ class STDIN {
          }
          dest.flip();
          System.out.printf("%2d bytes: \"", bytesRead);
-         
+
          while (dest.hasRemaining()) {
             var c = (char) dest.get();
             System.out.print(
