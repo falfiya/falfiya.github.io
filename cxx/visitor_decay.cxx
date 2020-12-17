@@ -1,5 +1,3 @@
-// std::visit aka "sad and weak pattern matching"
-// someone explain to me why there're differences between using decay_t and not.
 #include <variant>
 #include <iostream>
 #include "./type_name.cxx"
