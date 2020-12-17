@@ -12,13 +12,13 @@ template<> string hello<3> = "!";
 template<> string hello<4> = "\n";
 
 template<int i, int max>
-void printer() {
+void loop() {
    if constexpr (i <= max) {
       cout << hello<i>;
-      printer<i + 1, max>();
+      loop<i + 1, max>();
    }
 }
 
 int main() {
-   printer<0, 4>();
+   loop<0, 4>();
 }
