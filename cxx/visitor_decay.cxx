@@ -2,23 +2,24 @@
 // someone explain to me why there're differences between using decay_t and not.
 #include <variant>
 #include <iostream>
+#include "./type_name.cxx"
 using namespace std;
 
 template<class> inline constexpr bool always_false_v = false;
 
 static auto visitor_nodecay = [](auto&& inner) {
    using T = decltype(inner);
-   auto name{typeid(T).name()};
+   auto name{type_name<T>()};
    cout
       << "\nusing T = " << name
-      << "\nis_same_v<T, int>       = " << is_same_v<T, int>
-      << "\nis_same_v<T, monostate> = " << is_same_v<T, monostate>
+      << "\nis_same_v<T, int&>       = " << is_same_v<T, int&>
+      << "\nis_same_v<T, monostate&> = " << is_same_v<T, monostate&>
       << '\n';
 };
 
 static auto visitor_decay = [](auto&& inner) {
    using T = decay_t<decltype(inner)>;
-   auto name{typeid(T).name()};
+   auto name{type_name<T>()};
    cout
       << "\nusing T = " << name
       << "\nis_same_v<T, int>       = " << is_same_v<T, int>
