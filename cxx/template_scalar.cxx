@@ -14,9 +14,9 @@ template<> string hello<4> = "\n";
 template<int i, int max>
 void loop() {
    if constexpr (i <= max) {
-      cout << hello<i>;
       loop<i + 1, max>();
    }
+   cout << hello<i>;
 }
 
 int main() {
