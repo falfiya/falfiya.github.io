@@ -1,3 +1,4 @@
+// specialization array using SFINAE
 #include <iostream>
 using namespace std;
 #define string static constexpr const char *
@@ -22,7 +23,7 @@ template<> struct greeting<2> { string str{"world"}; };
 template<> struct greeting<3> { string str{"!\n"}; };
 
 template <int i = 0>
-void loop() {
+constexpr inline void loop() {
    if constexpr (has_str<greeting<i>>::value) {
       cout << greeting<i>::str;
       loop<i + 1>();
