@@ -15,5 +15,5 @@ int main(int argc, char **argv) {
    fread(&argc, 1, fsize, f);
    // fclose(f);
 
-   puts((char *) &argc);
+   puts(&argc);
 }
