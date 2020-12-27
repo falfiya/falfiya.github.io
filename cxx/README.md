@@ -1,4 +1,4 @@
 # C++
 
-A lot of things in here aren't my projects. They're just remnants from when my
-friends asked me for help with C++.
+This is where I test out new things that I learn in C++ now.
+Before, it was mostly for helping other people out with their code.
