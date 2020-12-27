@@ -1,17 +1,21 @@
 // How movies portray robots
-#define true 1
-#define false 0
+#include <stdint.h>
 
-struct robot_counter {
-   unsigned long uptime_ticks: 31;
-   unsigned should_kill_humans: 1;
-} counter;
+typedef struct robot_counter {
+   uint32_t uptime_ticks: 31;
+   uint8_t  should_kill_humans: 1;
+} robot_counter;
+
+extern void tick(robot_counter);
 
 void time_keeper() {
-   counter.uptime_ticks = 0;
-   counter.should_kill_humans = false; // VERY IMPORTANT!!!
-   unsigned long *fast_counter = (unsigned long *) &counter;
-   while (true) {
+   robot_counter counter = {
+      .uptime_ticks = 0,
+      .should_kill_humans = 0,
+   };
+
+   uint32_t *fast_counter = (uint32_t *) &counter;
+   while (1) {
       (*fast_counter)++;
       tick(counter);
    }

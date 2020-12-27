@@ -3,22 +3,26 @@
 #include <iostream>
 using namespace std;
 
-#define get(F, f,ield) inline int get##F##ield() noexcept { return f ## ield; }
-#define set(F, f,ield) inline void set##F##ield(int _) noexcept { f##ield = _; }
+#define get(F, f,ield) \
+   inline int get##F##ield() const noexcept { return this->f##ield; }
+#define set(F, f,ield) \
+   inline void set##F##ield(int _) noexcept { this->f##ield = _; }
 
 class Box {
    int width;
    int height;
    int depth;
 public:
+   explicit Box() = default;
    explicit Box(int w, int h, int d):
       width(w),
       height(h),
       depth(d)
    {}
-   explicit Box() {}
 
-   inline int calcArea() {
+   // [4:09 PM] cqwrteur: member functions inside classes are inline by default
+   // [4:09 PM] cqwrteur: but marking every function as inline is a simple rule
+   inline int calcArea() const noexcept {
       if (width & height & depth) {
          return 0
             + (2 * width * height)
@@ -30,11 +34,11 @@ public:
       return 0;
    }
 
-   inline int calcVolume() {
+   inline int calcVolume() const noexcept {
       if (width & height & depth) {
          return depth * width * height;
       }
-      cout << "Not all dimensions are nonzero." << endl;
+      cout << "Not all dimensions are nonzero.\n";
       return 0;
    }
 
