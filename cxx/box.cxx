@@ -14,8 +14,8 @@ class Box {
    int height{};
    int depth{};
 public:
-   constexpr explicit Box() = default;
-   constexpr explicit Box(int w, int h, int d):
+   constexpr explicit Box() noexcept = default;
+   constexpr explicit Box(int w, int h, int d) noexcept:
       width(w),
       height(h),
       depth(d)
