@@ -4,12 +4,16 @@ CXX_FLAGS := \
 	-IP:/lib/llvm/include/fast_io
 
 cxx/%.exe: cxx/%.cxx
-	clang++ $(CXX_FLAGS) $< -o $@
-# -fno-elide-constructors for testing catsail.cxx
+	-clang++ $(CXX_FLAGS) $< -o $@
+
 run~%.cxx: cxx/%.exe
-	# @echo ----- RUN $< -----
 	@-$<
-	# @echo ----- END $< -----
+
+c/%.exe: c/%.c
+	-clang $< -o $@
+
+run~%.c: c/%.exe
+	@-$<
 
 clean-cxx:
 
