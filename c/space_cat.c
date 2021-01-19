@@ -1,22 +1,17 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <malloc.h>
 
-inline void seek_beg(FILE *f) {
-	fseek(f, 0, SEEK_SET);
+#include <sys/stat.h>
+#include <sys/types.h>
+
+inline size_t file_size(FILE *f) {
+	struct stat stats;
+	fstat(_fileno(f), &stats);
+	return stats.st_size;
 }
 
-inline void seek_end(FILE *f) {
-	fseek(f, 0, SEEK_END);
-}
-
-inline long file_size(FILE *f) {
-	seek_end(f);
-	long size = ftell(f);
-	seek_beg(f);
-	return size;
-}
-
-int main(int argc, char **argv) {
+int main(int argc, char *argv[]) {
 	if (argc != 2) {
 		fprintf(stderr, "%s compile_flags.txt\n", argv[0]);
 		return 1;
@@ -31,12 +26,11 @@ int main(int argc, char **argv) {
 		return err;
 	}
 
-	long size = file_size(txt);
+	size_t size = file_size(txt);
 	char *buf = (char *) malloc(size);
 
 	if (buf == NULL) {
-		// well fuck
-		perror("Allocation failure!");
+		fputs("Allocation failure!\n", stderr);
 		return 1;
 	}
 

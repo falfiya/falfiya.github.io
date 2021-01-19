@@ -1,3 +1,4 @@
+C_FLAGS := -Wall
 CXX_FLAGS := \
 	-Wall \
 	-std=c++20 \
@@ -10,7 +11,7 @@ run~%.cxx: cxx/%.exe
 	@-$<
 
 c/%.exe: c/%.c
-	-clang $< -o $@
+	-clang $(C_FLAGS) $< -o $@
 
 run~%.c: c/%.exe
 	@-$<
