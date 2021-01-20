@@ -12,6 +12,6 @@ public class Solution {
          out.add(a);
          left -= a;
       }
-      return out.stream().mapToInt((i) -> i).toArray();
+      return out.stream().mapToInt(i -> i).toArray();
    }
 }
