@@ -6,4 +6,4 @@ void function bean(user) {
       }
    `, 0);
    return arguments.callee;
-}("blackberryrose")("Fenris");
+}("coalpha");
