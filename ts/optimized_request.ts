@@ -62,6 +62,7 @@ export function request_json(domain: string, path: string, exit: callback) {
    }
 
    function all_good(buffer: Buffer) {
+      conn.close();
       exit(JSON.parse(buffer.toString()));
    }
 }

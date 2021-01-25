@@ -1,2 +1,1 @@
--std=c++20
--IP:/lib/llvm/include/fast_io
+-std=c++17
