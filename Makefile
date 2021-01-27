@@ -1,8 +1,7 @@
 C_FLAGS := -Wall
 CXX_FLAGS := \
 	-Wall \
-	-std=c++20 \
-	-IP:/lib/llvm/include/fast_io
+	-std=c++17
 
 cxx/%.exe: cxx/%.cxx
 	-clang++ $(CXX_FLAGS) $< -o $@
