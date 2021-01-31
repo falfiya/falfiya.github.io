@@ -1,6 +1,5 @@
 // example 3 of
 // https://docs.microsoft.com/en-us/windows/console/clearing-the-screen
-#include <conio.h>
 #include <windows.h>
 #include <corecrt_terminate.h>
 
