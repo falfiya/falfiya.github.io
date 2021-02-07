@@ -2,10 +2,10 @@
    "version": "0.2.0",
    "configurations": [
       {
-         "type": "lldb++",
+         "type": "lldb",
          "request": "launch",
-         "name": "Debug",
-         "program": "${workspaceFolder}/cxx/program.exe",
+         "name": "lldb++",
+         "program": "${workspaceFolder}/cxx/${fileBasenameNoExtension}.debug.exe",
          "args": [],
          "cwd": "${workspaceFolder}"
       }

@@ -1,20 +1,19 @@
-C_FLAGS := -Wall
-CXX_FLAGS := \
-	-Wall \
-	-std=c++17
-
 cxx/%.exe: cxx/%.cxx
-	-clang++ $(CXX_FLAGS) $< -o $@
+	-clang++ -std=c++17 -Wall $< -o $@
 
 run~%.cxx: cxx/%.exe
 	@-$<
 
+cxx/%.debug.exe: cxx/%.cxx
+	-clang++ -std=c++17 -Wall -g $< -o $@
+
+debug~%.cxx: cxx/%.debug.exe
+	@-$<
+
 c/%.exe: c/%.c
-	-clang $(C_FLAGS) $< -o $@
+	-clang -Wall $< -o $@
 
 run~%.c: c/%.exe
 	@-$<
-
-clean-cxx:
 
 .SECONDARY:
