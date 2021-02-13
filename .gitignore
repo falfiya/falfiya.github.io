@@ -12,3 +12,5 @@ target/
 *.obj
 *.ilk
 *.pdb
+
+!/clean_artifacts.release.exe

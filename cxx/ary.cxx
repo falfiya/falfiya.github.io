@@ -1,22 +1,17 @@
 #include <new>
-#include <initializer_list>
 #include <utility>
 #include <iterator>
 using namespace std;
 
 using byte_t = char;
 
-template <class T, size_t len_t = 0>
+template <class T, size_t len_t = 1>
 struct ary {
    size_t len;
    T data[len_t];
    constexpr explicit ary() noexcept: len{len_t} {}
    constexpr explicit ary(size_t const len) noexcept: len{len} {}
 
-   /*
-   Would really like homogeneous variadic function parameters:
-   http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1219r2.html
-   */
    template <size_t i, size_t len, class ...Ts>
    static constexpr void init_array(T *array, T &&first, Ts &&...args) noexcept {
       array[i] = first;
