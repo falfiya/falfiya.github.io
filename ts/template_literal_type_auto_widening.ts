@@ -7,6 +7,10 @@ type contact_information_bad<email_t extends email> = `email: ${email_t}`;
 // this should work but it doesn't
 type bad_my_email = contact_information_bad<foobar>
 
+// this should also work but it doesn't
+type contact_information_worse<email_t extends string> = `email ${email_t}`;
+type worse_foobar = contact_information_worse<foobar>;
+
 // this is the best I can figure out now
 type upcast<_T extends U, U> = U;
 type contact_information_ok<email_t extends email> = `email: ${upcast<email_t, string>}`;

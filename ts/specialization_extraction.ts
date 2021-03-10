@@ -1,12 +1,19 @@
 declare const dirent: unique symbol;
-type dirent<S extends string = string> = S & {readonly [dirent]: void};
+type dirent<S extends string> = S & {readonly [dirent]: void};
 
-type user_profile<username extends dirent> =
-   `C:/Users/${unwrap<username>}`;
+const make_dirent = <S extends string>(S: S) => S as dirent<S>;
 
-declare const coalpha: user_profile<"coalpha" & dirent>;
+declare const user_profile: unique symbol;
+type user_profile<username> =
+   & `C:/Users/${username extends dirent<infer S> ? S : never}`
+   & {readonly [user_profile]: void};
 
-// const get_music = <username extends string>(profile: user_profile<username & dirent>) =>
-//    `${profile}/Music` as `${typeof profile}/Music`;
+const make_user_profile = <username>(username: username) =>
+   `C:/Users/${username}` as user_profile<username>;
 
-// const e = get_music(coalpha);
+const coalpha_dirent = make_dirent("coalpha");
+const coalpha_user   = make_user_profile(coalpha_dirent);
+
+if (coalpha_user === "C:/Users/coalpha") {
+   
+}
