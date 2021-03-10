@@ -11,11 +11,5 @@
    },
    "scripts": {
       "start": "http-server"
-   },
-   "dependencies": {
-      "@coalpha/node-sleep": "github:coalpha/node-sleep",
-      "eris": "^0.13.3",
-      "querystring": "^0.2.0",
-      "sync-request": "^6.1.0"
    }
 }
