@@ -118,11 +118,11 @@ type delta_t0 = string & delta; //:: string & delta_t
 
 // These two are equivalent
 type delta_t1 = unwrap_has_a<delta, delta>;       //:: unknown
-type delta_t2 = unwrap_has_a<delta_t0, delta>; //:: unknown
+type delta_t2 = unwrap_has_a<delta_t0, delta>;    //:: unknown
 
 // These two are also equivalent
 type delta_t3 = unwrap_has_a<delta, delta_t>;       //:: string
-type delta_t4 = unwrap_has_a<delta_t0, delta_t>; //:: string
+type delta_t4 = unwrap_has_a<delta_t0, delta_t>;    //:: string
 
 type delta_t5 = "delta_t5" & delta;
 type delta_t6 = unwrap_has_a<delta_t5, delta>; //:: "delta_t5"
