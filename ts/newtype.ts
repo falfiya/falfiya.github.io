@@ -22,43 +22,35 @@ type alpha = string & {readonly [alpha]: unique symbol};
  * It's impossible to unwrap the compile time contained value with this
  * declaration because "alpha" isn't part of the type.
  */
-const alpha_instance0 = "alpha" as alpha; //:: alpha
+const alpha0 = "alpha0" as alpha; //:: alpha
 
 /** This works but it's repetitive */
-const alpha_instance1 = "alpha" as "alpha" & alpha;
+const alpha1 = "alpha1" as "alpha1" & alpha; //:: "alpha1" & {readonly [alpha]: unique symbol}
 
 /**
  * Now we have a factory function to stop the repetition
  * See commit 79ee96a244bef0e25f6c99b5a9f89ca958f40cbf in ts-steam-webapi
  */
 const make_alpha = <val extends string>(val: val) => val as val & alpha;
-/** Functionally the same as alpha_instance1 */
-const alpha_instance2 = make_alpha("alpha");
+/** Functionally the same as alpha1 */
+const alpha2 = make_alpha("alpha2");
 
 /**
  * Learning to unwrap and the importance of unwrapping in the context of
- * template literal types happened a bit later but I'm including it in alpha
- * anyways.
+ * template literal types is happening now but I'm including it in alpha.
  */
 const unwrap_alpha = <val extends string>(alpha: val & alpha) =>
    alpha as val;
-const alpha_instance0_unwrapped = unwrap_alpha(alpha_instance0); //:: string
-const alpha_instance1_unwrapped = unwrap_alpha(alpha_instance1); //:: "alpha"
-const alpha_instance2_unwrapped = unwrap_alpha(alpha_instance2); //:: "alpha"
+const alpha0_unwrapped = unwrap_alpha(alpha0); //:: string
+const alpha1_unwrapped = unwrap_alpha(alpha1); //:: "alpha1"
+const alpha2_unwrapped = unwrap_alpha(alpha2); //:: "alpha2"
 
 /** What about unwrapping at the type level? */
 type unwrap_alpha<A extends alpha> = A extends infer val & alpha ? val : never;
-type alpha_type0 = "alpha" & alpha; //:: "alpha" & {readonly [alpha]: unique symbol;}
-type alpha_type1 = unwrap_alpha<alpha_type0>; //:: "alpha"
+type alpha_t0 = "alpha_t0" & alpha; //:: "alpha_t0" & {readonly [alpha]: unique symbol;}
+type alpha_t1 = unwrap_alpha<alpha_t0>; //:: "alpha_t0"
 
-/** Can we make the unwrap template generic for all types? */
-type unwrap2<child extends base, base> = child extends infer val & base ? val : never;
-type alpha_type2 = unwrap2<alpha_type0, alpha>; //:: "alpha"
-
-/** what about without the second type parameter? */
-type unwrap1<child> = child extends infer T & infer U ? T : never;
-
-
+type alpha_t2 = unwrap_alpha<typeof alpha2>; //:: "alpha2"
 
 /**
  * Changed the return signature of the unique key to void to make the type
@@ -83,15 +75,15 @@ type gamma<val extends string = string> =
 
 /**
  * Both of these two are the same and are functionally equivalent to
- * `alpha_instance0`. This suffers from the exact same issue as
- * `alpha_instance0` since it's impossible to unwrap. Should be made quite
+ * `alpha0`. This suffers from the exact same issue as
+ * `alpha0` since it's impossible to unwrap. Should be made quite
  * clear by the explicit and implicit <string> generic type parameter.
  */
-const gamma_instance0 = "gamma.alpha" as gamma<string>; //:: gamma<string>
-const gamma_instance1 = "gamma.alpha" as gamma;         //:: gamma<string>
+const gamma0 = "gamma0" as gamma<string>; //:: gamma<string>
+const gamma1 = "gamma1" as gamma;         //:: gamma<string>
 
-/** Looking similar yet? This time, we've got `alpha_instance1`. */
-const gamma_instance2 = "gamma.alpha" as gamma<"gamma.alpha">;
+/** Looking similar yet? This time, we've got `alpha1`. */
+const gamma2 = "gamma2" as gamma<"gamma2">;
 
 /**
  * So naturally, we'd solve it in the same way: by making a factory function.
@@ -100,8 +92,7 @@ const gamma_instance2 = "gamma.alpha" as gamma<"gamma.alpha">;
  */
 const make_gamma = <val extends string>(val: val) =>
    val as gamma<val>;
-const gamma_instance3 = make_gamma("gamma.alpha");
-
+const gamma3 = make_gamma("gamma3"); //:: gamma<"gamma3">
 
 /**
  * While labbing in newtype_is_a_has_a.ts, I noticed that you could separate the
@@ -120,14 +111,48 @@ declare const delta: unique symbol;
 type delta_t = {readonly [delta]: void};
 type delta = string & delta_t;
 
+/** Can we make the unwrap template generic for all has-a newtypes? */
+type unwrap_has_a<child extends base, base> = child extends infer val & base ? val : never;
+
+type delta_t0 = string & delta; //:: string & delta_t
+
+// These two are equivalent
+type delta_t1 = unwrap_has_a<delta, delta>;       //:: unknown
+type delta_t2 = unwrap_has_a<delta_t0, delta>; //:: unknown
+
+// These two are also equivalent
+type delta_t3 = unwrap_has_a<delta, delta_t>;       //:: string
+type delta_t4 = unwrap_has_a<delta_t0, delta_t>; //:: string
+
+type delta_t5 = "delta_t5" & delta;
+type delta_t6 = unwrap_has_a<delta_t5, delta>; //:: "delta_t5"
+
 /**
  * So the logical next step would be to combine gamma and delta.
  * epsilon has the same semantics as gamma and therefore will not have examples.
- * Neither delta nor epsilon is strictly better than the other, it's just a
- * matter of preference at this point.
+ * Delta is better than epsilon becauese of the lack of higher kinded types.
  */
 declare const epsilon: unique symbol;
 type epsilon_t = {readonly [delta]: void};
 type epsilon<val extends string = string> = val & delta_t;
 
+/** Borrow gamma's factory function */
+const make_epsilon = <val extends string>(val: val) =>
+   val as epsilon<val>;
 
+const epsilon0 = make_epsilon("epsilon0"); //:: epsilon<"epsilon0">
+type epsilon_t0 = typeof epsilon0; //:: "epsilon0" & delta_t
+
+/** Let's make an unwrap template for epsilon too! */
+type unwrap_epsilon<E extends epsilon> =
+   E extends epsilon<infer val> ? val : never;
+
+type epsilon_t2 = epsilon<"epsilon_t2">;
+type epsilon_t3 = unwrap_epsilon<epsilon_t2>; //:: "epsilon_t2"
+
+/**
+ * Can we make it generic to any is-a newtype?
+ * n o .
+ * No higher kinded types :death: :disapproval: :scringe:
+ */
+// type unwrap_is_a<child, base> = child extends base<infer val> ? val : never;
