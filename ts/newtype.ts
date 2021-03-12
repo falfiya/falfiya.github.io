@@ -107,7 +107,7 @@ const gamma3 = make_gamma("gamma3"); //:: gamma<"gamma3">
  * </tangent>
  */
 declare const delta: unique symbol;
-/** Separate the unique object */
+/** Separate the unique object. Was previously _uo but _t is just easier. */
 type delta_t = {readonly [delta]: void};
 type delta = string & delta_t;
 
@@ -130,7 +130,7 @@ type delta_t6 = unwrap_has_a<delta_t5, delta>; //:: "delta_t5"
 /**
  * So the logical next step would be to combine gamma and delta.
  * epsilon has the same semantics as gamma and therefore will not have examples.
- * Delta is better than epsilon becauese of the lack of higher kinded types.
+ * Delta is better than epsilon because of the lack of higher kinded types.
  */
 declare const epsilon: unique symbol;
 type epsilon_t = {readonly [delta]: void};
@@ -156,3 +156,60 @@ type epsilon_t3 = unwrap_epsilon<epsilon_t2>; //:: "epsilon_t2"
  * No higher kinded types :death: :disapproval: :scringe:
  */
 // type unwrap_is_a<child, base> = child extends base<infer val> ? val : never;
+
+/**
+ * Now that we know that composition using & rather than <> is better, Has-A is
+ * better than Is-A, let's continue work on delta. In ts-steam-webapi, I noticed
+ * that numerals.ts didn't have readonly next to the unique key. It's actually
+ * perfectly fine to omit it since the user will never be able to access it to
+ * change it anyways. A new idea that came to me in unwrap1.ts here also means
+ * that it's possible to make one argument unwrap for any newtype that obeys
+ * this format. For this example, let's assume there are two types of zeta that
+ * Have-A string and are mutually exclusive to each other.
+ */
+declare const zeta: unique symbol;
+
+declare const unique_object: unique symbol;
+type unique_object<T = unknown> = {[unique_object]: T};
+
+/**
+ * Although it would be nice to do this, currently, a type alias can only refer
+ * to itself within a property.
+ */
+//type zeta_one_t = {[zeta]: "zeta_one"} & unique_object<zeta_one_t>;
+
+type zeta_one_t = {[zeta]: "zeta_one", [unique_object]: zeta_one_t};
+type zeta_one   = string & zeta_one_t;
+
+const make_zeta_one = <val extends string>(val: val) =>
+   val as val & zeta_one;
+
+const zeta_one0 = make_zeta_one("zeta_one0");
+declare const zeta_one_unknown: zeta_one;
+
+type zeta_two_t = {[zeta]: "zeta_two", [unique_object]: zeta_two_t};
+type zeta_two   = string & zeta_two_t;
+
+const make_zeta_two = <val extends string>(val: val) =>
+   val as val & zeta_two;
+
+const zeta_two0 = make_zeta_two("zeta_two0");
+declare const zeta_two_unknown: zeta_two;
+
+type unwrap<T extends {[unique_object]: unknown}> =
+   T extends infer val & T[typeof unique_object] ? val : never;
+
+type zeta_one0_t = unwrap<typeof zeta_one0>; //:: "zeta_one0"
+type zeta_two0_t = unwrap<typeof zeta_two0>; //:: "zeta_two0"
+
+type zeta_one_unknown_t = unwrap<typeof zeta_one_unknown>;
+type zeta_two_unknown_t = unwrap<typeof zeta_two_unknown>;
+
+/**
+ * As expected, this gives the never type...
+ * ```ts
+ * "zeta_one" & "zeta_two" //:: never
+ * {[zeta]: "zeta_one" & "zeta_two"}; //:: never
+ * ```
+ */
+type zeta_never = "zeta_never" & zeta_one & zeta_two; //:: never
