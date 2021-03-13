@@ -178,7 +178,7 @@ type unique_object<T = unknown> = {[unique_object]: T};
  */
 //type zeta_one_t = {[zeta]: "zeta_one"} & unique_object<zeta_one_t>;
 
-type zeta_one_t = {[zeta]: "zeta_one", [unique_object]: zeta_one_t};
+type zeta_one_t = {[zeta]: "zeta_one"; [unique_object]: zeta_one_t};
 type zeta_one   = string & zeta_one_t;
 
 const make_zeta_one = <val extends string>(val: val) =>
@@ -187,7 +187,7 @@ const make_zeta_one = <val extends string>(val: val) =>
 const zeta_one0 = make_zeta_one("zeta_one0");
 declare const zeta_one_unknown: zeta_one;
 
-type zeta_two_t = {[zeta]: "zeta_two", [unique_object]: zeta_two_t};
+type zeta_two_t = {[zeta]: "zeta_two"; [unique_object]: zeta_two_t};
 type zeta_two   = string & zeta_two_t;
 
 const make_zeta_two = <val extends string>(val: val) =>
