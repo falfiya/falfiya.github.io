@@ -213,3 +213,26 @@ type zeta_two_unknown_t = unwrap<typeof zeta_two_unknown>;
  * ```
  */
 type zeta_never = "zeta_never" & zeta_one & zeta_two; //:: never
+
+/**
+ * Brain moment: you can probably still infer T & T[unique_object] on epsilon
+ * newtypes since they're not actually Is-A. They're just a different way to
+ * write Has-A. They can be useful in reducing type duplication. We can use
+ * zeta's improvements as a base.
+ */
+declare const eta: unique symbol;
+
+type eta_t = {
+   [eta]: void;
+   [unique_object]: eta_t;
+};
+type eta<val extends string = string> = `eta: ${val}` & eta_t;
+
+const make_eta = <val extends string>(val: val) =>
+   `eta: ${val}` as eta<val>;
+
+const eta_zero = make_eta("zero");
+declare const eta_unknown: eta;
+
+type eta_zero_t    = unwrap<typeof eta_zero>;    //:: "eta: zero"
+type eta_unknown_t = unwrap<typeof eta_unknown>; //:: `eta: ${string}`
