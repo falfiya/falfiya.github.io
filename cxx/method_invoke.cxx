@@ -1,14 +1,23 @@
-#include <string>
 #include <iostream>
 using namespace std;
+using str = char const *;
 
-struct Suffering {
-   string why = "life";
-   void say_why() { cout << this->why; }
+struct Alpha {
+   str name;
+   constexpr explicit Alpha(str name): name{name} {};
+   void say_name() const noexcept { cout << "Alpha " << this->name << '\n'; }
+};
+
+struct Beta: public Alpha {
+   using Alpha::Alpha;
+   void say_name() const noexcept { cout << "Beta " << this->name << '\n'; };
 };
 
 int main() {
-   Suffering contest;
-   // why can you call methods like this
-   contest.Suffering::say_why();
+   Beta my_name{"coalpha"};
+   // discovered while explaining virtual functions to marcus
+   // very cursed but sometimes useful like this
+   my_name.Alpha::say_name();
+   my_name.Beta::say_name();
+   my_name.say_name();
 }
