@@ -1,1 +1,3 @@
 -Wall
+-Wextra
+-fuse-ld=lld

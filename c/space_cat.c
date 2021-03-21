@@ -42,5 +42,10 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+	size_t last = size - 1;
+	if (buf[last] == '\n') {
+		buf[last] = '\0';
+	}
+
 	_fwrite_nolock(buf, sizeof(char), size, stdout);
 }
