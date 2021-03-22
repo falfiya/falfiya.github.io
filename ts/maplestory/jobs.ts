@@ -1,12 +1,3 @@
-type msavatar = "https://msavatar1.nexon.net";
-
-type worlds =
-   | {id:  0; key: "scania";      name: "Scania"}
-   | {id:  1; key: "bera";        name: "Bera"}
-   | {id: 17; key: "aurora";      name: "Aurora"}
-   | {id: 18; key: "elysium";     name: "Elysium"}
-   | {id: 45; key: "reboot-(na)"; name: "Reboot (NA)"};
-
 type jobs = {
    1: "Warrior";​
    2: "Magician";​
@@ -94,37 +85,4 @@ type jobs = {
    14213: "Kinesis";
 }
 
-type response<
-   character_name extends string,
-   world extends worlds,
-   job_id extends keyof jobs,
-> = {
-   Rank: number;
-   CharacterImgUrl: `${msavatar}/Character/${string}.png`;
-   PetImgUrl: `${msavatar}/Character/${string}.png`;
-   WorldName: world["name"];
-   JobName: jobs[job_id];
-   IsSearchTarget: boolean;
-   TimeSum: number;
-   Stage: number;
-   StarSum: number;
-   LegionLevel: number;
-   RaidPower: number;
-   GuildName: string | null;
-   AccountId: null;
-   Score: null | unknown;
-   CombatPower: null | unknown;
-   MatchSN: null | unknown;
-   Percentile: null | unknown;
-   SeasonNo: number;
-   CharacterID: 0;
-   CharacterName: character_name;
-   Exp: number;
-   Gap: number;
-   JobDetail: number;
-   JobID: job_id;
-   Level: number;
-   StartRank: number;
-   TransferStatus: number;
-   WorldId: world["id"];
-};
+export default jobs;
