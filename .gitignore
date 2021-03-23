@@ -7,6 +7,7 @@ target/
 .fake/
 
 *.exe
+*.elf
 *.class
 *.o
 *.obj

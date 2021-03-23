@@ -1,3 +1,4 @@
 -Wall
 -Wextra
+-pedantic
 -fuse-ld=lld

@@ -1,13 +1,19 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdint.h>
 #include <stdio.h>
 #include <malloc.h>
+#include <errno.h>
 
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#ifdef _WIN32
+#define fileno _fileno
+#endif
+
 inline size_t file_size(FILE *f) {
 	struct stat stats;
-	fstat(_fileno(f), &stats);
+	fstat(fileno(f), &stats);
 	return stats.st_size;
 }
 
@@ -19,11 +25,10 @@ int main(int argc, char *argv[]) {
 
 	argv++;
 
-	FILE *txt;
-	errno_t err = fopen_s(&txt, argv[0], "r");
-	if (err) {
+	FILE *txt = fopen(argv[0], "r");
+	if (txt == NULL) {
 		fprintf(stderr, "Unable to open %s\n", argv[0]);
-		return err;
+		return errno;
 	}
 
 	size_t size = file_size(txt);
@@ -34,7 +39,7 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	_fread_nolock(buf, sizeof(char), size, txt);
+	fread(buf, sizeof(char), size, txt);
 
 	for (size_t i = 0; i < size; ++i) {
 		if (buf[i] == '\n') {
@@ -47,5 +52,5 @@ int main(int argc, char *argv[]) {
 		buf[last] = '\0';
 	}
 
-	_fwrite_nolock(buf, sizeof(char), size, stdout);
+	fwrite(buf, sizeof(char), size, stdout);
 }
