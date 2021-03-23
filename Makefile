@@ -5,62 +5,81 @@ else
 	exe := elf
 endif
 
-space_cat.$(elf): c/space_cat.c
+.SECONDARY:
+
+space_cat.$(exe): c/space_cat.c
 	clang $< -Wall -Wextra -Ofast -fuse-ld=lld -o $@
 
 # c
-c_flags  := $(shell space_cat.$(elf) c/compile_flags.txt)
+c_flags  := $(shell space_cat.$(exe) c/compile_flags.txt)
 c_dflags := -g
 c_rflags := -O2
 
 ## base
-c/%.$(elf): c/%.c
+c/%.$(exe): c/%.c
 	-clang $< $(c_flags) -o $@
 
-run~%.c: c/%.$(elf)
+run~%.c: c/%.$(exe)
 	@-$<
 
 ## debug
-c/%.debug.$(elf): c/%.c
+c/%.debug.$(exe): c/%.c
 	-clang $< $(c_flags) $(c_dflags) -o $@
 
-debug~%.c: c/%.debug.$(elf)
+debug~%.c: c/%.debug.$(exe)
 	-
 
 ## release
-c/%.release.$(elf): c/%.c
+c/%.release.$(exe): c/%.c
 	-clang $< $(c_flags) $(c_rflags) -o $@
 
-release~%.c: c/%.release.$(elf)
+release~%.c: c/%.release.$(exe)
 	-
 
 # cxx
-cxx_flags  := $(shell space_cat.$(elf) cxx/compile_flags.txt)
+cxx_flags  := $(shell space_cat.$(exe) cxx/compile_flags.txt)
 cxx_dflags := -g
 cxx_rflags := -O2
 
 ## base
-cxx/%.$(elf): cxx/%.cxx
-	-clang++ $< $(cxx_flags) -o $@
+cxx_base = clang++ $< $(cxx_flags) -o $@
 
-run~%.cxx: cxx/%.$(elf)
+cxx/%.$(exe): cxx/%.cxx
+	-$(cxx_base)
+
+run~%.cxx: cxx/%.$(exe)
 	@-$<
 
 ## debug
-cxx/%.debug.$(elf): cxx/%.cxx
-	-clang++ $< $(cxx_flags) $(cxx_dflags) -o $@
+cxx_debug = clang++ $< $(cxx_flags) $(cxx_dflags) -o $@
 
-debug~%.cxx: cxx/%.debug.$(elf)
+cxx/%.debug.$(exe): cxx/%.cxx
+	-$(cxx_debug)
+
+debug~%.cxx: cxx/%.debug.$(exe)
 	-
 
 ## release
-cxx/%.release.$(elf): cxx/%.cxx
-	-clang++ $< $(cxx_flags) $(cxx_rflags) -o $@
+cxx_release = clang++ $< $(cxx_flags) $(cxx_rflags) -o $@
+cxx/%.release.$(exe): cxx/%.cxx
+	-$(cxx_release)
 
-release~%.cxx: cxx/%.release.$(elf)
+release~%.cxx: cxx/%.release.$(exe)
 	-
 
 clean-artifacts: run~clean_artifacts.cxx
 	-
 
-.SECONDARY:
+### cxx_weekly
+
+.SECONDEXPANSION:
+
+cxx/weekly/%.$(exe): cxx/weekly/%.cxx
+	-$(cxx_base)
+
+num_to_exe = $(patsubst %.cxx,%.$(exe),$(wildcard cxx/weekly/*$(1).*.cxx))
+
+cxx_weekly~%: $$(call num_to_exe,%)
+	@-$<
+
+.PHONY: cxx_weekly~%
