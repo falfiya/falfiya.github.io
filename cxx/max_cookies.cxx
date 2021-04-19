@@ -13,5 +13,5 @@ constexpr size_t example() noexcept {
 }
 
 int main() noexcept {
-   size_t const res{example()};
+   size_t 
 }
