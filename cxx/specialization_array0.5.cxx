@@ -1,4 +1,3 @@
-// the best way to declare arrays
 #include <string>
 #include <iostream>
 using namespace std;
@@ -11,14 +10,14 @@ template<> string hello<2> = "world";
 template<> string hello<3> = "!";
 template<> string hello<4> = "\n";
 
-template<int i, int max>
+template<int i>
 void loop() {
-   cout << hello<i>;
-   if constexpr (i <= max) {
-      loop<i + 1, max>();
+   if constexpr (i >= 0) {
+      loop<i - 1>();
    }
+   cout << hello<i>;
 }
 
 int main() {
-   loop<0, 4>();
+   loop<4>();
 }
