@@ -6,5 +6,6 @@
 
    <ItemGroup>
       <Compile Include="index.fs"/>
+      <Compile Include="idk.fs"/>
    </ItemGroup>
  </Project>
