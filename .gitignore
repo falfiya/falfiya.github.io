@@ -5,6 +5,7 @@ obj/
 target/
 .ionide/
 .fake/
+__pycache__/
 
 *.exe
 *.elf
