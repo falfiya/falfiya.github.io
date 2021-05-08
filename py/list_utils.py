@@ -1,13 +1,13 @@
 from typing import *
 
-def label(lst: list, lbls: Dict[int, str]) -> str:
+def label(lst: list, labels: Dict[int, str]) -> str:
    output = ""
 
    # list opens up with a `[`
    chrs_balance = 1
    for i in range(len(lst)):
       chrs_balance += len(repr(lst[i]))
-      label = lbls.get(i) or ""
+      label = labels.get(i) or ""
 
       if chrs_balance - len(label) < 0:
          # label is too long
