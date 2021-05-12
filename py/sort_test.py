@@ -9,13 +9,13 @@ def is_sorted(lst: List[T]) -> bool:
    copy.sort()
    return lst == copy
 
-from merge_sort_in_place_ii import merge_sort_ii
+from merge_sort_in_place_iii import merge_sort_iii
 import output
 
 for case in test_cases:
    copy = case[:]
    output.buffer()
-   merge_sort_ii(copy)
+   merge_sort_iii(copy)
    if is_sorted(copy):
       output.close()
       print(f"OK {case}")
