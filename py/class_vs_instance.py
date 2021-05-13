@@ -29,6 +29,7 @@ clazz1 = Clazz("clazz1")
 print(clazz1.str())
 
 Clazz.str_attr = "str_attr new"
+Clazz.lst_attr.append("Clazz")
 print(f"""\
 Clazz:
    {Clazz.str_attr = }
@@ -37,3 +38,12 @@ Clazz:
 """)
 
 print(clazz1.str(), end = "")
+
+print(f"{Clazz.str_attr is clazz1.str_attr = }")
+
+clazz1.str_attr = Clazz.str_attr
+
+a = "hello"
+b = a
+
+print(a is b)

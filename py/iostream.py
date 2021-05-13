@@ -8,9 +8,8 @@ def endl(ostream):
    ostream.file.flush()
 
 class basic_ostream:
-   file: io.TextIOBase
    def __init__(self, file: io.TextIOBase):
-      self.file = file
+      self.file: io.TextIOBase = file
 
    def __lshift__(self, val) -> basic_ostream:
       if val is endl:
