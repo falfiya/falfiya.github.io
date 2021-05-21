@@ -10,7 +10,7 @@ def is_sorted(lst: List[T]) -> bool:
    return lst == copy
 
 import output
-from merge_sort_in_place.ii import merge_sort_ii
+from merge_sort_in_place.merge_sort_ii import merge_sort_ii
 
 for case in test_cases:
    copy = case[:]
