@@ -11,10 +11,13 @@ def merge_i(data: list):
    # compare heads
    l = 0
    r = halfway
-   l_counter = 0
 
-   with Logger(f"merge_sort({data[:halfway]}|{data[halfway:]})") as L:
+   with Logger(f"merge({data[:halfway]}|{data[halfway:]})") as L:
       while True:
+         L(label(data, {i: 'v'}))
+         L(repr(data))
+         L(label(data, {l: 'l', r: 'r'}))
+
          if r == len(data):
             L("r has used up all indecies")
             break
@@ -22,10 +25,6 @@ def merge_i(data: list):
             L("l has used up all indecies")
             break
 
-         L(f"{l_counter = }")
-         L(label(data, {i: 'v'}))
-         L(repr(data))
-         L(label(data, {l: 'l', r: 'r'}))
          if data[r] < data[l]:
             L("swap i and r")
             swap(data, i, r)
