@@ -1,5 +1,3 @@
-// partial credit to TheWover
-// https://gist.github.com/TheWover/c7804fd541f5e458151220e5ab15bcf5
 #define WIN32_LEAN_AND_MEAN
 #include <winternl.h>
 #include <stdio.h>

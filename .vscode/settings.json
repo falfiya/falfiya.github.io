@@ -1,4 +1,7 @@
 {
    "java.configuration.updateBuildConfiguration": "automatic",
-   "python.analysis.extraPaths": ["./py"],
+   "python.analysis.extraPaths": [
+      "./py"
+   ],
+   "python.formatting.provider": "black",
 }
