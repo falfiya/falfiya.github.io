@@ -1,5 +1,4 @@
 from __future__ import annotations
-import enum
 from inspect import signature, Parameter
 from typing import *
 
@@ -18,6 +17,9 @@ class arg(param):
       self.ps  = param.ps
       self.kw  = param.kw
       self.val = val
+
+   def __repr__(self):
+      return f"repr{{{self.ps = } {self.kw = } {self.val = }}}"
 
 def curry(fn: Callable) -> curried:
    i = 0
@@ -42,22 +44,23 @@ def curry(fn: Callable) -> curried:
 
    return curried(fn, i, params)
 
-placeholder = object()
+__ = object()
 
-class curried:
+class curried(Callable):
    def __init__(self, fn: Callable, psargs_len: int, params: list[param], args: list[arg] = []):
       self.fn = fn
       self.params = params
       self.psargs_len = psargs_len
       self.args = args
 
+   # curry functionality
    def __call__(self, *psargs, **kwargs):
       new_params = self.params[:]
       new_args   = self.args[:]
 
       i = 0
       for psarg in psargs:
-         if psarg is placeholder:
+         if psarg is __:
             i += 1
             continue
 
@@ -65,7 +68,7 @@ class curried:
          plen = len(new_params)
          found_param = False
          while j < plen:
-            if new_params[j].kw is not None:
+            if new_params[j].ps is not None:
                found_param = True
                new_args.append(arg(new_params.pop(j), psarg))
                break
@@ -75,9 +78,19 @@ class curried:
             continue
          raise TypeError("Too many positional arguments!")
 
-      for _, kwarg in kwargs:
-         if kwarg is placeholder:
+      for name, kwarg in kwargs.items():
+         if kwarg is __:
             raise TypeError("Placeholder in keyword argument not allowed!")
+
+         found_param = False
+         for j, param in enumerate(new_params):
+            if param.kw == name:
+               found_param = True
+               new_args.append(arg(new_params.pop(j), kwarg))
+               break
+
+         if not found_param:
+            raise TypeError(f"Unexpected keyword argument '{kwarg}'")
 
       if len(new_params) == 0:
          re_psargs = [None]*self.psargs_len
@@ -91,10 +104,7 @@ class curried:
       else:
          return curried(self.fn, self.psargs_len, new_params, new_args)
 
-def add(a, b):
-   print(f"{a}, {b}")
-   return a + b
-
-add = curry(add)
-
-print(add(placeholder, 3)(9))
+   def __rshift__(self, other: Callable):
+      def piped(*psargs, **kwargs):
+         return other(self.fn(*psargs, **kwargs))
+      return curried(piped, self.psargs_len, self.params, self.args)
