@@ -1,59 +1,81 @@
+from types import MethodType
+from typing import *
 import operator as op
 
+T = TypeVar('T')
+
 class imut:
-   def __init__(self, val):
-      def get_val():
+   def __new__(cls, val):
+      if isinstance(val, imut):
          return val
-      self.val = get_val
+      return object.__new__(cls)
+
+   def __init__(self, val):
+      def get_val(self):
+         return val
+      self.get_val = MethodType(get_val, self)
       # operator overloads
-      self.__lt__ = lambda o: op.lt(val, o)
-      self.__le__ = lambda o: op.le(val, o)
-      self.__eq__ = lambda o: op.eq(val, o)
-      self.__ne__ = lambda o: op.eq(val, o)
-      self.__ge__ = lambda o: op.ge(val, o)
-      self.__gt__ = lambda o: op.gt(val, o)
 
-      self.__or__ = lambda o: op.or_(val, o)
+   def binop_wrap(fn: T) -> T:
+      def wrapped(self, o):
+         val = self.get_val()
+         if isinstance(o, imut):
+            return fn(val, o.get_val())
+         else:
+            return fn(val, o)
+      return wrapped
 
-      self.__not__ = lambda o: op.not_(val, o)
-      self.__abs__ = lambda o: op.abs (val, o)
-      self.__add__ = lambda o: op.and_(val, o)
-      self.__mod__ = lambda o: op.mod (val, o)
-      self.__mul__ = lambda o: op.mul (val, o)
-      self.__sub__ = lambda o: op.sub (val, o)
-      self.__xor__ = lambda o: op.xor (val, o)
+   __lt__ = binop_wrap(op.lt)
+   __le__ = binop_wrap(op.le)
+   __eq__ = binop_wrap(op.eq)
+   __ne__ = binop_wrap(op.eq)
+   __ge__ = binop_wrap(op.ge)
+   __gt__ = binop_wrap(op.gt)
 
-      self.__matmul__ = lambda o: op.matmul  (val, o)
-      self.__truediv__ = lambda o: op.truediv (val, o)
-      self.__floordiv__ = lambda o: op.floordiv(val, o)
+   __or__  = binop_wrap(op.or_ )
 
-      self.__neg__ = lambda: op.neg(val)
-      self.__pos__ = lambda: op.pos(val)
-      self.__pow__ = lambda: op.pow(val)
+   __not__ = binop_wrap(op.not_)
+   __add__ = binop_wrap(op.and_)
+   __abs__ = binop_wrap(op.abs )
+   __mod__ = binop_wrap(op.mod )
+   __mul__ = binop_wrap(op.mul )
+   __sub__ = binop_wrap(op.sub )
+   __xor__ = binop_wrap(op.xor )
+   __pow__ = binop_wrap(op.pow )
 
-      self.__index__ = lambda: op.index(val)
-      self.__invert__ = lambda: op.invert(val)
+   __lshift__ = binop_wrap(op.lshift)
+   __rshift__ = binop_wrap(op.rshift)
 
-      self.__lshift__ = lambda o: op.lshift(val, o)
-      self.__rshift__ = lambda o: op.rshift(val, o)
+   __matmul__ = binop_wrap(op.matmul)
+   __truediv__ = binop_wrap(op.truediv)
+   __floordiv__ = binop_wrap(op.floordiv)
 
-      # other stuff
-      self.__str__ = lambda: str(val)
-      self.__repr__ = lambda: repr(val)
+   def __neg__(self): return -self.get_val()
+   def __pos__(self): return +self.get_val()
 
-      self.__bool__ = lambda: bool(val)
-      self.__hash__ = lambda: hash(val)
+   def __index__(self): return self.get_val().__index__()
+   def __invert__(self): return ~self.get_val()
 
-      self.__bytes__ = lambda: bytes(val)
-      self.__format__ = lambda: format(val)
+   def __str__(self): return str(self.get_val())
+   def __repr__(self): return repr(self.get_val())
 
-      def getattr_(name: str):
-         return getattr(val, name)
-      self.__getattr__ = getattr_
-      def setattr_(name: str, value: Any):
-         setattr(val, name, value)
-      self.__setattr__ = setattr_
-      def delattr_(val, name):
-         delattr(val, name)
-      self.__delattr__ = delattr_
-      self.__dir__ = lambda: dir(val)
+   def __bool__(self): return bool(self.get_val())
+   def __hash__(self): return hash(self.get_val())
+
+   def __bytes__(self): return bytes(self.get_val())
+   def __format__(self): return format(self.get_val())
+
+   def __getattr__(self, name: str):
+      return getattr(self.get_val(), name)
+
+   def __setattr__(self, name: str, value: Any):
+      if name == get_val
+      setattr(self.get_val(), name, value)
+
+   def __delattr__(self, name):
+      delattr(self.get_val(), name)
+
+   def __dir__(self): return dir(self.get_val())
+
+b = imut(1) + imut(2)
+print(b)
