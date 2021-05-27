@@ -44,7 +44,10 @@ def curry(fn: Callable) -> curried:
 
    return curried(fn, i, params)
 
-__ = object()
+class placeholder:
+   pass
+
+__ = placeholder()
 
 class curried(Callable):
    def __init__(self, fn: Callable, psargs_len: int, params: list[param], args: list[arg] = []):
@@ -104,7 +107,7 @@ class curried(Callable):
       else:
          return curried(self.fn, self.psargs_len, new_params, new_args)
 
-   def __rshift__(self, other: Callable):
+   def __matmul__(self, other: Callable):
       def piped(*psargs, **kwargs):
          return other(self.fn(*psargs, **kwargs))
       return curried(piped, self.psargs_len, self.params, self.args)
