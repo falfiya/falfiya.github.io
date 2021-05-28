@@ -94,7 +94,8 @@ class fsharped(Generic[T]):
    def __getitem__(self, key):
       return self.__val__[key]
 
-   def __rshift__(self, fn: Callable[[T], V]) -> fsharped[V]:
+   # apply
+   def __matmul__(self, fn: Callable[[T], V]) -> fsharped[V]:
       return fsharped.make(fn(self.__val__))
 
    def __call__(self, *psargs, **kwargs):

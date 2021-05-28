@@ -107,7 +107,7 @@ class curried(Callable):
       else:
          return curried(self.fn, self.psargs_len, new_params, new_args)
 
-   def __matmul__(self, other: Callable):
+   def __rshift__(self, other: Callable):
       def piped(*psargs, **kwargs):
          return other(self.fn(*psargs, **kwargs))
       return curried(piped, self.psargs_len, self.params, self.args)
