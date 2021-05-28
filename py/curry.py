@@ -34,12 +34,12 @@ def curry(fn: Callable) -> curried:
          i += 1
          continue
 
-      if p.kind is Parameter.POSITIONAL_OR_KEYWORD:
+      if p.kind == Parameter.POSITIONAL_OR_KEYWORD:
          params.append(param(ps = i, kw = name))
          i += 1
          continue
 
-      if p.kind in Parameter.KEYWORD_ONLY:
+      if p.kind == Parameter.KEYWORD_ONLY:
          params.append(param(kw = name))
 
    return curried(fn, i, params)
