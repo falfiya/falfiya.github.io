@@ -1,35 +1,23 @@
-// specialization array using SFINAE
+#include <string>
 #include <iostream>
 using namespace std;
-#define string static constexpr const char *
 
-// https://stackoverflow.com/a/257382
-template <class T>
-struct has_str {
-   template <class U>
-   static char _has_str(decltype(&U::str));
-   template <class U>
-   static short _has_str(...);
-   enum {
-      value = sizeof(_has_str<T>(0)) == sizeof(char)
-   };
-};
+template<int i> string hello;
 
-template<int i = 0> struct greeting {};
+template<> string hello<0> = "hello";
+template<> string hello<1> = ", ";
+template<> string hello<2> = "world";
+template<> string hello<3> = "!";
+template<> string hello<4> = "\n";
 
-template<> struct greeting<0> { string str{"Hello"}; };
-template<> struct greeting<1> { string str{", "}; };
-template<> struct greeting<2> { string str{"world"}; };
-template<> struct greeting<3> { string str{"!\n"}; };
-
-template <int i = 0>
-constexpr inline void loop() {
-   if constexpr (has_str<greeting<i>>::value) {
-      cout << greeting<i>::str;
-      loop<i + 1>();
+template<int i>
+void loop() {
+   if constexpr (i >= 0) {
+      loop<i - 1>();
    }
+   cout << hello<i>;
 }
 
 int main() {
-   loop();
+   loop<4>();
 }
