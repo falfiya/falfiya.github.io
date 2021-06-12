@@ -1,5 +1,5 @@
-from tkinter import *
-from random import *
+from tkinter import*
+from random import*
 r=Tk()
 r.title("choas game")
 W=600
