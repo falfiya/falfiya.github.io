@@ -41,6 +41,7 @@ class dumb_linear_hashtable(Generic[T]):
             return B.element.val
 
          i += 1
+         i %= self.size
          if i == b:
             return None
 
@@ -61,6 +62,7 @@ class dumb_linear_hashtable(Generic[T]):
             return
 
          i += 1
+         i %= self.size
          if i == b:
             raise ValueError("Not enough room for the new element!")
 
@@ -78,6 +80,7 @@ class dumb_linear_hashtable(Generic[T]):
             return val
 
          i += 1
+         i %= self.size
          if i == b:
             return None
 

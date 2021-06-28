@@ -15,13 +15,10 @@ def dispatch_for(fn_name: str):
       in_types = [reconstruct_type(t) for t in args_in]
 
       for candidate in __multiple_dispatch__[fn_name]:
-         print(f"try {candidate.sig}")
          for i in range(0, argc):
             if not is_convertible(in_types[i], candidate.sig[i]):
-               print(f"{in_types[i]} is not convertable to {candidate.sig[i]}")
                break
          else:
-            print("found")
             return candidate.fn(*args_in)
 
       raise TypeError(f"No matching function for {fn_name}({in_types})")

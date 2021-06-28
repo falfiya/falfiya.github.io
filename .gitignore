@@ -6,6 +6,7 @@ target/
 .ionide/
 .fake/
 __pycache__/
+zig-cache/
 
 *.exe
 *.elf

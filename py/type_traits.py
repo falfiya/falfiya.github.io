@@ -74,9 +74,8 @@ def widen_union(u: Union[T]):
          wide_ts.append(t)
    return Union[tuple(wide_ts)]
 
-
 def is_convertible(From: type[T], To: type[U]) -> bool:
-   if To is Any:
+   if To is Any or To is object:
       return True
 
    if From == To:
@@ -88,54 +87,95 @@ def is_convertible(From: type[T], To: type[U]) -> bool:
    to_o   = get_origin(To)
 
    if from_o == To:
-      # T[int] -> T
+      # From: T[...?] -> To: T
+      # where 
       return True
 
    if from_o is Union:
-      for t in get_args(From):
-         if not is_convertible(t, To):
+      # From: Union -> To: T
+      #
+      # Can convert if every element within the union is convertable to T.
+      #
+      # Side note:
+      # From: Union -> To: Union
+      #
+      # is not as simple as checking if from is a subset of to, unlike literals.
+      # Unions always have non-primitives in them which means that each element
+      # in From must be convertable to at least one element within To.
+      for f in get_args(From):
+         if not is_convertible(f, To):
             return False
       return True
 
    if to_o is Union:
+      # From: T -> To: Union
+      # where T is not Union
+      #
+      # Convertable if From is convertable to at least one element in To
       for t in get_args(To):
          if is_convertible(From, t):
             return True
       return False
 
-   if from_o is Literal:
-      # Literal[1, 2, 3...] -> int
-      # This for loop will always run once because
-      # Literal[must have something here]
-      for l in get_args(From):
-         if not is_convertible(type(l), To):
-            return False
-      return True
-
    if to_o is Literal:
-      # Literal[1] -> Literal[1, 2, 3...]
-      for l in get_args(To):
-         if not is_convertible(From, type(l)):
+      # From: T -> To: Literal
+      # where T is not Union
+      if from_o is Literal:
+         # From: Literal -> To: Literal
+         #
+         # for example:
+         # Literal[1, 2] -> Literal[1, 2, 3]
+         # {1, 2} is a subset of {1, 2, 3}
+         return {*get_args(From)}.issubset({*get_args(To)})
+      else:
+         # From: T -> To: Literal
+         # where T is not Union
+         # where T is not Literal
+         #
+         # There are no cases where T would be convertable to a literal type.
+         # int -> Literal[1, 2, 3]?
+         return False
+
+   if from_o is Literal:
+      # From: Literal -> To: T
+      # where T is not Union
+      # where T is not Literal
+      #
+      # Convertable
+      # where T may be int
+      # where T may be float
+      # where T may be bool
+      # where T may be str
+      #
+      # for example:
+      # Literal[1] -> int
+      # Literal["hello"] -> str
+      for l in get_args(From):
+         if not isinstance(l, To):
             return False
       return True
 
+   # It would be a really silly idea to try to match generic type arguments if
+   # either From or To weren't generic.
    if from_o is None:
       return False
    if to_o is None:
       return False
 
    if from_o == to_o:
-      # T[int, str] -> T[int, str | float]
+      # From: T[...A] -> To: T[...B]
+      #
+      # for example:
+      # dict[str, int] -> dict[str, int | float]
       from_args = get_args(From)
       to_args   = get_args(To)
 
       if len(from_args) != len(to_args):
          return False
 
-      for i in range(0, len(from_args)):
-         if not is_convertible(from_args[i], to_args[i]):
+      for (f, t) in zip(from_args, to_args):
+         if not is_convertible(f, t):
             return False
-
       return True
 
    return False

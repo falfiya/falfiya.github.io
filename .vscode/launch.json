@@ -2,6 +2,13 @@
    "version": "0.2.0",
    "configurations": [
       {
+         "name": "snake!",
+         "type": "python",
+         "request": "launch",
+         "program": "${file}",
+         "console": "integratedTerminal"
+      },
+      {
          "type": "lldb",
          "request": "launch",
          "name": "lldb++",
