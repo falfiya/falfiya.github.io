@@ -28,7 +28,7 @@ def reconstruct_type(it: T) -> type[T]:
       for val in it:
          val_ts.append(reconstruct_type(val))
       return list[Union[tuple(val_ts)]]
- 
+
    if t is set:
       val_ts = []
       for val in it:
@@ -91,6 +91,30 @@ def is_convertible(From: type[T], To: type[U]) -> bool:
       # where 
       return True
 
+   if from_o is Literal:
+      # From: Literal -> To: T
+      if to_o is Literal:
+         # From: Literal -> To: Literal
+         #
+         # for example:
+         # Literal[1, 2] -> Literal[1, 2, 3]
+         # {1, 2} is a subset of {1, 2, 3}
+         return {*get_args(From)}.issubset({*get_args(To)})
+      else:
+         # From: Literal -> To: T
+         # where T is not Literal
+         args = get_args(From)
+         if len(args) == 1:
+            # From: Literal[A] -> To: T
+            # where T is not Literal
+            #
+            # Convertable
+            # where A's class is convertable to T
+            return is_convertible(args[0].__class__, To)
+         else:
+            # From: Literal[...?] -> To: T
+            return is_convertible(Union[tuple(Literal[l] for l in args)], To)
+
    if from_o is Union:
       # From: Union -> To: T
       #
@@ -119,41 +143,12 @@ def is_convertible(From: type[T], To: type[U]) -> bool:
 
    if to_o is Literal:
       # From: T -> To: Literal
-      # where T is not Union
-      if from_o is Literal:
-         # From: Literal -> To: Literal
-         #
-         # for example:
-         # Literal[1, 2] -> Literal[1, 2, 3]
-         # {1, 2} is a subset of {1, 2, 3}
-         return {*get_args(From)}.issubset({*get_args(To)})
-      else:
-         # From: T -> To: Literal
-         # where T is not Union
-         # where T is not Literal
-         #
-         # There are no cases where T would be convertable to a literal type.
-         # int -> Literal[1, 2, 3]?
-         return False
-
-   if from_o is Literal:
-      # From: Literal -> To: T
-      # where T is not Union
       # where T is not Literal
+      # where T is not Union
       #
-      # Convertable
-      # where T may be int
-      # where T may be float
-      # where T may be bool
-      # where T may be str
-      #
-      # for example:
-      # Literal[1] -> int
-      # Literal["hello"] -> str
-      for l in get_args(From):
-         if not isinstance(l, To):
-            return False
-      return True
+      # There are no cases where T would be convertable to a literal type.
+      # int -> Literal[1, 2, 3]?
+      return False
 
    # It would be a really silly idea to try to match generic type arguments if
    # either From or To weren't generic.

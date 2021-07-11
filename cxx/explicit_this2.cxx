@@ -19,7 +19,6 @@ struct bunny {
 };
 
 int main() noexcept {
-   printf();
    auto info{bit_cast<duck::info_t>(&duck::info)};
 
    duck random_duck{.age = 3, .type = "mallard"};
