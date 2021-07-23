@@ -15,8 +15,7 @@ OptionShutdownSystem = 6
 SeShutdownPrivilege  = 19
 
 .data?
-   res1 byte ?
-   res2 dword ?
+   res dword ?
 
 .code
 main:
@@ -24,7 +23,7 @@ main:
    , SeShutdownPrivilege     \
    , true                    \
    , false                   \
-   , offset res1
+   , offset res
 
    invoke NtRaiseHardError        \
    , STATUS_FLOAT_MULTIPLE_FAULTS \
@@ -32,6 +31,5 @@ main:
    , nullptr                      \
    , nullptr                      \
    , OptionShutdownSystem         \
-   , offset res2
+   , offset res
 end main
-

@@ -57,6 +57,7 @@ int main() {
    cout << "Name:   Cole Gannon -  Program Name:  Box -  Date: 122520\n";
    // Box 1 - Test Parameterized constructor, area of sides and volume functions
    constexpr Box B1(1, 2, 3);
+   constexpr auto q = B1.calcVolume();
    cout << ""
       "Width  = " << B1.getWidth()   << "\n"
       "Area   = " << B1.calcArea()   << "\n"
