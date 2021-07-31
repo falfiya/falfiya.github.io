@@ -15,6 +15,14 @@
          "program": "${workspaceFolder}/cxx/${fileBasenameNoExtension}.debug.exe",
          "args": [],
          "cwd": "${workspaceFolder}"
+      },
+      {
+         "type": "lldb",
+         "request": "launch",
+         "name": "lldb",
+         "program": "${workspaceFolder}/c/${fileBasenameNoExtension}.debug.exe",
+         "args": [],
+         "cwd": "${workspaceFolder}"
       }
    ]
 }
