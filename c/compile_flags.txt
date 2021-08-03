@@ -1,5 +1,4 @@
 -Wall
 -Wextra
 -pedantic
--std=c99
 -fuse-ld=lld

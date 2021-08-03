@@ -7,13 +7,13 @@ void start(void) {
    PWSTR *argv = CommandLineToArgvW(GetCommandLineW(), &argc);
 
    if (argc != 3) {
-      #define mUsage L"mv.exe from to"
-      DWORD chars_written;
-      WriteConsoleW(
+      WCHAR usage[] = L"mv.exe from to";
+      DWORD charsWritten;
+      WriteFile(
          GetStdHandle(STD_ERROR_HANDLE),
-         mUsage,
-         sizeof(mUsage) / sizeof(WCHAR),
-         &chars_written,
+         usage,
+         sizeof(usage) / sizeof(WCHAR) - 1,
+         &charsWritten,
          NULL
       );
       ExitProcess(1);
