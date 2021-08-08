@@ -15,5 +15,5 @@ zig-cache/
 *.obj
 *.ilk
 *.pdb
-
+*.gdb_history
 !/clean_artifacts.release.exe

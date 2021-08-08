@@ -1,84 +1,53 @@
+; how to debug
+; break _start
+; start
+; si repeatedly
+; p (char [20]) u64Str
+; x /c $rsi
 bits 64
 default rel
 
-extern GetStdHandle
-extern WriteConsoleW
-extern WriteFile
-extern ExitProcess
-
-;  extern bool WriteConsoleW(
-;     u64 in rcx hConsoleOutput
-;     u64 in rdx lpBuffer
-;     u32 in r8  charsToWrite
-;     u64 in r9  bytesWritten
-;     u64 in stk lpReserved
-; );
-
-STD_OUTPUT_HANDLE equ -11
-
 section .data
-   u64Str: resb 20
+   u64Str: times 20 db 0
    lf: db 10
-   strTest dw __utf16__('Hello, World'), 10, 0
-
-section .bss
-   hStdout: resd 1
-   bytesWritten: resd 1
 
 section .text
-global start
-global written
-global sayHello
-start:
-   mov rcx, STD_OUTPUT_HANDLE
-   call GetStdHandle
-   mov [hStdout], eax
-
+global _start
+_start:
    xor r12, r12 ; a = 0
    mov r13, 1   ; b = 1
-   mov r14, 30  ; c = 30
-
    mov r15, 10  ; divisor is 10
-   l1:
-      mov rcx, lf ; char *
+   xor bl, bl   ; last chance flag
+   fib:
+      mov rsi, lf ; char *
       mov rax, r12
       test rax, rax
       jnz aToStr
-         dec rcx
-         mov byte [rcx], '0'
+         dec rsi
+         mov byte [rsi], '0'
       jmp aToStr.end
       aToStr:
-         dec rcx
+         dec rsi
          xor rdx, rdx
          div r15
-         mov byte [rcx], al
-         add byte [rcx], '0'
+         mov byte [rsi], dl
+         add byte [rsi], '0'
          test rax, rax
          jnz aToStr
       aToStr.end:
-      ; print u64Str
-      ; mov rcx, [hStdout]    ; hConsoleOutput
-      ; mov rdx, u64Str       ; lpBuffer
-      ; mov r8 , lf           ; bufCount
-      ; sub r8 , rdx
-      ; mov r9 , bytesWritten ; bytesWritten
-      ; push 0                ; lpOverlapped
-      ; call WriteConsoleA
-   sayHello:
-      mov rcx, [hStdout]
-      lea rdx, strTest
-      mov r8 , 14
-      mov r9 , bytesWritten
-      sub rsp, 8 * 5
-      mov qword [rsp + 8 * 4], 0
-      call WriteConsoleW
-      add rsp, 8 * 5
-   written:
+      mov rax, 1 ; write
+      mov rdi, 1 ; stdout
+      mov rdx, lf + 1
+      sub rdx, rsi
+      syscall
+      test bl, bl ; was this our last chance before carry?
+      jnz fib.end
       xchg r12, r13 ; a <> b
-      add r13, r12  ; b += a
-      dec r14
-      jnz l1
-   l1.end:
-   xor rcx, rcx
-   call ExitProcess
-
+      add r13, r12 ; b += a
+      jnc fib
+      mov bl, 1
+      jmp fib
+   fib.end:
+   mov rax, 60 ; exit
+   xor rdi, rdi
+   syscall

@@ -24,13 +24,5 @@
          "terminal": "external",
          "initCommands": ["settings set target.x86-disassembly-flavor intel"]
       },
-      {
-         "type": "lldb",
-         "request": "launch",
-         "name": "lldb for assembly",
-         "program": "${fileDirname}/${fileBasenameNoExtension}.exe",
-         "cwd": "${fileDirname}",
-         "initCommands": ["settings set target.x86-disassembly-flavor intel"]
-      },
    ]
 }

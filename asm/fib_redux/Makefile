@@ -1,23 +1,22 @@
-n := repeated_hello
+n := fib_redux
+mode := release
 
-libpath := $(shell winsdk.exe --kit:um --type:lib --arch:x64)
-
-xlinker += /debug
-xlinker += /nodefaultlib
-xlinker += /libpath:"$(libpath)"
-xlinker += /subsystem:console
-xlinker += /entry:start
-
-libs += kernel32.lib
-
-build: $n.exe
+build: $n.elf
 	-
 
-run: $n.exe
+run: $n.elf
 	./$<
 
-$n.exe: $n.obj
-	lld-link $(xlinker) /out:$@ $< kernel32.lib
+$n.elf: $n.o
+	ld.lld -m elf_x86_64 $< -o $@
+ifeq ($(mode), release)
+	strip $@
+endif
 
-$n.obj: $n.nasm Makefile
-	nasm $< -f win64 -g -o $@
+$n.o: $n.nasm Makefile
+ifeq ($(mode), debug)
+	nasm $< -f elf64 -gdwarf -o $@
+endif
+ifeq ($(mode), release)
+	nasm $< -f elf64 -o $@
+endif
