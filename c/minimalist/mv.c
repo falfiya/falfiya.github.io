@@ -4,7 +4,7 @@
 
 void start(void) {
    int argc;
-   PWSTR *argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+   PWSTR *const restrict argv = CommandLineToArgvW(GetCommandLineW(), &argc);
 
    if (argc != 3) {
       WCHAR usage[] = L"mv.exe from to";

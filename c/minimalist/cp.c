@@ -4,7 +4,7 @@
 
 void start(void) {
    int argc;
-   PWSTR *argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+   PWSTR *const restrict argv = CommandLineToArgvW(GetCommandLineW(), &argc);
 
    if (argc != 3) {
       #define mUsage L"cp.exe from to"
@@ -21,7 +21,7 @@ void start(void) {
    }
 
    DWORD code = 0;
-   if (!CopyFileW(argv[1], argv[2], 1)) {
+   if (!CopyFileW(argv[1], argv[2], FALSE)) {
       code = GetLastError();
    }
    ExitProcess(0);
