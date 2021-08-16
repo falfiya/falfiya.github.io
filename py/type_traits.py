@@ -88,7 +88,6 @@ def is_convertible(From: type[T], To: type[U]) -> bool:
 
    if from_o == To:
       # From: T[...?] -> To: T
-      # where 
       return True
 
    if from_o is Literal:
