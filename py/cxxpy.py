@@ -1,23 +1,41 @@
 # templates in python, kinda
-from typing import TypeVar, Generic, Type
+# present issues with this
+# representing typedefs within python
+#     cannot change __base__ of s12n
+#     no proper way to have macros
+# not threadsafe yet
+# typing.Generic does not work. I manually implement __class_getitem__.
+from typing import TypeVar, Generic, Type, Callable
 from types import BuiltinFunctionType, FunctionType
+from threading import Lock
 
 T = TypeVar('T')
 
 def _global_inject_candidate(fn):
    return callable(fn) and not isinstance(fn, BuiltinFunctionType)
 
+_INJECT_THEN_COMPUTE = "__cxxpy_inject_compute__"
 def _global_inject(fn: T, injected: dict) -> T:
    globals = {}
    globals.update(fn.__globals__)
    globals.update(injected)
-   return FunctionType(
+   cpyfn = FunctionType(
       fn.__code__,
       globals,
       fn.__name__,
       fn.__defaults__,
       fn.__closure__
    )
+   if hasattr(fn, _INJECT_THEN_COMPUTE):
+      return cpyfn()
+   else:
+      return cpyfn
+
+def computed(fn: Callable[[], T]) -> T:
+   setattr(fn, _INJECT_THEN_COMPUTE, True)
+   return fn
+
+_BUILTIN = ("__dict__", "__doc__", "__module__", "__weakref__")
 
 def template(cls: T) -> T:
    # specializations: {[args: tuple]: cls[...args]}
@@ -28,7 +46,7 @@ def template(cls: T) -> T:
          args = (args,)
 
       if args not in s13s:
-         class s12n(cls):
+         class s12n:
             ...
          s13s[args] = s12n
 
@@ -48,32 +66,29 @@ def template(cls: T) -> T:
    cls.__class_getitem__ = __class_getitem__
    return cls
 
-_NOCOPY = ("__dict__", "__doc__", "__module__", "__weakref__")
-
-def implement(actual):
+def specialize(actual):
    def decorator(cls: Type[T]) -> None:
+      actual.__bases__ = (cls,)
       for key, val in vars(cls).items():
-         if key not in _NOCOPY:
+         if key not in _BUILTIN:
             if _global_inject_candidate(val):
                val = _global_inject(val, actual.__cxxpy_typeargs__)
-            setattr(actual, key, val)
+            setattr(cls, key, val)
    return decorator
 
 @template
-class Ops(Generic[T]):
-   def add(a: T, b: T) -> T:
-      print(f"No specialization found for {T}")
+class Clazz(Generic[T]):
+   @computed
+   def Container_t():
+      return list[T]
 
-@implement(Ops[int])
+   def print():
+      print(f"non-specialized Clazz[{T = }, {Container_t = }")
+
+@specialize(Clazz[int])
 class _:
-   def add(a: int, b: int) -> int:
-      return a + b
+   def print():
+      print(f"specialized Clazz[{T = }]")
 
-@implement(Ops[str])
-class _:
-   def add(a: str, b: str) -> str:
-      return f"{a} {b}"
-
-print(f"{Ops[int].add(1, 2) = }")
-print(f"{Ops[str].add('hello', 'world') = }")
-Ops[float].add(1, 2)
+Clazz[str].print()
+Clazz[int].print()
