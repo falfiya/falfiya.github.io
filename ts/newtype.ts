@@ -20,7 +20,7 @@ type alpha = string & {readonly [alpha]: unique symbol};
 /**
  * Before steam-web-api's newtype revolution, this is how it used to be done.
  * It's impossible to unwrap the compile time contained value with this
- * declaration because "alpha" isn't part of the type.
+ * declaration because "alpha0" isn't part of the type.
  */
 const alpha0 = "alpha0" as alpha; //:: alpha
 

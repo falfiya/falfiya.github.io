@@ -1,10 +1,4 @@
 # templates in python, kinda
-# present issues with this
-# representing typedefs within python
-#     cannot change __base__ of s12n
-#     no proper way to have macros
-# not threadsafe yet
-# typing.Generic does not work. I manually implement __class_getitem__.
 from typing import Any, TypeVar, Generic
 from types import BuiltinFunctionType, FunctionType
 from threading import Lock
@@ -27,14 +21,16 @@ def _global_inject(fn: T, injected: dict[str, Any], /) -> T:
       fn.__closure__
    )
 
-class _cxxpy_class:
+class _cxxpy_template_class:
    __cxxpy_lock__    : Lock
    __cxxpy_s13s__    : dict[tuple, type]
    __cxxpy_t_params__: tuple[TypeVar]
 
 _NOCOPY = ("__dict__", "__weakref__")
 
-def _specialize(base: _cxxpy_class, from_s12n: type, t_args: tuple):
+_OBJECT_KEYS = vars(type("object_keys", (object,), {})).keys()
+
+def _specialize(base: _cxxpy_template_class, from_s12n: type, t_args: tuple):
    class s12n:
       ...
    base.__cxxpy_s13s__[t_args] = s12n
@@ -61,13 +57,12 @@ def _specialize(base: _cxxpy_class, from_s12n: type, t_args: tuple):
       elif i < t_args_len:
          inject[name] = t_args[i]
 
-   parent_keys = vars(from_s12n.__base__).keys()
    for key, val in from_dict.items():
       if key.startswith("__cxxpy_"):
          continue
       if key in _NOCOPY:
          continue
-      if key in parent_keys:
+      if key in _OBJECT_KEYS:
          continue
       if _global_inject_candidate(val):
          setattr(s12n, key, _global_inject(val, inject))
@@ -75,31 +70,41 @@ def _specialize(base: _cxxpy_class, from_s12n: type, t_args: tuple):
          setattr(s12n, key, val)
 
 def template(base: T, /) -> T:
-   base: _cxxpy_class
+   base: _cxxpy_template_class
    base.__cxxpy_lock__ = Lock()
-   base.__cxxpy_lock__.acquire()
-   base.__cxxpy_s13s__ = {}
-   base.__cxxpy_t_params__ = tuple(base.__parameters__)
+   with base.__cxxpy_lock__:
+      base.__cxxpy_s13s__ = {}
+      base.__cxxpy_t_params__ = tuple(base.__parameters__)
 
-   def __class_getitem__(t_args):
-      if not isinstance(t_args, tuple):
-         t_args = (t_args,)
-      with base.__cxxpy_lock__:
-         if t_args not in base.__cxxpy_s13s__:
-            _specialize(base, base, t_args)
-         ret = base.__cxxpy_s13s__[t_args]
-      return ret
-   base.__class_getitem__ = __class_getitem__
-   base.__cxxpy_lock__.release()
+      def __class_getitem__(t_args):
+         if not isinstance(t_args, tuple):
+            t_args = (t_args,)
+         with base.__cxxpy_lock__:
+            if t_args not in base.__cxxpy_s13s__:
+               _specialize(base, base, t_args)
+            ret = base.__cxxpy_s13s__[t_args]
+         return ret
+      base.__class_getitem__ = __class_getitem__
    return base
 
-def specialize(base: _cxxpy_class, /, *t_args: list):
+def specialize(base: _cxxpy_template_class, t_args: list, /):
    t_args = tuple(t_args)
    def decorator(s12n: type) -> None:
       with base.__cxxpy_lock__:
          if t_args in base.__cxxpy_s13s__:
             raise TypeError(f"Explicit specialization of '{base.__name__}{t_args}' after initialization.")
          _specialize(base, s12n, t_args)
+   return decorator
+
+def forward_declare(cls: T) -> T:
+   cls.__cxxpy_forward_declare__ = True
+   return cls
+
+def implement(cls):
+   if not hasattr(cls, "__cxxpy_forward_declare__"):
+      raise TypeError("Implementation on class not declared with @forward_declare.")
+   def decorator(impl: T) -> T:
+      from key, val in vars(impl)
    return decorator
 
 # demo code
@@ -112,7 +117,7 @@ class Clazz(Generic[T, container_t]):
    def print():
       print(f"non-specialized Clazz[{T}, {container_t}]")
 
-@specialize(Clazz, int)
+@specialize(Clazz, [int])
 class _:
    container_t = lambda: tuple[T]
    def print():

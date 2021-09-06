@@ -79,4 +79,10 @@ num_to_exe = $(patsubst %.cxx,%.$(exe),$(wildcard cxx/weekly/*$(1).*.cxx))
 cxx_weekly~%: $$(call num_to_exe,%)
 	@-./$<
 
+### building java programs (pony)
+
+pony-bjp~%: pony/bjp/%
+	ponyc $< -o $<
+	./$</$*.exe
+
 .PHONY: cxx_weekly~%
