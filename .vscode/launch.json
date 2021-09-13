@@ -2,6 +2,13 @@
    "version": "0.2.0",
    "configurations": [
       {
+         "type": "java",
+         "name": "Launch coalpha/BoxingConversion",
+         "request": "launch",
+         "mainClass": "coalpha/BoxingConversion",
+         "projectName": "coalpha-java"
+      },
+      {
          "name": "snake!",
          "type": "python",
          "request": "launch",
@@ -13,7 +20,7 @@
          "request": "launch",
          "name": "lldb++",
          "program": "${workspaceFolder}/cxx/${fileBasenameNoExtension}.debug.exe",
-         "cwd": "${workspaceFolder}",
+         "cwd": "${workspaceFolder}"
       },
       {
          "type": "lldb",
@@ -22,7 +29,9 @@
          "program": "${workspaceFolder}/c/${fileBasenameNoExtension}.debug.exe",
          "cwd": "${workspaceFolder}",
          "terminal": "external",
-         "initCommands": ["settings set target.x86-disassembly-flavor intel"]
-      },
+         "initCommands": [
+            "settings set target.x86-disassembly-flavor intel"
+         ]
+      }
    ]
 }
