@@ -2,13 +2,6 @@
    "version": "0.2.0",
    "configurations": [
       {
-         "type": "java",
-         "name": "Launch coalpha/BoxingConversion",
-         "request": "launch",
-         "mainClass": "coalpha/BoxingConversion",
-         "projectName": "coalpha-java"
-      },
-      {
          "name": "snake!",
          "type": "python",
          "request": "launch",
@@ -19,7 +12,7 @@
          "type": "lldb",
          "request": "launch",
          "name": "lldb++",
-         "program": "${workspaceFolder}/cxx/${fileBasenameNoExtension}.debug.exe",
+         "program": "${fileDirname}/${fileBasenameNoExtension}.debug.exe",
          "cwd": "${workspaceFolder}"
       },
       {
