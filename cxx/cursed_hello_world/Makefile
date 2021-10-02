@@ -18,4 +18,4 @@ cxxflags += -Xlinker /subsystem:console
 	clang++ $< $(cxxflags) -g -o $@
 
 %.asm: %.cxx
-	clang++ $< $(cxxflags) -S -masm=intel -o $@
+	clang++ $< $(cxxflags) -Oz -S -masm=intel -o $@

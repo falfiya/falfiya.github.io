@@ -11,5 +11,8 @@
    },
    "scripts": {
       "start": "http-server"
+   },
+   "dependencies": {
+      "axios": "^0.21.4"
    }
 }
