@@ -12,8 +12,10 @@ __declspec(dllimport) BOOL WriteConsoleA(
    DWORD *amountWritten,
    void *reservedAlwaysNull
 );
+__attribute__((noreturn))
+__declspec(dllimport) void ExitProcess(DWORD);
 
-int start(void) {
+void start(void) {
    HANDLE const handleToStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
    char const greeting[] = "Hello, World!";
@@ -26,5 +28,5 @@ int start(void) {
       0
    );
 
-   return 0;
+   ExitProcess(0);
 }
