@@ -2,6 +2,7 @@ cflags += -Oz
 cflags += -nobuiltininc
 cflags += -nostdlib
 cflags += -ffreestanding
+cflags += -flto
 cflags += -fuse-ld=lld
 cflags += -Wl,/entry:start,/nodefaultlib,/subsystem:console
 

@@ -1,23 +1,35 @@
-cflags += -O0
-cflags += --debugger-tune=lldb
-cflags += --debugify-level=location+variables
-cflags += --thread-model=single
+# LINKER = lld
+LINKER = link
 
-lflags += /subsystem:windows
-lflags += /entry:start
-lflags += /nodefaultlib
+ifeq ($(LINKER),lld)
+else ($(LINKER),link)
+else
+	$(error LINKER must be either lld (llvm linker) or link (msvc linker)!)
+endif
+
+cflags += -Oz
+cflags += -ffreestanding
+ifeq ($(LINKER),lld)
+	cflags += -flto
+	cflags += -fuse-ld=lld
+endif
+cflags += -Wl,kernel32.lib,/nodefaultlib
+ifeq ($(LINKER),link)
+	cflags += -Wl,/align:16
+endif
 
 exe: hello.exe
 	-
-
 asm: hello.asm
 	-
 
-hello.obj: hello.ll
-	clang $< $(cflags) --filetype=obj -o $@
-
-hello.exe: hello.obj
-	llvm-link $< kernel32.lib $(lflags) /out:$@
+hello.exe: hello.ll
+	clang $< $(cflags) -o $@
+	llvm-strip -s $@
 
 hello.asm: hello.ll
 	clang $< -S -masm=intel -o $@
+
+*: Makefile
+
+.PHONY: exe asm
