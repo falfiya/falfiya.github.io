@@ -18,3 +18,4 @@ zig-cache/
 *.gdb_history
 *.exp
 *.lib
+*.strace

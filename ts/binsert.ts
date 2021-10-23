@@ -7,7 +7,7 @@ type Ord = -1 | 0 | 1;
  */
 type Cmp<T> = (a: T, b: T) => Ord;
 
-function binsert_ts<T>(ary: T[], val: T, cmp: Cmp<T>): boolean {
+export function binsert_ts<T>(ary: T[], val: T, cmp: Cmp<T>): boolean {
    var lower = 0;
    var upper = ary.length;
    while (lower !== upper) {
