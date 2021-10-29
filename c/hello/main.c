@@ -15,6 +15,8 @@ __declspec(dllimport) BOOL WriteConsoleA(
 __attribute__((noreturn))
 __declspec(dllimport) void ExitProcess(DWORD);
 
+#pragma comment(linker, "/entry:start")
+#pragma comment(linker, "/subsystem:console")
 void start(void) {
    HANDLE const handleToStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 

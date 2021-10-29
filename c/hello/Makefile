@@ -8,27 +8,28 @@ endif
 endif
 
 cflags += -Oz
+cflags += -nobuiltininc
+cflags += -nostdlib
 cflags += -ffreestanding
 ifeq ($(LINKER),lld)
 	cflags += -flto
 	cflags += -fuse-ld=lld
 endif
 
-cflags += -Wl,kernel32.lib,/nodefaultlib
+cflags += -Wl,/nodefaultlib,/subsystem:console
 ifeq ($(LINKER),link)
 	cflags += -Wl,/align:16
 endif
 
-exe: hello.exe
-	-
-asm: hello.asm
-	-
-
-hello.exe: hello.ll
-	clang $< $(cflags) -o $@
+main.exe: main.c k32.lib
+	clang $^ $(cflags) -o $@
 	llvm-strip -s $@
 
-hello.asm: hello.ll
-	clang $< -S -masm=intel -o $@
+k32.lib: k32.def
+	lld-link /def:$< /machine:x64 /out:$@
 
-.PHONY: exe asm
+main.asm: main.c
+	clang $< $(cflags) -S -masm=intel -o $@
+
+main.ll: main.c
+	clang $< $(cflags) -S -emit-llvm -o $@
