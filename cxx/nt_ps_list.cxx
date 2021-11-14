@@ -9,6 +9,8 @@
 #define STATUS_INFO_LENGTH_MISMATCH 0xC0000004
 #endif
 
+RTL_UNICODE_STRING_BUFFER 
+
 using NtGetNextProcess = NTSTATUS (NTAPI *const)(
    _In_  HANDLE ProcessHandle,
    _In_  ACCESS_MASK DesiredAccess,
@@ -63,7 +65,7 @@ int main() noexcept {
       auto status{NtQueryInformationProcess(
          proc,
          ProcessInfoClass::ProcessImageFileName,
-         &buf,
+         &buf, // what the fuck???
          sizeof(buf),
          &return_length
       )};
