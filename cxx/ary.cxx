@@ -56,5 +56,6 @@ int main() {
    // would be nice if you didn't have to declare the size but whatever
    ary<int, 4> stack = {1, 2, 3, 4};
    auto *heap{ary<int>::heap(9, 10, 11, 3, 4)};
+   auto *h{ary<int>::heap(3)};
    cout << heap->len << "\n";
 }

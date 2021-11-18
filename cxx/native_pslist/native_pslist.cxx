@@ -15,7 +15,7 @@ void start() noexcept {
 
    rtl::unicode_string_buffer DosPath = {};
    char16_t *FilePart{};
-   unicode_string NtPath{u"\\Device\\HarddiskVolume6\\Program Files\\Mullvad VPN\\Mullvad VPN.exe"};
+   unicode_string NtPath{u"\\??\\C:\\WINDOWS\\system32\\drivers"};
 
    char16_t *const DosPathBuffer = (char16_t *) __builtin_alloca(NtPath.length + 2);
    char16_t *const NtPathBuffer  = (char16_t *) __builtin_alloca(NtPath.length + 2);

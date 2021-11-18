@@ -6,7 +6,7 @@ endif
 
 # c
 c_flags   = $(shell ./space_cat.$(exe) c/compile_flags.txt)
-c_dflags := -g
+c_dflags := -g -fsanitize=address -fsanitize
 c_rflags := -O2
 
 .SECONDARY:
