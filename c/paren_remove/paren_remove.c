@@ -1,3 +1,5 @@
+// 0ms :Cults:
+
 char *minRemoveToMakeValid(char *str) {
    char *buf = str;
    { // remove the right parens
@@ -7,28 +9,21 @@ char *minRemoveToMakeValid(char *str) {
          // c is the read head
          // buf is the write head
          char const c = buf[rremoved];
-         if (c == '(') {
+         switch (c) {
+         case '(':
             lparen_count++;
-            *buf++ = c;
-            continue;
-         }
-
-         if (c == ')') {
-            if (lparen_count != 0) {
-               lparen_count--;
-               *buf++ = c;
+            break;
+         case ')':
+            if (lparen_count == 0) {
+               rremoved++;
                continue;
             }
-
-            // remove case: do not advance write head forwards
-            rremoved++;
-            continue;
+            lparen_count--;
+            break;
          }
 
          *buf++ = c;
-         if (__builtin_expect(c == '\0', 0)) {
-            break;
-         }
+         if (__builtin_expect(c == '\0', 0)) break;
       }
    }
    // buf is currently on the null byte
@@ -40,22 +35,17 @@ char *minRemoveToMakeValid(char *str) {
          // c is the write head
          char *const c = buf + lremoved;
 
-         if (*buf == ')') {
+         switch (*buf) {
+         case ')':
             rparen_count++;
-            *c = *buf;
-            continue;
-         }
-
-         if (*buf == '(') {
-            if (rparen_count != 0) {
-               rparen_count--;
-               *c = *buf;
+            break;
+         case '(':
+            if (rparen_count == 0) {
+               lremoved++;
                continue;
             }
-
-            // remove case: add one to lremoved
-            lremoved++;
-            continue;
+            rparen_count--;
+            break;
          }
 
          *c = *buf;
