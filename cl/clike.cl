@@ -13,30 +13,46 @@
       (setf curr (car! ts))
 
       (if (symbolp curr)
-         ; potential keyword fn call, function symbol name in curr
          (cond
-            ((sym-is (car ts) "[") (progn
+            ((and ts (listp (car ts))) (progn
+               ; guard for ts = (variable) since (listp (car nil)) is true
                ; function call
-               ; + [ 1 2 3 ]
-               (car! ts)
+               ; +(2 *(4 10))
+               ; wanted to pass a list as an argument?
+               ; fn(list(1 2 3))
+               ; or
+               ; fn([ 1 2 3 ])
+
                (psh! out curr) ; function name
+
+               (let ((args (car! ts)) res-arg)
+                  (loop
+                     (if (null args)
+                        (return))
+                     (setf res-arg (clike-expr args))
+                     (psh! out (car res-arg))
+                     (setf args (cadr res-arg))
+                  )
+               )
+            ))
+            ((sym-is (car ts) "[") (progn
+               ; list literal
+               ; [ 1 2 3 ]
+               (psh! out 'list)
 
                (loop
                   (if (null ts)
-                     (error "Expecting closing bracket in function call!~%"))
+                     (error "Expecting closing bracket list literal!~%"))
 
                   (if (sym-is (car ts) "]")
-                     (progn
-                        (car! ts)
-                        (return)))
+                     (return))
 
-                  (let ((res-arg (clike-expr ts)))
-                     (progn
-                        (psh! out (car res-arg))
-                        (setf ts (cadr res-arg))
-                     )
+                  (let ((res-element (clike-expr ts)))
+                     (psh! out (car res-element))
+                     (setf ts (cadr res-element))
                   )
                )
+               (car! ts) ; remove ]
             ))
             ((sym-is (car ts) "@[") (progn
                ; explosive function call
@@ -45,14 +61,25 @@
                (setf out `(apply ',curr ,(car! ts))) ; function name
                (token! (car! ts) "]")
             ))
+
+            ; variable stuff
+            ((sym-is (car ts) "=") (progn
+               ; assignment
+               (let ((res-val (clike-expr ts)))
+                  (progn
+                     (setf out `(setf ,curr ,(car res-val)))
+                     (setf ts (cadr res-val))
+                  )
+               )
+            ))
             (t (progn
-                  ; variable
+               ; variable access
                (setf out curr)
             ))
          )
-         (progn
-            ; literal
-            (setf out curr))
+
+         ; else
+         (setf out curr)
       )
 
       (list out ts) ; expr in car, excess tokens in cadr
@@ -66,7 +93,6 @@
 
       (setf res-val (clike-expr ts))
       (setf ts (cadr res-val))
-      (token! (car! ts) "OK")
 
       (setf res-scope (clike-scope ts))
       (setf ts (cadr res-scope))
@@ -130,9 +156,10 @@
 )
 
 (clike
-   let i = 10 ok
-   while > [ setf [ i - [ i 1 ] ] 0 ] {
-      format [ t "~D~%" i ]
+   let i = 0;
+   while <(i 10) {
+      format(t "~D~%" i);
+      setf(i +(i 1));
    }
-   exit [ ]
+   exit();
 )
