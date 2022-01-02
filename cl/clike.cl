@@ -154,6 +154,10 @@
             (setf tag-top (clike-while-tag-top (car next)))
             (setf tag-end (clike-while-tag-end (car next)))
          )
+         (progn
+            (setf tag-top (clike-while-tag-top nil))
+            (setf tag-end (clike-while-tag-end nil))
+         )
       )
 
       (setf res-cond (clike-expr ts))
@@ -253,11 +257,11 @@
 
 (clike
    let i = 0
-   while(foo) <(i 10) {
+   while <(i 10) {
       if =(0 mod(i 2)) {
          princ("nope")
          i = +(i 1)
-         continue(foo)
+         continue()
       }
 
       print(i)
