@@ -7,6 +7,30 @@
 (defmacro psh! (sym e) `(setf ,sym (psh ,sym ,e)))
 (defmacro car! (sym) `(let ((fst (car ,sym))) (setf ,sym (cdr ,sym)) fst))
 
+(defun clike-while-tag-top (sym-or-nil)
+   (intern
+      (concatenate
+         'string
+         "clike-while-top"
+         (if sym-or-nil
+            (concatenate 'string "-" (symbol-name sym-or-nil))
+            "")
+      )
+   )
+)
+
+(defun clike-while-tag-end (sym-or-nil)
+   (intern
+      (concatenate
+         'string
+         "clike-while-end"
+         (if sym-or-nil
+            (concatenate 'string "-" (symbol-name sym-or-nil))
+            "")
+      )
+   )
+)
+
 (declaim (ftype function clike-scope))
 (defun clike-expr (ts)
    (let (curr out)
@@ -14,8 +38,27 @@
 
       (if (symbolp curr)
          (cond
-            ((and ts (listp (car ts))) (progn
-               ; guard for ts = (variable) since (listp (car nil)) is true
+            ((sym-is curr "BREAK") (progn
+               (let ((next (car! ts)))
+                  (unless (listp next)
+                     (error "`break' must be invoked, it cannot be a bareword!"))
+                  (if (> (length next) 1)
+                     (error "too many arguments to `break' (provide at most 1)"))
+                  (setf out `(go ,(clike-while-tag-end (car next))))
+               )
+            ))
+            ((sym-is curr "CONTINUE") (progn
+               (let ((next (car! ts)))
+                  (unless (listp next)
+                     (error "`continue' must be invoked, it cannot be a bareword!"))
+                  (if (> (length next) 1)
+                     (error "too many arguments to `continue` (provide at most 1)"))
+                  (setf out `(go ,(clike-while-tag-top (car next))))
+               )
+            ))
+            ((and ts (car ts) (listp (car ts))) (progn
+               ; curr(variable) and curr(variable nil) because we don't want
+               ; to expand variable into a function call
                ; function call
                ; +(2 *(4 10))
                ; wanted to pass a list as an argument?
@@ -35,7 +78,14 @@
                   )
                )
             ))
-            ((sym-is (car ts) "[") (progn
+            ((sym-is (car ts) "<-") (progn
+               ; function call with spread arguments
+               ; + <- '(1 2)
+               ; terpri <- nil
+               (car! ts)
+               (setf out `(apply ',curr ,(car! ts)))
+            ))
+            ((sym-is curr "[") (progn
                ; list literal
                ; [ 1 2 3 ]
                (psh! out 'list)
@@ -96,7 +146,16 @@
 )
 
 (defun clike-while (ts)
-   (let (res-cond res-body)
+   (let (res-cond res-body tag-top tag-end)
+      (if (listp (car ts))
+         (let ((next (car! ts)))
+            (if (> (length next) 1)
+               (error "while(<at most 1 symbol here>)"))
+            (setf tag-top (clike-while-tag-top (car next)))
+            (setf tag-end (clike-while-tag-end (car next)))
+         )
+      )
+
       (setf res-cond (clike-expr ts))
       (setf ts (cdr res-cond))
       (token! (car! ts) "{")
@@ -105,7 +164,16 @@
       (setf ts (cdr res-body))
       (token! (car! ts) "}")
 
-      (cons `(loop (unless ,(car res-cond) (return)) ,(car res-body)) ts)
+      (cons
+         `(tagbody
+            ,tag-top
+            (unless ,(car res-cond) (go ,tag-end))
+            ,(car res-body)
+            (go ,tag-top)
+            ,tag-end
+         )
+         ts
+      )
    )
 )
 
@@ -120,12 +188,18 @@
       (token! (car! ts) "}")
 
       (if (sym-is (car ts) "ELSE")
-         (progn
-            (car! ts)
-            (token! (car! ts) "{")
-            (setf res-else (clike-scope ts))
-            (setf ts (cdr res-else))
-            (token! (car! ts) "}")
+         (let (next)
+            (car! ts) ; remove else token
+            (setf next (car! ts))
+            (if (sym-is next "IF")
+               (progn
+                  (setf res-else (clike-if ts))
+                  (setf ts (cdr res-else)))
+               (progn
+                  (setf res-else (clike-scope ts))
+                  (setf ts (cdr res-else))
+                  (token! (car! ts) "}"))
+            )
          )
       )
       (cons `(if ,(car res-cond) ,(car res-body) ,(car res-else)) ts)
@@ -178,14 +252,17 @@
 )
 
 (clike
-   let i = 0;
-   while <(i 10) {
-      if =(mod(i 2) 0) {
-         format(t "~D~%" i);
-      } else {
-         format(T "odd~%")
+   let i = 0
+   while(foo) <(i 10) {
+      if =(0 mod(i 2)) {
+         princ("nope")
+         i = +(i 1)
+         continue(foo)
       }
-      i = +(i 1);
+
+      print(i)
+      terpri <- nil
+      i = +(i 1)
    }
-   exit();
+   exit <- nil;
 )
