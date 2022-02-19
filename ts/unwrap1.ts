@@ -29,3 +29,5 @@ type unwrap_appliance<T extends {readonly [appliance_symbol]: unknown}> =
 type kitchenaid_name     = unwrap_appliance<typeof kitchenaid>;
 type samsung_name        = unwrap_appliance<typeof samsung>;
 type unknown_washer_name = unwrap_appliance<typeof unknown_washer>;
+
+export type dummy = never;

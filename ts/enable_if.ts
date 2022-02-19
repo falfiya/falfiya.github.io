@@ -4,3 +4,5 @@ function add<T>(a: T, b: T extends string ? void : T): T {
 
 add(1 as number, 2);
 add("3", "4");
+
+export type dummy = never;

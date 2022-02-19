@@ -236,3 +236,5 @@ declare const eta_unknown: eta;
 
 type eta_zero_t    = unwrap<typeof eta_zero>;    //:: "eta: zero"
 type eta_unknown_t = unwrap<typeof eta_unknown>; //:: `eta: ${string}`
+
+export type dummy = never;
