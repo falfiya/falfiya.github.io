@@ -1,3 +1,9 @@
+// extended-eta newtypes
+
+// Because of these two "global" unique symbols, these newtypes may not be
+// compatible because of different unique types between versions, even if the
+// API and source are the same.
+
 declare const sym_s: unique symbol; // symbol symbol
 declare const of_s: unique symbol;
 
