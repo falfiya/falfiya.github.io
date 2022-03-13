@@ -7,6 +7,7 @@ target/
 .fake/
 __pycache__/
 zig-cache/
+/.stfolder/
 
 *.exe
 *.elf
