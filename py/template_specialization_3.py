@@ -2,10 +2,10 @@ from typing import *
 
 T = TypeVar('T')
 
+s13s = {}
 MAGIC_ATTR = "__cxxpy_s13s__"
 
 def template(cls: T) -> T:
-   s13s = {}
    setattr(cls, MAGIC_ATTR, s13s)
    def __class_getitem__(args):
       if not isinstance(args, tuple):
