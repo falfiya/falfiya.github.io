@@ -1,8 +1,7 @@
+# does not work in mypy but works in vscode so :shrug:
 from typing import *
 
 T = TypeVar('T')
-
-
 
 class instanceof(Generic[T]):
    def __init__(self, parent: Type[T]):
@@ -15,22 +14,34 @@ class instanceof(Generic[T]):
       return isinstance(child, self.parent)
 
 class Animal: ...
-class Cat(Animal): ...
+class Cat(Animal):
+   is_cat = True
+class Dog(Animal):
+   is_dog = True
 class Car: ...
 
 cat_is_animal = instanceof(Animal).child(Cat())
 car_is_animal = instanceof(Animal).child(Car())
 car_is_car = instanceof(Car).child(Cat())
 
-# todo, completely type level one?
+class vt(Generic[T]):
+   def __init__(self):
+      self.v : T = None
+      self.t : Type[T] = None
 
 @overload
-def NotT(b: Literal[True]) -> Type[Literal[False]]: ...
+def NotT(b: Literal[True]) -> vt[Literal[False]]: ...
 @overload
-def NotT(b: Literal[False]) -> Type[Literal[True]]: ...
+def NotT(b: Literal[False]) -> vt[Literal[True]]: ...
+def NotT(_): return vt()
 
-a: NotT[True]
+@overload
+def Choose(cond: Literal[True], a: T, _) -> vt[T]: ...
+@overload
+def Choose(cond: Literal[False], _, b: T) -> vt[T]: ...
+def Choose(*_): return vt()
 
-def takes_false(false: a): ...
+cat = Choose(NotT(NotT(True).v).v, Dog, Cat).t
+cat_intstance: cat = None
 
-takes_false(1)
+cat_intstance.is_dog
