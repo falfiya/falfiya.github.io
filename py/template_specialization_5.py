@@ -15,7 +15,7 @@ class Ops__str:
       return f"{a} {b}"
    def exclaim(s: str) -> str:
       return f"{s}!"
-
+a
 @overload([str], Ops__str)
 def Ops(T: Type[str]) -> Type[Ops__str]: ...
 

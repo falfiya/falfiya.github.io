@@ -15,4 +15,5 @@ int main() noexcept {
    auto const above_me_ptr{(std::remove_cv_t<decltype(five)> *) &above_me};
    *above_me_ptr = 4;
    std::cout << "five is " << five << '\n';
+   std::cout.sync_with_stdio()
 }
