@@ -3,8 +3,6 @@ using DWORD = unsigned long;
 using BOOL = int;
 
 struct ConsoleAPI {
-   HANDLE h;
-
    static inline ConsoleAPI *from(DWORD const n) noexcept {
       return (ConsoleAPI *) ConsoleAPI::GetStdHandle(n);
    }
