@@ -1,6 +1,8 @@
 // not my idea
 // https://gist.github.com/ENvironmentSet/1662a140f99381bc85fd6be51ecdcbb5
 
+const _ = 0 as never;
+
 /** higher order function */
 interface hof {
    arg: unknown;
@@ -12,14 +14,14 @@ interface hof_static {
 }
 
 class exclaim implements hof {
-   arg: unknown;
-   res: this["arg"] extends string ? `${this["arg"]}!` : never = null as never;
+   arg: string
+   = _;
+   res: `${this["arg"]}!`
+   = _;
    static run(s: string): `${string}!` {
       return `${s}!`;
    }
 }
-
-type q = Parameters<typeof exclaim["run"]>["length"];
 
 type apply<fn extends hof, arg> = ({arg: arg} & fn)["res"];
 function apply
