@@ -6,3 +6,4 @@ Small, potentially cursed, and interesting artifacts of code.
 flowchart TD
    A[commit curse?] --> B[yes.];
 ```
+  
