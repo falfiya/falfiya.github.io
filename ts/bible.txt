@@ -1,0 +1,8 @@
+In the beginning was The Script, and The Script was JavaScript.
+And The Script was without Types, and void.
+And God said, Let there be Types: and there were Types.
+And God saw the Types, that they were good: and God divided the Typed from the Untyped.
+And God called this TypeScript. And it was gradually Typed.
+And God said, Let the Types be turing complete.
+And God made the Types a typed lambda calculus: and it was so.
+God looked upon his creation and saw every thing that he had made, and, behold, it gave him massive blue balls. This was very good.
