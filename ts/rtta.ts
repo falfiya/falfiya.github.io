@@ -1,9 +1,12 @@
 import {$extends, satisfies} from "./type_traits";
 
-interface assertable<T = any> {
+export interface assertable<T = any> {
    assert(u: unknown): asserts u is T;
 };
-namespace assertable {
+
+export type unknown_assertable = {assert(u: unknown): void};
+
+export namespace assertable {
    export function is(u: unknown): u is {assert(u: unknown): void} {
       return true
          && typeof u === "object"
@@ -12,7 +15,7 @@ namespace assertable {
    }
 }
 
-namespace string {
+export namespace string {
    export function assert(u: unknown): asserts u is string {
       if (typeof u !== "string") {
          throw new TypeError("not string!");
@@ -21,7 +24,7 @@ namespace string {
    }
 }
 
-namespace number {
+export namespace number {
    export function assert(u: unknown): asserts u is number {
       if (typeof u !== "number") {
          throw new TypeError("not number!");
@@ -30,7 +33,7 @@ namespace number {
    }
 }
 
-namespace boolean {
+export namespace boolean {
    export function assert(u: unknown): asserts u is boolean {
       if (typeof u !== "boolean") {
          throw new TypeError("not boolean");
@@ -39,7 +42,7 @@ namespace boolean {
    }
 }
 
-namespace object {
+export namespace object {
    export function assert(u: unknown): asserts u is {} {
       if (typeof u !== "object") {
          throw new TypeError("not object!");
@@ -54,7 +57,7 @@ namespace object {
    }
 }
 
-type asserts_to<schema extends {}> = {
+export type asserts_to<schema extends {}> = {
    [field in keyof schema]:
    schema[field] extends assertable<infer T> ? T : asserts_to<schema[field]>
 }
@@ -66,14 +69,12 @@ function make_assert<schema extends assert_node>(schema: schema):
 {
    const rec = (schema: schema, u: unknown) => {
       console.log(JSON.stringify(schema), u)
-      object.assert(schema)
       if (assertable.is(schema)) {
          schema.assert(u);
          return;
       }
-      
+
       for (const key of object.keys(schema)) {
-         console.log(`key = ${key}`)
          rec(schema[key] as any, (u as any)[key]);
       }
    };

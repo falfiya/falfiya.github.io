@@ -1,4 +1,6 @@
-export type map_get<field extends keyof any, ary extends readonly [...any[]]> =
+import {$key} from "./type_traits";
+
+export type map_get<field extends $key, ary extends readonly [...any[]]> =
    ary extends []
    ? []
    : ary extends readonly [infer head, ...infer tail]

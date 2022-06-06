@@ -6,16 +6,19 @@ export type not<T> = T extends true ? false : true;
 export type $extends<parent, child> = child extends parent ? true : false;
 declare const unsatisfiable: unique symbol;
 export type satisfies<T> = T extends true ? never : typeof unsatisfiable;
+export type $key = keyof any;
 
-export type uniq<ary extends readonly [...(keyof any)[]], seen extends {} = {}> =
+export type uniq<ary extends readonly [...($key)[]], seen extends {} = {}> =
    ary extends readonly []
    ? true
    : ary extends readonly [infer head, ...infer tail]
-      ? head extends keyof any
+      ? head extends $key
          ? seen extends {[key in head]: void}
             ? false
-            : tail extends readonly [...(keyof any)[]]
+            : tail extends readonly [...($key)[]]
                ? uniq<tail, seen & {[key in head]: void}>
                : never
          : never
       : never;
+
+      

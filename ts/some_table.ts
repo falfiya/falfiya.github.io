@@ -1,7 +1,6 @@
 import {map_get} from "./map_get";
-import {satisfies, uniq} from "./type_traits";
-
-export declare const dummy: void;
+import {assertable, asserts_to, object, unknown_assertable} from "./rtta";
+import {$key, satisfies, uniq} from "./type_traits";
 
 const students = [
    {name: "coalpha", id: 10380},
@@ -9,14 +8,14 @@ const students = [
 ] as const;
 type students = typeof students;
 
-type unique_constraint<key extends keyof any>
+type unique_constraint<key extends $key>
    = satisfies<uniq<map_get<key, students>>>;
 
 void (null as unique_constraint<"name">);
 void (null as unique_constraint<"id">);
 
-type filter = {key: keyof any; value: any};
-type filter_by<needle extends filter, ary extends readonly [...any[]]> =
+export type filter = {key: $key; value: any};
+export type filter_by<needle extends filter, ary extends readonly [...any[]]> =
    ary extends readonly [infer head, ...infer tail]
    ? head extends {[key in needle["key"]]: needle["value"]}
       ? head
