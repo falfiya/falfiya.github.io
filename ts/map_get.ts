@@ -1,4 +1,4 @@
-type map_get<field extends string, ary extends readonly [...any[]]> =
+export type map_get<field extends keyof any, ary extends readonly [...any[]]> =
    ary extends []
    ? []
    : ary extends readonly [infer head, ...infer tail]
