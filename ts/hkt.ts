@@ -8,6 +8,7 @@ interface hof {
    arg: unknown;
    res: unknown;
 }
+
 interface hof_static {
    new(): hof;
    run(a: any): any;
@@ -53,3 +54,5 @@ type WORDS = map_tpl<exclaim, words>; //:: ["higher!", "kinded!", "types!"]
 
 // now map with both
 const WORDS = map_tpl(exclaim, words); //:: ["higher!", "kinded!", "types!"]
+
+export declare const dummy: void;

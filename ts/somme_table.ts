@@ -24,8 +24,8 @@ type exists_duplicates<a extends readonly [...any[]], b extends readonly [...any
    : a extends readonly [infer head, ...infer tail]
       ? exists_entry<head, b>;
 
-class table<schema extends {[pk in string]: assertable}, entries extends readonly [...any[]] = [], valid = true> {
-   primary_keys: {[pk in keyof schema]: {[pk_value in $key]: asserts_to<schema>}};
+class table<schema extends {[pk in string]: assertable}, entries extends {[]}> {
+   already_mapped: {[pk in keyof schema]: never};
    schema: schema;
 
    constructor (schema: schema) {
