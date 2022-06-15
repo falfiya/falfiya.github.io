@@ -8,6 +8,7 @@ target/
 __pycache__/
 zig-cache/
 /.stfolder/
+/ts/dist/
 
 *.exe
 *.elf
