@@ -43,6 +43,9 @@ export namespace boolean {
 }
 
 export namespace object {
+   export function hop(p: string, o: {}): boolean {
+      return Object.hasOwnProperty.call(o, p);
+   }
    export function assert(u: unknown): asserts u is {} {
       if (typeof u !== "object") {
          throw new TypeError("not object!");

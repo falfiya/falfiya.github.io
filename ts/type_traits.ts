@@ -17,3 +17,15 @@ export type uniq<ary extends readonly [...any[]], seen = never> =
          // else, next element
          : uniq<tail, seen | head>
       : never;
+
+/// only string and number now
+export type is_narrow<val> =
+   val extends string
+      ? string extends val
+         ? false
+         : true
+      : val extends number
+         ? number extends val
+            ? false
+            : true
+            : false;

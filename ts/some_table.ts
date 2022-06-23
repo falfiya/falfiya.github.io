@@ -1,5 +1,4 @@
 import {map_get} from "./map_get";
-import {assertable, asserts_to, object, unknown_assertable} from "./rtta";
 import {$key, satisfies, uniq} from "./type_traits";
 
 const students = [
