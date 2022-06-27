@@ -16,22 +16,33 @@ function unwrapunwrapfactoryfactory(checker) {
          console.log(source.fileName);
          /** @param node {ts.Node} */
          function visitor(node) {
-            console.log("Visiting " + ts.SyntaxKind[node.kind]);
             if (ts.isTypeAliasDeclaration(node)) {
                const inner = node.type;
                if (ts.isTypeReferenceNode(inner)) {
                   if (inner.typeName.text === "unwrap") {
-                     const computed_type = checker.getTypeAtLocation(node);
-                     console.log(checker.typeToString(computed_type));
+                     const computed_type = checker.getTypeFromTypeNode(inner);
+                     let final_type;
+                     if (computed_type.flags & ts.TypeFlags.UnionOrIntersection) {
+                        /** @type {ts.Type[]} */
+                        const types = computed_type.types;
+                        const nodes = types.map(t => checker.typeToTypeNode(t));
+                        if (computed_type.flags & ts.TypeFlags.Union) {
+                           // it's a union
+                           final_type = ts.factory.createUnionTypeNode(nodes);
+                        } else {
+                           final_type = ts.factory.createIntersectionTypeNode(nodes);
+                        }
+                     } else {
+                        final_type = checker.typeToTypeNode(computed_type);
+                     }
+                     console.log(`type ${node.name.text} = ${final_type};`);
                      return ts.factory.createTypeAliasDeclaration(
                         undefined, // decorators
                         node.modifiers,
                         node.name,
                         undefined, // type parameters
-                        checker.typeToTypeNode(computed_type),
+                        final_type,
                      );
-                  } else {
-                     console.log(inner.getText());
                   }
                }
             }
