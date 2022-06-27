@@ -36,3 +36,5 @@ if (animal.is(input)) {
 } else {
    // too bad
 }
+
+export {animal, unwrap}
