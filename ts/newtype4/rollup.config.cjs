@@ -21,20 +21,13 @@ function unwrapunwrapfactoryfactory(checker) {
                if (ts.isTypeReferenceNode(inner)) {
                   if (inner.typeName.text === "unwrap") {
                      const computed_type = checker.getTypeFromTypeNode(inner);
-                     let final_type;
-                     if (computed_type.flags & ts.TypeFlags.UnionOrIntersection) {
-                        /** @type {ts.Type[]} */
-                        const types = computed_type.types;
-                        const nodes = types.map(t => checker.typeToTypeNode(t));
-                        if (computed_type.flags & ts.TypeFlags.Union) {
-                           // it's a union
-                           final_type = ts.factory.createUnionTypeNode(nodes);
-                        } else {
-                           final_type = ts.factory.createIntersectionTypeNode(nodes);
-                        }
-                     } else {
-                        final_type = checker.typeToTypeNode(computed_type);
-                     }
+                     const final_type = checker.typeToTypeNode(
+                        computed_type,
+                        undefined,
+                        0
+                        | ts.NodeBuilderFlags.NoTruncation
+                        | ts.NodeBuilderFlags.InTypeAlias
+                     );
                      console.log(`type ${node.name.text} = ${final_type};`);
                      return ts.factory.createTypeAliasDeclaration(
                         undefined, // decorators
