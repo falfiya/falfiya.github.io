@@ -1,0 +1,15 @@
+{
+   "compilerOptions": {
+      "strict": true,
+      "lib": ["es2019"],
+      "newLine": "lf",
+      "target": "es2019",
+      "module": "esnext",
+      "moduleResolution": "node",
+
+      "esModuleInterop": true,
+
+      "declaration": true,
+   },
+   "include": ["src/**/*.ts"],
+}

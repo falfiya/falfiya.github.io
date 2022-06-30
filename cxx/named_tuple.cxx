@@ -3,11 +3,6 @@
 using size_t = unsigned long long;
 #endif
 
-template<typename T>
-struct type_identity {
-   using type = T;
-};
-
 template<typename ...>
 struct pack{};
 
@@ -48,7 +43,7 @@ struct last{};
 template<typename ...all>
 struct last<pack<all...>>
 {
-   using type = typename decltype((type_identity<all>{}, ...))::type;
+   using type = typename decltype((std::type_identity<all>{}, ...))::type;
 };
 template<typename ...ts>
 using last_t = typename last<ts...>::type;
