@@ -53,3 +53,26 @@ type add$3<i_first extends string, i_last extends [any, any], acc_first extends 
 
 
 export type _420 = add<"378", "42">;
+
+type vector<T, length extends string> = {
+   length: length;
+   ary: T[];
+};
+
+const i32 = (a: any): number => a|0;
+
+function concat<T, a extends string, b extends string>
+   (a: vector<T, a>, b: vector<T, b>):
+      vector<T, add<a, b>>
+{
+   return {length: `${i32(a.length) + i32(b.length)}`, ary: [...a.ary, ...b.ary]} as any;
+}
+
+// the classic dependent types example
+
+declare const A: vector<number, "2">;
+declare const B: vector<number, "40">;
+
+export const C = concat(A, B);
+
+C.length === "42"; // <-- always true
