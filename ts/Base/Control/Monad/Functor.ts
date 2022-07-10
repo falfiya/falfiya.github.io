@@ -1,10 +1,10 @@
-import {$_, Constructor} from "../../Kind";
+import {$_, Constructor} from "../../Generic";
 
-export interface Functor<A> {
+export interface Functor<A = any> {
    fmap<B>(fn: (_: A) => B): Functor<B>;
 }
 
-export interface FunctorKind<T extends Constructor> {
+export interface FunctorKind<T extends Constructor<Functor>> {
    <A, B>(fn: (_: A) => B, $0: $_<T, [A]>): $_<T, [B]>;
 }
 
