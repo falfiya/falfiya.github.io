@@ -13,6 +13,7 @@
       "outDir": "ts/bin",
 
       "newLine": "lf",
+      "noEmit": true,
    },
    "include": ["ts/**/*.ts"]
 }
