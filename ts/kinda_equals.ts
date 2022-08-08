@@ -16,5 +16,4 @@ type correct = mutual_extends<struct["field"], undefined> //:: boolean
 
 // so looks like we have to compare every damn field
 
-type equals<a, b> =
-   
+type equals<a, b> = 1;
