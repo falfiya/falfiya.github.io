@@ -21,9 +21,9 @@ inline void print(str s) noexcept {
 }
 
 inline char *getline() noexcept {
-	static const size_t buf_size = 256;
-	char *buf = new char[buf_size];
-	return fgets(buf, buf_size, stdin);
+   static const size_t buf_size = 256;
+   char *buf = new char[buf_size];
+   return fgets(buf, buf_size, stdin);
 }
 
 

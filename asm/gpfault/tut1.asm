@@ -1,4 +1,4 @@
-; shows bits of a value in right-to-left order			
+; shows bits of a value in right-to-left order
 macro showbits_rtl arg {
    val = arg
    while val > 0
