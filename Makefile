@@ -5,7 +5,7 @@ else
 endif
 
 # c
-c_flags   = $(shell ./space_cat.$(exe) c/compile_flags.txt)
+c_flags   = -Wall -Wextra -fuse-ld=lld
 c_dflags := -g -fsanitize=address -fsanitize
 c_rflags := -O2
 
@@ -36,7 +36,7 @@ release~%.c: c/%.release.$(exe)
 	-
 
 # cxx
-cxx_flags  := $(shell ./space_cat.$(exe) cxx/compile_flags.txt)
+cxx_flags   = -Wall -Wextra -std=c++20 -fuse-ld=lld
 cxx_dflags := -g
 cxx_rflags := -O2
 
@@ -86,3 +86,6 @@ pony-bjp~%: pony/bjp/%
 	./$</$*.exe
 
 .PHONY: cxx_weekly~%
+
+hex:
+	@python py/decode_hex_string.py
