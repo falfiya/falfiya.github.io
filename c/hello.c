@@ -1,6 +1,7 @@
 #ifdef _WIN32
 #include <stdio.h>
 #include <process.h>
+#include <windows.h>
 
 int main() {
    puts("Hello, World!");
