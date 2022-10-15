@@ -1,19 +1,27 @@
-{
-   "compilerOptions": {
-      "strict": true,
-      "lib": [
-         "es2020",
-         "dom"
-      ],
-      "target": "es2020",
-      "module": "commonjs",
-      "esModuleInterop": true,
-      "moduleResolution": "node",
-
-      "outDir": "ts/bin",
-
-      "newLine": "lf",
-      "noEmit": true,
-   },
-   "include": ["ts/**/*.ts"]
+{  "compilerOptions":
+   // type checking
+   {  "exactOptionalPropertyTypes": true
+   ,  "noImplicitAny": true
+   ,  "noImplicitReturns": true
+   ,  "noImplicitThis": true
+   ,  "noUncheckedIndexedAccess": true
+   ,  "strict": true
+   ,  "useUnknownInCatchVariables": true
+   // modules
+   ,  "module": "es2020"
+   ,  "moduleResolution": "node"
+   // emit
+   ,  "newLine": "lf"
+   ,  "noEmitOnError": true
+   ,  "outDir": "bin"
+   // interop constraints
+   ,  "esModuleInterop": true
+   ,  "forceConsistentCasingInFileNames": true
+   // Language and Environment
+   ,  "lib": ["es2020"]
+   ,  "target": "es2020"
+   // Projects
+   ,  "incremental": true
+   }
+,  "include": ["ts/**/*.ts"],
 }

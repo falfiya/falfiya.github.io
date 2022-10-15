@@ -86,9 +86,9 @@ function succ(n: number): number {
       return next;
    }
 }
-function print_next_id(u: union) {
+function print_next_id(u: union): void {
    if ("id" in u) {
-      console.log(succ(u.id));      
+      console.log(succ(u.id));
    }
 }
 print_next_id({id: "yeah this is fine"});
