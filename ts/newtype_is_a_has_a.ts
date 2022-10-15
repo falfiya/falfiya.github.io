@@ -34,4 +34,4 @@ module has_a {
    export const home = make_home(uname);
 }
 
-export type dummy = never;
+export {};

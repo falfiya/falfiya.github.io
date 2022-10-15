@@ -60,4 +60,4 @@ declare const something: special_string;
 type hello_something = add_special_strings<typeof hello, typeof something>;
 const hello_something = add_special_strings(hello, something);
 
-export type dummy = never;
+export {};
