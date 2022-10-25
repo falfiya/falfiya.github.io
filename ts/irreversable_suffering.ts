@@ -1,3 +1,4 @@
+export {};
 // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-6.html
 const lowercase = (s: string) => s.toLowerCase();
 
@@ -20,6 +21,5 @@ declare let f3: (x: Cat) => void;
 f1 = f2; // errors in strict mode
 f2 = f1; // Ok
 f2 = f3; // never ok
-
 
 // Blue balled again :Cults:

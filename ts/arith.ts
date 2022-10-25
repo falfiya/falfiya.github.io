@@ -1,3 +1,5 @@
+export {};
+
 type tuple<length extends number, cur extends [...void[]] = []> =
    cur["length"] extends length
    ? cur
@@ -13,3 +15,5 @@ function add
 }
 
 const three = add(1, 2);
+
+globalThis.i

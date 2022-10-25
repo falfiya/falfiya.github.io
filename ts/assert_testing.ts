@@ -1,3 +1,5 @@
+export {};
+
 type assert_obj<T> = {
    assert(u: unknown): asserts u is T;
    typename: string;
