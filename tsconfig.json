@@ -9,7 +9,7 @@
    ,  "useUnknownInCatchVariables": true
    // modules
    ,  "module": "es2020"
-   ,  "moduleResolution": "node"
+   ,  "moduleResolution": "node16"
    // emit
    ,  "newLine": "lf"
    ,  "noEmitOnError": true

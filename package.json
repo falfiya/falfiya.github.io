@@ -12,6 +12,7 @@
       "start": "http-server"
    },
    "dependencies": {
+      "@axel-hq/foundatsion": "file:../f-as",
       "benchmark": "^2.1.4",
       "jsdom": "^18.0.1",
       "node-fetch": "^3.0.0"
