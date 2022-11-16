@@ -4,4 +4,7 @@
    "python.formatting.provider": "black",
    "lldb.displayFormat": "auto",
    "lldb.dereferencePointers": true,
+   "cSpell.words": [
+      "unstringify"
+   ],
 }

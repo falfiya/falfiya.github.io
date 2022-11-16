@@ -39,8 +39,10 @@ type add$0<i extends string, acc extends string, carry> =
 // We see that the acc side is short on digits when we get to the 10s column.
 // add$1 generates "0" digits for the acc side when needed so that add_char works correctly.
 type add$1<i_first extends string, i_last extends [any, any], acc extends string> =
-   acc extends `${infer acc_first}${char}` ? acc extends `${acc_first}${infer acc_last}`
-      ? add$2<i_first, i_last, acc_first, acc_last> : never
+   acc extends `${infer acc_first}${char}`
+      ? acc extends `${acc_first}${infer acc_last}`
+         ? add$2<i_first, i_last, acc_first, acc_last>
+         : never
       : add$2<i_first, i_last, "", "0">
 
 // add$2 is entirely a passthrough lambda so that we have an alias for add_res
@@ -51,8 +53,30 @@ type add$2<i_first extends string, i_last extends [any, any], acc_first extends 
 type add$3<i_first extends string, i_last extends [any, any], acc_first extends string, add_res extends [any, any]> =
    `${add$0<acc_first, i_first, or<i_last[1], add_res[1]>>}${add_res[0]}`;
 
+type _10x<t extends [...any[]]> =
+   [...t, ...t, ...t, ...t, ...t, ...t, ...t, ...t, ...t, ...t];
 
-export type _420 = add<"378", "42">;
+type num_tuples = {
+   "0": [],
+   "1": [0],
+   "2": [0, 0],
+   "3": [0, 0, 0],
+   "4": [0, 0, 0, 0],
+   "5": [0, 0, 0, 0, 0],
+   "6": [0, 0, 0, 0, 0, 0],
+   "7": [0, 0, 0, 0, 0, 0, 0],
+   "8": [0, 0, 0, 0, 0, 0, 0, 0],
+   "9": [0, 0, 0, 0, 0, 0, 0, 0, 0],
+};
+
+type unstringify_rec<s extends string, i extends [...any] = num_tuples[0]> =
+   s extends `${infer head extends char}${infer tail}`
+      ? unstringify_rec<tail, [..._10x<i>, ...num_tuples[head]]>
+      : i;
+
+type unstringify<s extends string> = unstringify_rec<s>["length"];
+
+export type _420 = unstringify<add<"378", "42">>; //:: 420
 
 type vector<T, length extends string> = {
    length: length;
