@@ -4,16 +4,10 @@
    "repository": "https://github.com/coalpha/coalpha.github.io",
    "devDependencies": {
       "@types/node": "latest",
-      "http-server": "latest",
       "readline-sync": "latest",
       "typescript": "latest"
    },
-   "scripts": {
-      "start": "http-server"
-   },
    "dependencies": {
-      "benchmark": "^2.1.4",
-      "jsdom": "^18.0.1",
-      "node-fetch": "^3.0.0"
+      "benchmark": "^2.1.4"
    }
 }
