@@ -3,7 +3,7 @@ import io
 import sys
 from typing import *
 
-def endl(ostream):
+def endl(ostream: basic_ostream):
    ostream.file.write('\n')
    ostream.file.flush()
 
@@ -13,7 +13,7 @@ class basic_ostream:
 
    def __lshift__(self, val) -> basic_ostream:
       if val is endl:
-         endl(val)
+         endl(self)
       else:
          self.file.write(val)
       return self

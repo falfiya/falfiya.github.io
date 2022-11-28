@@ -2,7 +2,7 @@
    // type checking
    {  "exactOptionalPropertyTypes": true
    ,  "noImplicitAny": true
-   ,  "noImplicitReturns": true
+   // ,  "noImplicitReturns": true
    ,  "noImplicitThis": true
    ,  "noUncheckedIndexedAccess": true
    ,  "strict": true
@@ -11,7 +11,6 @@
    ,  "module": "commonjs"
    ,  "moduleResolution": "node16"
    // emit
-   ,  "declaration": true
    ,  "newLine": "lf"
    ,  "noEmitOnError": true
    ,  "outDir": "bin"
@@ -21,8 +20,6 @@
    // Language and Environment
    ,  "lib": ["es2020"]
    ,  "target": "es2020"
-   // Projects
-   // ,  "incremental": true
    }
-,  "include": ["src/*.ts"],
+,  "include": ["index.ts"],
 }

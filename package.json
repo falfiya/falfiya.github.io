@@ -8,6 +8,7 @@
       "typescript": "latest"
    },
    "dependencies": {
-      "benchmark": "^2.1.4"
+      "benchmark": "^2.1.4",
+      "ts-node": "^10.9.1"
    }
 }
