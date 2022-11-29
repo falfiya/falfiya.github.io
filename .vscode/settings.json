@@ -7,4 +7,5 @@
    "cSpell.words": [
       "unstringify"
    ],
+   "typescript.tsdk": "node_modules\\typescript\\lib",
 }

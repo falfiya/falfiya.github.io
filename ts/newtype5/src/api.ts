@@ -1,6 +1,6 @@
 export namespace api {
-   //! newtype5::bake
+   //! inline
    export type api_in<_> = unknown;
-   //! newtype5::bake
+   //! bake
    export type api_out<t> = t;
 }
