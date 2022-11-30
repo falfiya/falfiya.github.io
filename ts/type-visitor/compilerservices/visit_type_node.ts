@@ -110,6 +110,73 @@ function bake_type(tn: ts.TypeNode): ts.TypeNode {
    }
 }
 
+function transformer(context: ts.TransformationContext) {
+   return function bake(maybebundle: ts.SourceFile | ts.Bundle) {
+      if (maybebundle.kind === ts.SyntaxKind.Bundle) {
+         throw new Error("bundle??");
+      }
+      const source = maybebundle;
+      function visitor(node: ts.Node): ts.VisitResult<ts.Node> {
+         that: if (ts.isTypeReferenceNode(node)) {
+            const tn = node.typeName;
+            if (!tn.getText().includes("api")) {
+               break that;
+            }
+            console.log(tn.getText());
+            const s = checker.getSymbolAtLocation(tn);
+            if (s) {
+               type k = {[k in keyof ts.TypeAliasDeclaration]: ts.TypeAliasDeclaration[k]};
+               const id = s?.declarations?.[0] as ts.TypeAliasDeclaration;
+               console.log(id.name.getText());
+            }
+         }
+         if (ts.isTypeAliasDeclaration(node)) {
+            //! bake
+            if (should_inline(node, source)) {
+               const computed_type = checker.getTypeFromTypeNode(node.type);
+               const final_type = checker.typeToTypeNode(
+                  computed_type,
+                  undefined, // ???
+                  0 // vvvvv this is where the magic happens
+                  | ts.NodeBuilderFlags.NoTruncation
+                  | ts.NodeBuilderFlags.InTypeAlias
+                  | ts.NodeBuilderFlags.UseFullyQualifiedType
+               );
+               if (final_type == undefined) {
+                  throw new Error("cannot bake");
+               }
+               process.stdout.write(`STAGE1: BAKE type ${node.name.text}\n`);
+               return ts.factory.createTypeAliasDeclaration(
+                  node.modifiers,
+                  node.name,
+                  undefined, // type parameters
+                  final_type,
+               );
+            }
+         }
+         ts.transform
+         return ts.visitEachChild(node, visitor, context);
+      }
+      return ts.visitEachChild(source, visitor, context);
+   }
+}
+
+let emitResult = program.emit(
+   undefined,
+   undefined,
+   undefined,
+   undefined,
+   {before: [transformer]},
+);
+
+// Report errors
+print_diagnostics(emitResult.diagnostics);
+
+// Return code
+let exitCode = emitResult.emitSkipped ? 1 : 0;
+process.exit(exitCode);
+
+
 export enum SyntaxTypeishKind {
    NumericLiteral = 8,
    BigIntLiteral = 9,
@@ -189,109 +256,3 @@ export enum SyntaxTypeishKind {
    // UnparsedSyntheticReference = 307,
    SourceFile = 308,
 }
-
-const tf = ts.TypeFlags;
-function unwrap_type(otn: ts.TypeNode): ts.TypeNode {
-   const typ = checker.getTypeFromTypeNode(otn);
-
-   // special types
-   if (typ.flags & tf.Any) {
-      return otn;
-   }
-   if (typ.flags & tf.Unknown) {
-      return otn;
-   }
-   if (typ.flags & tf.Never) {
-      return otn;
-   }
-
-   // any single value
-   if (typ.flags & tf.Unit) {
-      return otn;
-   }
-
-   // primitive types
-   if (!(typ.flags & tf.NonPrimitive)) {
-      return otn;
-   }
-
-   const ntn = checker.typeToTypeNode(
-      typ,
-      undefined, // enclosingDelcaration
-      ts.NodeBuilderFlags.UseFullyQualifiedType,
-   );
-
-   if (ntn == null) {
-      console.log(`Failure mode. Couldn't write type for ${otn.getText()}`);
-      return otn;
-   }
-
-   
-}
-
-function transformer(context: ts.TransformationContext) {
-   return function bake(maybebundle: ts.SourceFile | ts.Bundle) {
-      if (maybebundle.kind === ts.SyntaxKind.Bundle) {
-         throw new Error("bundle??");
-      }
-      const source = maybebundle;
-      function visitor(node: ts.Node): ts.VisitResult<ts.Node> {
-         that: if (ts.isTypeReferenceNode(node)) {
-            const tn = node.typeName;
-            if (!tn.getText().includes("api")) {
-               break that;
-            }
-            console.log(tn.getText());
-            const s = checker.getSymbolAtLocation(tn);
-            if (s) {
-               type k = {[k in keyof ts.TypeAliasDeclaration]: ts.TypeAliasDeclaration[k]};
-               const id = s?.declarations?.[0] as ts.TypeAliasDeclaration;
-               console.log(id.name.getText());
-            }
-         }
-         if (ts.isTypeAliasDeclaration(node)) {
-            //! bake
-            if (should_inline(node, source)) {
-               const computed_type = checker.getTypeFromTypeNode(node.type);
-               const final_type = checker.typeToTypeNode(
-                  computed_type,
-                  undefined, // ???
-                  0 // vvvvv this is where the magic happens
-                  | ts.NodeBuilderFlags.NoTruncation
-                  | ts.NodeBuilderFlags.InTypeAlias
-                  | ts.NodeBuilderFlags.UseFullyQualifiedType
-               );
-               if (final_type == undefined) {
-                  throw new Error("cannot bake");
-               }
-               process.stdout.write(`STAGE1: BAKE type ${node.name.text}\n`);
-               return ts.factory.createTypeAliasDeclaration(
-                  node.modifiers,
-                  node.name,
-                  undefined, // type parameters
-                  final_type,
-               );
-            }
-         }
-         ts.transform
-         return ts.visitEachChild(node, visitor, context);
-      }
-      return ts.visitEachChild(source, visitor, context);
-   }
-}
-
-let emitResult = program.emit(
-   undefined,
-   undefined,
-   undefined,
-   undefined,
-   {before: [transformer]},
-);
-
-// Report errors
-print_diagnostics(emitResult.diagnostics);
-
-// Return code
-let exitCode = emitResult.emitSkipped ? 1 : 0;
-process.exit(exitCode);
-

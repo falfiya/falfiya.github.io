@@ -1,7 +1,7 @@
 // simpler newtype and corrected to allow for unions and type narrowing
 export {};
 
-declare const phi: unique symbol;
+export declare const phi: unique symbol;
 
 type union_to_intersection<u> =
    (u extends any ? {(k: u): void} : never) extends {(k: infer t): void} ? t : never;

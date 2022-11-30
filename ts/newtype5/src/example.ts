@@ -1,5 +1,5 @@
 import {api} from "./api";
-import {newtype, unwrap} from "./newtype5";
+import {newtype, unwrap, phi} from "./newtype5";
 
 type unsigned = (number | bigint) & newtype<"unsigned">;
 function is_unsigned(n: number | bigint): n is unsigned {
