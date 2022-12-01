@@ -51,6 +51,8 @@ const program = ts.createProgram(config.fileNames, config.options);
 console.log("errors after program");
 print_diagnostics(ts.getPreEmitDiagnostics(program));
 
+
+
 function should_inline(ta: ts.TypeAliasDeclaration, file: ts.SourceFile): boolean {
    const raw = file.getFullText();
    const ranges = ts.getLeadingCommentRanges(raw, ta.getFullStart());
@@ -71,6 +73,7 @@ const checker = program.getTypeChecker();
 // comment command = cc
 function cc_trans_factory(ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile>
 {
+   ctx.factory.createTypeReferenceNode
    function cc_trans(src: ts.SourceFile): ts.SourceFile {
       function visitor(node: ts.Node): ts.VisitResult<ts.Node> {
          that: if (ts.isTypeReferenceNode(node)) {
@@ -191,6 +194,28 @@ export enum SyntaxTypeishKind {
 }
 
 const tf = ts.TypeFlags;
+
+function shallow_unwrap(otn: ts.TypeNode): ts.TypeNode {
+   const typ = checker.getTypeFromTypeNode(otn);
+
+   if (!(typ.flags & tf.Intersection)) {
+      return otn;
+   }
+
+   const rewrite = checker.typeToTypeNode(
+      typ,
+      undefined, // enclosingDelcaration
+      ts.NodeBuilderFlags.UseFullyQualifiedType
+   )
+
+   if (rewrite === undefined) {
+      console.log(`Failure mode. Couldn't write type for ${otn.getText()}`);
+      return otn;
+   }
+
+   // next, find the side of the intersection that has the unique part 
+}
+
 function unwrap_type(otn: ts.TypeNode): ts.TypeNode {
    const typ = checker.getTypeFromTypeNode(otn);
 
