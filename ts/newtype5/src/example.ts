@@ -25,7 +25,6 @@ if (is_unsigned(my_int)) {
 
 type num = unwrap<u32>; //:: number
 
-
 // we want this to look like succ(a: number): number
 export function succ(a: api.api_in<u32>): api.api_out<u32> {
    const b = to_i32(a);
