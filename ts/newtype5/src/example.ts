@@ -1,5 +1,4 @@
-import {api} from "./api";
-import {newtype, unwrap} from "./newtype5";
+import {newtype, unwrap, api_in, api_out} from "./newtype5";
 
 type unsigned = (number | bigint) & newtype<"unsigned">;
 function is_unsigned(n: number | bigint): n is unsigned {
@@ -26,7 +25,7 @@ if (is_unsigned(my_int)) {
 type num = unwrap<u32>; //:: number
 
 // we want this to look like succ(a: number): number
-export function succ(a: api.api_in<u32>): api.api_out<u32> {
+export function succ(a: api_in<u32>): api_out<u32> {
    const b = to_i32(a);
    if (is_unsigned(b)) {
       return (b + 1) as never;

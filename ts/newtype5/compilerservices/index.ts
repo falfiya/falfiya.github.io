@@ -45,44 +45,66 @@ if (config.errors.length > 0) {
 }
 
 // Compile
-console.log("errors after program");
-const program = ts.createProgram(config.fileNames, config.options);
+// allows us to access parent nodes
+const compiler_host = ts.createCompilerHost(config.options, true);
 
 console.log("errors after program");
+const program = ts.createProgram(config.fileNames, config.options, compiler_host);
 print_diagnostics(ts.getPreEmitDiagnostics(program));
 
-
-
-function should_inline(ta: ts.TypeAliasDeclaration, file: ts.SourceFile): boolean {
+function has_leading_comment
+   (needle: string, node: ts.Node, file: ts.SourceFile):
+      boolean
+{
    const raw = file.getFullText();
-   const ranges = ts.getLeadingCommentRanges(raw, ta.getFullStart());
+   const ranges = ts.getLeadingCommentRanges(raw, node.getFullStart());
    if (!ranges) return false;
    for (const {pos, end} of ranges) {
-      const comment = raw.slice(pos, end);
-      if (comment === "//! inline") {
+      const haystack = raw.slice(pos, end);
+      console.log(haystack);
+      if (haystack === needle) {
          return true;
       }
    }
    return false;
 }
 
-type z = ts.LanguageService
+function is_nt_symbol(ta: ts.VariableStatement, file: ts.SourceFile): boolean {
+   return has_leading_comment("//! newtype::symbol", ta, file);
+}
+
+function is_api_out(ta: ts.TypeAliasDeclaration, file: ts.SourceFile): boolean {
+   return has_leading_comment("//! newtype::api_out", ta, file);
+}
 
 const checker = program.getTypeChecker();
+
+let nt_symbol: ts.TypeAliasDeclaration | null = null;
 
 // comment command = cc
 function cc_trans_factory(ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile>
 {
-   ctx.factory.createTypeReferenceNode
+   console.log("cctf");
    function cc_trans(src: ts.SourceFile): ts.SourceFile {
       function visitor(node: ts.Node): ts.VisitResult<ts.Node> {
-         that: if (ts.isTypeReferenceNode(node)) {
+         if (ts.isVariableStatement(node)) {
+            if (is_nt_symbol(node, src)) {
+               console.log("I found the symbol!");
+               console.log(node.getText());
+            } else {
+               console.log("was not the symbol ", node.getText());
+               
+            }
+            return undefined;
+         }
+         if (ts.isTypeReferenceNode(node)) then: {
             const tn = node.typeName;
             if (!tn.getText().includes("api")) {
-               break that;
+               break then;
             }
             console.log(tn.getText());
             const s = checker.getSymbolAtLocation(tn);
+            
             if (s) {
                const id = s?.declarations?.[0] as ts.TypeAliasDeclaration;
                console.log(id.name.getText());
@@ -112,7 +134,7 @@ function bake_type(tn: ts.TypeNode): ts.TypeNode {
       return tn;
    }
 }
-
+/*
 export enum SyntaxTypeishKind {
    NumericLiteral = 8,
    BigIntLiteral = 9,
@@ -250,10 +272,9 @@ function unwrap_type(otn: ts.TypeNode): ts.TypeNode {
       console.log(`Failure mode. Couldn't write type for ${otn.getText()}`);
       return otn;
    }
-
-   
 }
-
+*/
+/*
 function transformer(context: ts.TransformationContext) {
    return function bake(maybebundle: ts.SourceFile | ts.Bundle) {
       if (maybebundle.kind === ts.SyntaxKind.Bundle) {
@@ -304,13 +325,13 @@ function transformer(context: ts.TransformationContext) {
       return ts.visitEachChild(source, visitor, context);
    }
 }
-
+*/
 let emitResult = program.emit(
    undefined,
    undefined,
    undefined,
    undefined,
-   {before: [transformer]},
+   {afterDeclarations: [cc_trans_factory as never]},
 );
 
 // Report errors

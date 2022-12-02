@@ -1,6 +1,7 @@
 // simpler newtype and corrected to allow for unions and type narrowing
 export {};
 
+//! newtype::symbol
 declare const phi: unique symbol;
 
 type union_to_inter<u> =
@@ -22,10 +23,10 @@ export type unwrap<outer> =
          : never
       : outer;
 
-//! newtype::inline
+//! newtype::api_in
 export type api_in<_> = unknown;
 
-//! newtype::bake
+//! newtype::api_out
 export type api_out<t> = t;
 
 export function unwrap<outer>(outer: outer): unwrap<outer> {
