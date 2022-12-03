@@ -52,94 +52,90 @@ console.log("errors after program");
 const program = ts.createProgram(config.fileNames, config.options, compiler_host);
 print_diagnostics(ts.getPreEmitDiagnostics(program));
 
-function print_comments(node: ts.Node, file: ts.SourceFile) {
-   try {
-      console.log(node.getText());
-      const raw = file.getFullText();
-      const ranges = ts.getLeadingCommentRanges(raw, node.getFullStart());
-      if (!ranges) return;
-      for (const {pos, end} of ranges) {
-         console.log(raw.slice(pos, end));
-      }
-   } catch (e) {}
-}
-
-function has_leading_comment
-   (needle: string, node: ts.Node, file: ts.SourceFile):
-      boolean
-{
-   const raw = file.getFullText();
-   const ranges = ts.getLeadingCommentRanges(raw, node.getFullStart());
-   if (!ranges) return false;
-   for (const {pos, end} of ranges) {
-      const haystack = raw.slice(pos, end);
-      if (haystack === needle) {
-         return true;
-      }
-   }
-   return false;
-}
-
-function is_nt_alias(n: ts.Node, file: ts.SourceFile): boolean {
-   if (ts.isTypeAliasDeclaration(n)) {
-      if (has_leading_comment("//! newtype::newtype", n, file)) {
-         return true;
-      } else {
-         const raw = file.getFullText();
-         const ranges = ts.getLeadingCommentRanges(raw, n.getFullStart());
-         console.log(n.getText(), "missed the comment", ranges);
-      }
-   } else {
-      console.log(n.getText(), "was not a type alias");
-   }
-   return false;
-}
-
-function is_nt_symbol(ta: ts.VariableStatement, file: ts.SourceFile): boolean {
-   return has_leading_comment("//! newtype::symbol", ta, file);
-}
-
-function is_api_out(ta: ts.TypeAliasDeclaration, file: ts.SourceFile): boolean {
-   return has_leading_comment("//! newtype::api_out", ta, file);
-}
-
 const checker = program.getTypeChecker();
 
 let nt_symbol: ts.TypeAliasDeclaration | null = null;
 
+function leading_comments(node: ts.Node): string[] {
+   const declaration_file = node.getSourceFile();
+   const raw = declaration_file.getFullText();
+   const start = node.getFullStart();
+   const ranges = ts.getLeadingCommentRanges(raw, start);
+   return ranges ? ranges.map(({pos, end}) => raw.slice(pos, end)) : [];
+}
+
+
+
 // comment command = cc
 function cc_trans_factory(ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile>
 {
+   function unwrapping_visitor(node: ts.Node): ts.Node {
+      if (ts.isTypeReferenceNode(node)) then: {
+         const computed_type = checker.getTypeFromTypeNode(node);
+         if (computed_type.aliasSymbol == null) {
+            return node;
+         }
+         const sym = computed_type.aliasSymbol;
+         if (sym.declarations == null) {
+            return node;
+         }
+         const [declaration] = sym.declarations;
+         if (declaration == null) {
+            return node;
+         }
+         if (!ts.isTypeAliasDeclaration(declaration)) {
+            return node;
+         }
+
+         if (!leading_comments(declaration).includes("//! newtype")) {
+            return node;
+         }
+
+         return ctx.factory.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword);
+      }
+      return ts.visitEachChild(node, unwrapping_visitor, ctx);
+   }
+
    function cc_trans(src: ts.SourceFile): ts.SourceFile {
       function visitor(node: ts.Node): ts.VisitResult<ts.Node> {
-         // if (ts.isVariableStatement(node)) {
-         //    if (is_nt_symbol(node, src)) {
-         //       console.log("I found the symbol!");
-         //       console.log(node.getText());
-         //    } else {
-         //       console.log("was not the symbol ", node.getText());
-         //    }
-         //    return node;
-         // }
-         print_comments(node, src);
          if (ts.isTypeReferenceNode(node)) then: {
             const computed_type = checker.getTypeFromTypeNode(node);
-            if (is_newtype_alias(computed_type, src)) {
-               return ctx.factory.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword);
-            } else {
+            console.log(node.getText());
+            if (computed_type.aliasSymbol == null) {
+               console.log("|  not alias symbol");
                return node;
             }
-            // const tn = node.typeName;
-            // if (!tn.getText().includes("api")) {
-            //    break then;
-            // }
-            // console.log(tn.getText());
-            // const s = checker.getSymbolAtLocation(tn);
-            
-            // if (s) {
-            //    const id = s?.declarations?.[0] as ts.TypeAliasDeclaration;
-            //    console.log(id.name.getText());
-            // }
+            const sym = computed_type.aliasSymbol;
+            if (sym.declarations == null) {
+               console.log("|  no declarations");
+               return node;
+            }
+            const [declaration] = sym.declarations;
+            if (declaration == null) {
+               console.log("|  no declaration");
+               return node;
+            }
+            if (!ts.isTypeAliasDeclaration(declaration)) {
+               console.log("|  not a type alias");
+               return node;
+            }
+            console.log(`!  ${declaration.getText()}`);
+
+            const declaration_file = declaration.getSourceFile();
+            const raw = declaration_file.getFullText();
+            const start = declaration.getFullStart();
+            const ranges = ts.getLeadingCommentRanges(raw, start);
+            if (!ranges) {
+               console.log("!  no leading comments");
+               return node;
+            }
+
+            const comments = ranges.map(({pos, end}) => raw.slice(pos, end));
+            if (comments.every(comment => comment !== "//! newtype")) {
+               return node;
+            }
+
+            return ctx.factory.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword);
          }
          return ts.visitEachChild(node, visitor, ctx);
       }
@@ -147,55 +143,6 @@ function cc_trans_factory(ctx: ts.TransformationContext): ts.Transformer<ts.Sour
    }
    return cc_trans;
 }
-
-function symbol_is_newtype(s: ts.Symbol, f: ts.SourceFile): boolean {
-   if (!s.declarations) return false;
-   if (!s.declarations[0]) return false;
-   const declaration = s.declarations[0];
-   return is_nt_alias(declaration, f);
-}
-
-
-function is_newtype_alias(t: ts.Type, f: ts.SourceFile): boolean {
-   if (t.aliasSymbol == null) return false;
-   return symbol_is_newtype(t.aliasSymbol, f);
-}
-
-// function bake_type(tn: ts.TypeNode, f: ts.SourceFile): ts.TypeNode {
-//    console.log(tn.getText());
-//    const computed_type = checker.getTypeFromTypeNode(tn);
-//    if (newtype_alias(computed_type, f)) {
-//       console.log("bing bong");
-//       factory.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword);
-//    } else {
-//       return tn;
-//    }
-//    if (computed_type.flags & ts.TypeFlags.Intersection) {
-//       console.log("isinter")
-//       const inter = computed_type as ts.IntersectionType;
-//       inter.types = inter.types.filter(not_nt_a(f));
-//       const baked_type = checker.typeToTypeNode(
-//          inter,
-//          undefined, // ???
-//          0 // vvvvv this is where the magic happens
-//          | ts.NodeBuilderFlags.NoTruncation
-//          | ts.NodeBuilderFlags.GenerateNamesForShadowedTypeParams
-//          | ts.NodeBuilderFlags.UseFullyQualifiedType
-//          // | ts.NodeBuilderFlags.UseOnlyExternalAliasing
-//          | ts.NodeBuilderFlags.UseAliasDefinedOutsideCurrentScope
-//          | ts.NodeBuilderFlags.InTypeAlias
-//       );
-//       if (baked_type) {
-//          return baked_type;
-//       } else {
-//          console.error(`Could not bake ${tn.getText()}`);
-//          return tn;
-//       }
-//    } else {
-//       console.log("not inter")
-//       return tn;
-//    }
-// }
 
 function bake_typereal(tn: ts.TypeNode): ts.TypeNode {
    const computed_type = checker.getTypeFromTypeNode(tn);
@@ -214,198 +161,7 @@ function bake_typereal(tn: ts.TypeNode): ts.TypeNode {
       return tn;
    }
 }
-/*
-export enum SyntaxTypeishKind {
-   NumericLiteral = 8,
-   BigIntLiteral = 9,
-   StringLiteral = 10,
-   NoSubstitutionTemplateLiteral = 14,
 
-   // only with type query
-   // Identifier = 79,
-   // PrivateIdentifier = 80,
-   FalseKeyword = 95,
-   NullKeyword = 104,
-   // thistype instead
-   // ThisKeyword = 108,
-   TrueKeyword = 110,
-   // typequery instead
-   // TypeOfKeyword = 112,
-   VoidKeyword = 114,
-   WhileKeyword = 115,
-   AnyKeyword = 131,
-   BooleanKeyword = 134,
-   // use conditional type & infertype
-   // InferKeyword = 138,
-   IntrinsicKeyword = 139,
-   // use type predicate instead
-   // IsKeyword = 140,
-   // use mapped type instead
-   // KeyOfKeyword = 141,
-   NeverKeyword = 144,
-   // OutKeyword = 145,
-   // use type operator instead
-   // ReadonlyKeyword = 146,
-   NumberKeyword = 148,
-   ObjectKeyword = 149,
-   StringKeyword = 152,
-   SymbolKeyword = 153,
-   // can't have type within type
-   // TypeKeyword = 154,
-   UndefinedKeyword = 155,
-   UniqueKeyword = 156,
-   UnknownKeyword = 157,
-   BigIntKeyword = 160,
-   QualifiedName = 163,
-   // ComputedPropertyName = 164,
-   // etc t<x>
-   TypeParameter = 165,
-   Parameter = 166,
-   Decorator = 167,
-   PropertySignature = 168,
-   MethodSignature = 170,
-   CallSignature = 176,
-   ConstructSignature = 177,
-   IndexSignature = 178,
-   TypePredicate = 179,
-   TypeReference = 180,
-   FunctionType = 181,
-   ConstructorType = 182,
-   TypeQuery = 183, // typeof
-   TypeLiteral = 184,
-   ArrayType = 185,
-   TupleType = 186,
-   OptionalType = 187,
-   RestType = 188,
-   UnionType = 189,
-   IntersectionType = 190,
-   ConditionalType = 191,
-   InferType = 192,
-   ParenthesizedType = 193,
-   ThisType = 194,
-   TypeOperator = 195,
-   IndexedAccessType = 196,
-   MappedType = 197,
-   LiteralType = 198,
-   NamedTupleMember = 199,
-   TemplateLiteralType = 200,
-   TemplateLiteralTypeSpan = 201,
-   ImportType = 202,
-   // UnparsedSyntheticReference = 307,
-   SourceFile = 308,
-}
-
-const tf = ts.TypeFlags;
-
-function shallow_unwrap(otn: ts.TypeNode): ts.TypeNode {
-   const typ = checker.getTypeFromTypeNode(otn);
-
-   if (!(typ.flags & tf.Intersection)) {
-      return otn;
-   }
-
-   const rewrite = checker.typeToTypeNode(
-      typ,
-      undefined, // enclosingDelcaration
-      ts.NodeBuilderFlags.UseFullyQualifiedType
-   )
-
-   if (rewrite === undefined) {
-      console.log(`Failure mode. Couldn't write type for ${otn.getText()}`);
-      return otn;
-   }
-
-   // next, find the side of the intersection that has the unique part 
-}
-
-function unwrap_type(otn: ts.TypeNode): ts.TypeNode {
-   const typ = checker.getTypeFromTypeNode(otn);
-
-   // special types
-   if (typ.flags & tf.Any) {
-      return otn;
-   }
-   if (typ.flags & tf.Unknown) {
-      return otn;
-   }
-   if (typ.flags & tf.Never) {
-      return otn;
-   }
-
-   // any single value
-   if (typ.flags & tf.Unit) {
-      return otn;
-   }
-
-   // primitive types
-   if (!(typ.flags & tf.NonPrimitive)) {
-      return otn;
-   }
-
-   const ntn = checker.typeToTypeNode(
-      typ,
-      undefined, // enclosingDelcaration
-      ts.NodeBuilderFlags.UseFullyQualifiedType,
-   );
-
-   if (ntn == null) {
-      console.log(`Failure mode. Couldn't write type for ${otn.getText()}`);
-      return otn;
-   }
-}
-*/
-/*
-function transformer(context: ts.TransformationContext) {
-   return function bake(maybebundle: ts.SourceFile | ts.Bundle) {
-      if (maybebundle.kind === ts.SyntaxKind.Bundle) {
-         throw new Error("bundle??");
-      }
-      const source = maybebundle;
-      function visitor(node: ts.Node): ts.VisitResult<ts.Node> {
-         that: if (ts.isTypeReferenceNode(node)) {
-            const tn = node.typeName;
-            if (!tn.getText().includes("api")) {
-               break that;
-            }
-            console.log(tn.getText());
-            const s = checker.getSymbolAtLocation(tn);
-            if (s) {
-               type k = {[k in keyof ts.TypeAliasDeclaration]: ts.TypeAliasDeclaration[k]};
-               const id = s?.declarations?.[0] as ts.TypeAliasDeclaration;
-               console.log(id.name.getText());
-            }
-         }
-         if (ts.isTypeAliasDeclaration(node)) {
-            //! bake
-            if (should_inline(node, source)) {
-               const computed_type = checker.getTypeFromTypeNode(node.type);
-               const final_type = checker.typeToTypeNode(
-                  computed_type,
-                  undefined, // ???
-                  0 // vvvvv this is where the magic happens
-                  | ts.NodeBuilderFlags.NoTruncation
-                  | ts.NodeBuilderFlags.InTypeAlias
-                  | ts.NodeBuilderFlags.UseFullyQualifiedType
-               );
-               if (final_type == undefined) {
-                  throw new Error("cannot bake");
-               }
-               process.stdout.write(`STAGE1: BAKE type ${node.name.text}\n`);
-               return ts.factory.createTypeAliasDeclaration(
-                  node.modifiers,
-                  node.name,
-                  undefined, // type parameters
-                  final_type,
-               );
-            }
-         }
-         ts.transform
-         return ts.visitEachChild(node, visitor, context);
-      }
-      return ts.visitEachChild(source, visitor, context);
-   }
-}
-*/
 let emitResult = program.emit(
    undefined,
    undefined,

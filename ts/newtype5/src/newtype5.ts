@@ -13,10 +13,10 @@ type newtype_partials_union<phi_uniq_union extends keyof any> =
 type newtype_inter<uniqs extends keyof any> =
    union_to_inter<newtype_partials_union<uniqs>>;
 
-//! newtype::newtype
+//! newtype
 export type newtype<uniq extends string | symbol> = {[phi]: {[k in uniq]: void}};
 
-//! newtype::unwrap
+//! unwrap
 export type unwrap<outer> =
    outer extends {[phi]: {}}
       ? outer extends infer inner & newtype_inter<keyof outer[typeof phi]>
@@ -24,10 +24,10 @@ export type unwrap<outer> =
          : never
       : outer;
 
-//! newtype::api_in
+//! api_in
 export type api_in<_> = unknown;
 
-//! newtype::api_out
+//! api_out
 export type api_out<t> = t;
 
 export function unwrap<outer>(outer: outer): unwrap<outer> {
