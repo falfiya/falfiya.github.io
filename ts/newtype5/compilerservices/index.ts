@@ -1,6 +1,7 @@
 import fs from "fs";
 import ts from "typescript";
 import {dirname} from "path";
+import rl from 'readline-sync';
 
 function print_diagnostics(diagnostics: readonly ts.Diagnostic[]): void {
    for (const diag of diagnostics) {
@@ -46,10 +47,10 @@ if (config.errors.length > 0) {
 
 // Compile
 // allows us to access parent nodes
-// const compiler_host = ts.createCompilerHost(config.options, true);
+const compiler_host = ts.createCompilerHost(config.options, true);
 
 console.log("errors after program");
-const program = ts.createProgram(config.fileNames, config.options, /* compiler_host */);
+const program = ts.createProgram(config.fileNames, config.options, compiler_host);
 print_diagnostics(ts.getPreEmitDiagnostics(program));
 
 const checker = program.getTypeChecker();
@@ -62,7 +63,7 @@ function leading_comments(node: ts.Node, sf: ts.SourceFile): string[] {
    return ranges ? ranges.map(({pos, end}) => raw.slice(pos, end).trim()) : [];
 }
 
-function orig_decl_rec(tr: ts.TypeReferenceNode): null | ts.NamedDeclaration {
+function orig_decl(tr: ts.TypeReferenceNode): null | ts.NamedDeclaration {
    const potential_alias = checker.getTypeFromTypeNode(tr);
    let sym = potential_alias.aliasSymbol;
    if (!sym) {
@@ -86,16 +87,29 @@ function orig_decl_rec(tr: ts.TypeReferenceNode): null | ts.NamedDeclaration {
    return declaration;
 }
 
-function orig_decl(tr: ts.TypeReferenceNode): null | ts.TypeAliasDeclaration {
+function orig_tdecl(tr: ts.TypeReferenceNode): null | ts.TypeAliasDeclaration {
    let count = 0;
    let declaration;
    do {
-      declaration = orig_decl_rec(tr);
+      declaration = orig_decl(tr);
       if (declaration === null) {
          return null;
       }
       if (count++ > 10) {
+         console.log(`|   ${tr.getFullText()}`);
          console.log("|   orig_decl not type alias");
+         if (tr.getText().includes("api_out")) {
+            while (true) {
+               const t = ts;
+               const c = checker;
+               var x;
+               try {
+                  console.log(eval(rl.question("> ")));
+               } catch (e) {
+                  console.log(e);
+               }
+            }
+         }
          return null;
       }
    } while (!ts.isTypeAliasDeclaration(declaration));
@@ -132,7 +146,7 @@ class cc_transformer implements ts.CustomTransformer {
       
             if (ts.isTypeReferenceNode(node)) {
                console.log(node.getText());
-               let orig = orig_decl(node);
+               let orig = orig_tdecl(node);
                if (!orig) {
                   break this_node_into_children;
                }
@@ -179,7 +193,7 @@ class cc_transformer implements ts.CustomTransformer {
       const unwrapping_visitor = (node: ts.Node): ts.Node => {
          console.log("%   unwrapping!");
          if (ts.isTypeReferenceNode(node)) {
-            const orig = orig_decl(node);
+            const orig = orig_tdecl(node);
             if (orig && leading_comments(orig, src).includes("//! newtype")) {
                return this.ctx.factory.createKeywordTypeNode(
                   ts.SyntaxKind.UnknownKeyword

@@ -4,7 +4,8 @@
    "repository": "https://github.com/coalpha/coalpha.github.io",
    "devDependencies": {
       "@types/node": "latest",
-      "readline-sync": "latest",
+      "@types/readline-sync": "^1.4.4",
+      "readline-sync": "^1.4.10",
       "typescript": "latest"
    },
    "dependencies": {
