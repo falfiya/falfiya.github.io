@@ -1,4 +1,5 @@
 export {};
+declare const phi: unique symbol;
 type union_to_inter<u> = (u extends any ? {
     (k: u): void;
 } : never) extends {

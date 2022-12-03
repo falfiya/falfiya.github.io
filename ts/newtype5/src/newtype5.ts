@@ -13,6 +13,7 @@ type newtype_partials_union<phi_uniq_union extends keyof any> =
 type newtype_inter<uniqs extends keyof any> =
    union_to_inter<newtype_partials_union<uniqs>>;
 
+//! newtype::newtype
 export type newtype<uniq extends string | symbol> = {[phi]: {[k in uniq]: void}};
 
 //! newtype::unwrap
