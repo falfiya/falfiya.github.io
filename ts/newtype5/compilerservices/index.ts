@@ -63,6 +63,74 @@ function leading_comments(node: ts.Node, sf: ts.SourceFile): string[] {
    return ranges ? ranges.map(({pos, end}) => raw.slice(pos, end).trim()) : [];
 }
 
+function get_export(mod: ts.Symbol | undefined, id: ts.Identifier): ts.Symbol | null {
+   if (!mod) {
+      return null;
+   }
+
+   if (!mod.exports) {
+      return null;
+   }
+
+   const res_export = mod.exports.get(id.escapedText);
+   if (!res_export) {
+      return null;
+   }
+
+   return res_export;
+}
+
+function get_declarations(s: ts.Symbol | undefined): ts.Declaration[] {
+   if (!s) {
+      return [];
+   }
+
+   if (!s.declarations) {
+      return [];
+   }
+
+   return s.declarations;
+}
+
+// NamedDeclaration
+// :> ImportSpecifier
+// :> DeclarationStatement
+//    :> ImportEqualsDeclaration
+//    :> TypeAliasDeclaration <- good!
+function find_actual_type_declaration(nd: ts.NamedDeclaration): ts.TypeAliasDeclaration | null {
+   if (ts.isTypeAliasDeclaration(nd)) {
+      return nd;
+   }
+
+
+   if (ts.isImportSpecifier(nd)) {
+      const actual_identifier = nd.propertyName ?? nd.name;
+      const named_imports = nd.parent;
+      const import_clause = named_imports.parent;
+      const import_declaration = import_clause.parent;
+      const module_pointer = import_declaration.moduleSpecifier;
+      const module_symbol = checker.getSymbolAtLocation(module_pointer);
+      const export_symbol = get_export(module_symbol, actual_identifier);
+      if (!export_symbol) {
+         return null;
+      }
+   }
+
+   if (ts.isImportEqualsDeclaration(nd)) {
+      // import x = require("y"); << can ignore
+      // import x = y; << can ignore
+      // import x = y.z;
+      const ref = nd.moduleReference;
+      if (!ts.isQualifiedName(ref)) {
+         return null;
+      }
+
+      const {left, right} = ref;
+      const module_symbol = checker.getSymbolAtLocation(left);
+      const declarations = get_declarations(module_symbol);
+   }
+}
+
 function orig_decl(tr: ts.TypeReferenceNode): null | ts.NamedDeclaration {
    const potential_alias = checker.getTypeFromTypeNode(tr);
    let sym = potential_alias.aliasSymbol;
@@ -129,7 +197,7 @@ class cc_transformer implements ts.CustomTransformer {
    }
 
    transformSourceFile(src: ts.SourceFile): ts.SourceFile {
-      console.log(`# # # ${src.fileName}`);
+      console.log(`$$$ ${src.fileName}`);
       return ts.visitEachChild(src, this.routing_visitor_factory(src), this.ctx);
    }
 

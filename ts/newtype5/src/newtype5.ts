@@ -25,7 +25,7 @@ export type unwrap<outer> =
       : outer;
 
 //! unwrap
-export type api_in<_> = unknown;
+export type api_in<t> = newtype<"api_in"> | t;
 
 //! unwrap
 export type api_out<t> = t;
