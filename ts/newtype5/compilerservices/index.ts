@@ -97,11 +97,10 @@ function get_declarations(s: ts.Symbol | undefined): ts.Declaration[] {
 // :> DeclarationStatement
 //    :> ImportEqualsDeclaration
 //    :> TypeAliasDeclaration <- good!
-function find_actual_type_declaration(nd: ts.NamedDeclaration): ts.TypeAliasDeclaration | null {
+function find_actual_type_declaration(nd: ts.NamedDeclaration): ts.TypeAliasDeclaration[] {
    if (ts.isTypeAliasDeclaration(nd)) {
-      return nd;
+      return [nd];
    }
-
 
    if (ts.isImportSpecifier(nd)) {
       const actual_identifier = nd.propertyName ?? nd.name;
@@ -112,7 +111,7 @@ function find_actual_type_declaration(nd: ts.NamedDeclaration): ts.TypeAliasDecl
       const module_symbol = checker.getSymbolAtLocation(module_pointer);
       const export_symbol = get_export(module_symbol, actual_identifier);
       if (!export_symbol) {
-         return null;
+         return [];
       }
    }
 
@@ -122,13 +121,18 @@ function find_actual_type_declaration(nd: ts.NamedDeclaration): ts.TypeAliasDecl
       // import x = y.z;
       const ref = nd.moduleReference;
       if (!ts.isQualifiedName(ref)) {
-         return null;
+         return [];
       }
 
       const {left, right} = ref;
       const module_symbol = checker.getSymbolAtLocation(left);
       const declarations = get_declarations(module_symbol);
+      return declarations.map(d => {
+         
+      });
    }
+
+   return [];
 }
 
 function orig_decl(tr: ts.TypeReferenceNode): null | ts.NamedDeclaration {
