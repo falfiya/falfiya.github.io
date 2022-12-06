@@ -67,16 +67,13 @@ function get_export(mod: ts.Symbol | undefined, id: ts.Identifier): ts.Symbol | 
    if (!mod) {
       return null;
    }
-
    if (!mod.exports) {
       return null;
    }
-
    const res_export = mod.exports.get(id.escapedText);
    if (!res_export) {
       return null;
    }
-
    return res_export;
 }
 
@@ -84,55 +81,52 @@ function get_declarations(s: ts.Symbol | undefined): ts.Declaration[] {
    if (!s) {
       return [];
    }
-
    if (!s.declarations) {
       return [];
    }
-
    return s.declarations;
 }
 
-// NamedDeclaration
-// :> ImportSpecifier
-// :> DeclarationStatement
-//    :> ImportEqualsDeclaration
-//    :> TypeAliasDeclaration <- good!
-function find_actual_type_declaration(nd: ts.NamedDeclaration): ts.TypeAliasDeclaration[] {
-   if (ts.isTypeAliasDeclaration(nd)) {
-      return [nd];
+namespace get_origin_type_aliases {
+   export function type_directed_method(t: ts.Type): ts.TypeAliasDeclaration[] {
+      return get_declarations(t.aliasSymbol)
+         .filter(d => ts.isTypeAliasDeclaration(d)) as ts.TypeAliasDeclaration[];
    }
 
-   if (ts.isImportSpecifier(nd)) {
-      const actual_identifier = nd.propertyName ?? nd.name;
-      const named_imports = nd.parent;
-      const import_clause = named_imports.parent;
-      const import_declaration = import_clause.parent;
-      const module_pointer = import_declaration.moduleSpecifier;
-      const module_symbol = checker.getSymbolAtLocation(module_pointer);
-      const export_symbol = get_export(module_symbol, actual_identifier);
-      if (!export_symbol) {
+   export function symbol_recursive_method(s: ts.Symbol): ts.TypeAliasDeclaration[] {
+      return get_declarations(s).flatMap(d => {
+         if (ts.isTypeAliasDeclaration(d)) {
+            return d;
+         }
+         if (ts.isImportSpecifier(d)) {
+            const actual_identifier = d.propertyName ?? d.name;
+            const named_imports = d.parent;
+            const import_clause = named_imports.parent;
+            const import_declaration = import_clause.parent;
+            const module_pointer = import_declaration.moduleSpecifier;
+            const module_symbol = checker.getSymbolAtLocation(module_pointer);
+            const export_symbol = get_export(module_symbol, actual_identifier);
+            if (!export_symbol) {
+               return [];
+            }
+            return symbol_recursive_method(export_symbol);
+         }
+         if (ts.isImportEqualsDeclaration(d)) {
+            const ref = d.moduleReference;
+            if (!ts.isQualifiedName(ref)) {
+               return [];
+            }
+            const {left, right} = ref;
+            const module_symbol = checker.getSymbolAtLocation(left);
+            const export_symbol = get_export(module_symbol, right);
+            if (!export_symbol) {
+               return [];
+            }
+            return symbol_recursive_method(export_symbol);
+         }
          return [];
-      }
+      })
    }
-
-   if (ts.isImportEqualsDeclaration(nd)) {
-      // import x = require("y"); << can ignore
-      // import x = y; << can ignore
-      // import x = y.z;
-      const ref = nd.moduleReference;
-      if (!ts.isQualifiedName(ref)) {
-         return [];
-      }
-
-      const {left, right} = ref;
-      const module_symbol = checker.getSymbolAtLocation(left);
-      const declarations = get_declarations(module_symbol);
-      return declarations.map(d => {
-         
-      });
-   }
-
-   return [];
 }
 
 function orig_decl(tr: ts.TypeReferenceNode): null | ts.NamedDeclaration {
@@ -217,7 +211,6 @@ class cc_transformer implements ts.CustomTransformer {
             }
       
             if (ts.isTypeReferenceNode(node)) {
-               console.log(node.getText());
                let orig = orig_tdecl(node);
                if (!orig) {
                   break this_node_into_children;

@@ -10,22 +10,24 @@ type hex_char = `${
 
 // unknown if true
 // hex_string if false
-type only_hex_chars<s> =
+type force_hex_chars<s> =
    s extends ""
       ? unknown
       : s extends `${infer first}${infer rest}`
          ? first extends hex_char
-            ? only_hex_chars<rest>
+            ? force_hex_chars<rest>
             : hex_string
          : never;
 
-type is_hex_string<s> =
+// unknown if true
+// hex_string if false
+type force_hex_string<s> =
    s extends `0x${infer chars}`
-      ? only_hex_chars<chars>
+      ? force_hex_chars<chars>
       : hex_string;
 
-function hex_string<s extends string>(s: s & is_hex_string<s>): hex_string {
+function hex_string<s extends string>(s: s & force_hex_string<s>): hex_string {
    return s as never;
 }
 
-hex_string("0x1")
+hex_string("0x1("); // Type 'string' is not assignable to type 'hex_string'
