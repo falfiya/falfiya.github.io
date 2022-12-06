@@ -88,12 +88,15 @@ function get_declarations(s: ts.Symbol | undefined): ts.Declaration[] {
 }
 
 namespace get_origin_type_aliases {
-   export function type_directed_method(t: ts.Type): ts.TypeAliasDeclaration[] {
+   export function type_direct_method(t: ts.Type): ts.TypeAliasDeclaration[] {
       return get_declarations(t.aliasSymbol)
          .filter(d => ts.isTypeAliasDeclaration(d)) as ts.TypeAliasDeclaration[];
    }
 
-   export function symbol_recursive_method(s: ts.Symbol): ts.TypeAliasDeclaration[] {
+   export function symbol_recursive_method(s: ts.Symbol | undefined | null): ts.TypeAliasDeclaration[] {
+      if (!s) {
+         return [];
+      }
       return get_declarations(s).flatMap(d => {
          if (ts.isTypeAliasDeclaration(d)) {
             return d;
@@ -106,9 +109,6 @@ namespace get_origin_type_aliases {
             const module_pointer = import_declaration.moduleSpecifier;
             const module_symbol = checker.getSymbolAtLocation(module_pointer);
             const export_symbol = get_export(module_symbol, actual_identifier);
-            if (!export_symbol) {
-               return [];
-            }
             return symbol_recursive_method(export_symbol);
          }
          if (ts.isImportEqualsDeclaration(d)) {
@@ -119,9 +119,6 @@ namespace get_origin_type_aliases {
             const {left, right} = ref;
             const module_symbol = checker.getSymbolAtLocation(left);
             const export_symbol = get_export(module_symbol, right);
-            if (!export_symbol) {
-               return [];
-            }
             return symbol_recursive_method(export_symbol);
          }
          return [];
@@ -129,58 +126,10 @@ namespace get_origin_type_aliases {
    }
 }
 
-function orig_decl(tr: ts.TypeReferenceNode): null | ts.NamedDeclaration {
-   const potential_alias = checker.getTypeFromTypeNode(tr);
-   let sym = potential_alias.aliasSymbol;
-   if (!sym) {
-      console.log("|   orig_decl cannot get typed symbol");
-      sym = checker.getSymbolAtLocation(tr.typeName);
-   }
-   if (!sym) {
-      console.log("|   orig_decl no symbol");
-      return null;
-   }
-   const declarations = sym.declarations;
-   if (!declarations) {
-      console.log("|   orig_decl no declarations");
-      return null;
-   }
-   const [declaration] = declarations;
-   if (!declaration) {
-      console.log("|   orig_decl no declaration");
-      return null;
-   }
-   return declaration;
-}
+let ident = 0;
 
-function orig_tdecl(tr: ts.TypeReferenceNode): null | ts.TypeAliasDeclaration {
-   let count = 0;
-   let declaration;
-   do {
-      declaration = orig_decl(tr);
-      if (declaration === null) {
-         return null;
-      }
-      if (count++ > 10) {
-         console.log(`|   ${tr.getFullText()}`);
-         console.log("|   orig_decl not type alias");
-         if (tr.getText().includes("api_out")) {
-            while (true) {
-               const t = ts;
-               const c = checker;
-               var x;
-               try {
-                  console.log(eval(rl.question("> ")));
-               } catch (e) {
-                  console.log(e);
-               }
-            }
-         }
-         return null;
-      }
-   } while (!ts.isTypeAliasDeclaration(declaration));
-
-   return declaration;
+function log(s: string) {
+   console.log(`${String(ident).padStart(2)} ${' '.repeat(ident)}|${s}`);
 }
 
 class cc_transformer implements ts.CustomTransformer {
@@ -202,32 +151,50 @@ class cc_transformer implements ts.CustomTransformer {
    routing_visitor_factory(src: ts.SourceFile) {
       const unwrapping_visitor = this.unwrapping_visitor_factory(src);
       const routing_visitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
+         ident++;
          this_node_into_children: {
             if (ts.isTypeAliasDeclaration(node)) {
                if (leading_comments(node, src).includes("//! bake")) {
-                  return this.baking_visitor(node);
+                  const temp = this.baking_visitor(node);
+                  ident--;
+                  return temp;
                }
                break this_node_into_children;
             }
-      
+
             if (ts.isTypeReferenceNode(node)) {
-               let orig = orig_tdecl(node);
-               if (!orig) {
-                  break this_node_into_children;
+               log(node.getText());
+               const typ = checker.getTypeFromTypeNode(node);
+               const tdm_origin = get_origin_type_aliases.type_direct_method(typ);
+               for (const orgn of tdm_origin) {
+                  const comments = leading_comments(orgn, src);
+                  if (comments.includes("//! unwrap")) {
+                     const temp = unwrapping_visitor(node); // <-- found one!
+                     ident--;
+                     return temp;
+                  }
                }
-               const comments = leading_comments(orig, src);
-               comments.forEach(c => console.log(`|   ${c}`));
-               console.log(`|   ${orig.getText()}`);
-               if (!comments.includes("//! unwrap")) {
-                  break this_node_into_children;
+               log("   node failed type directed method");
+               const sym = checker.getSymbolAtLocation(node.typeName);
+               const srm_origin = get_origin_type_aliases.symbol_recursive_method(sym);
+               for (const orgn of srm_origin) {
+                  const comments = leading_comments(orgn, src);
+                  if (comments.includes("//! unwrap")) {
+                     const temp = unwrapping_visitor(node); // <-- found one!
+                     ident--;
+                     return temp;
+                  }
                }
-               return unwrapping_visitor(node);
             }
+            break this_node_into_children;
          }
 
-         return ts.visitEachChild(node, routing_visitor, this.ctx);
+         const temp = ts.visitEachChild(node, routing_visitor, this.ctx);
+         ident--;
+         return temp;
       }
 
+      ident--;
       return routing_visitor;
    }
 
@@ -256,20 +223,75 @@ class cc_transformer implements ts.CustomTransformer {
 
    unwrapping_visitor_factory(src: ts.SourceFile) {
       const unwrapping_visitor = (node: ts.Node): ts.Node => {
-         console.log("%   unwrapping!");
+         ident++;
          if (ts.isTypeReferenceNode(node)) {
-            const orig = orig_tdecl(node);
-            if (orig && leading_comments(orig, src).includes("//! newtype")) {
-               return this.ctx.factory.createKeywordTypeNode(
-                  ts.SyntaxKind.UnknownKeyword
-               );
+            log(`unwrapping ${node.getText()}`);
+            const tdm_origin = get_origin_type_aliases.type_direct_method(typ);
+            for (const orgn of tdm_origin) {
+               const comments = leading_comments(orgn, src);
+               if (comments.includes("//! newtype")) {
+                  ident--;
+                  log("replaced with unknown");
+                  return this.ctx.factory.createKeywordTypeNode(
+                     ts.SyntaxKind.UnknownKeyword
+                  );
+               }
             }
+            log("no tdm");
+            const sym = checker.getSymbolAtLocation(node.typeName);
+            const srm_origin = get_origin_type_aliases.symbol_recursive_method(sym);
+            for (const orgn of srm_origin) {
+               const comments = leading_comments(orgn, src);
+               if (comments.includes("//! newtype")) {
+                  ident--;
+                  log("replaced with unknown");
+                  return this.ctx.factory.createKeywordTypeNode(
+                     ts.SyntaxKind.UnknownKeyword
+                  );
+               }
+            }
+            log("nothing");
+            const temp = ts.visitEachChild(node, unwrapping_visitor, this.ctx);
+            ident--;
+            return temp;
+         }
+         log(`not even a typereferencenode ${node.kind}`);
+         const temp = ts.visitEachChild(node, unwrapping_visitor, this.ctx);
+         ident--;
+         return temp;
+      }
+      const extracting_visitor = (node: ts.TypeReferenceNode): ts.Node => {
+         ident++;
+         if (!node.typeArguments) {
+            log("should type arguments");
+            ident--;
             return node;
          }
-         return ts.visitEachChild(node, unwrapping_visitor, this.ctx);
-      }
+         const [arg] = node.typeArguments
+         if (!arg) {
+            log("missing type argument");
+            ident--;
+            return node;
+         }
+         const typ = checker.getTypeFromTypeNode(node);
+         const generated = checker.typeToTypeNode(
+            typ,
+            undefined, 0
+            | ts.NodeBuilderFlags.NoTruncation
+            | ts.NodeBuilderFlags.UseFullyQualifiedType
+            | ts.NodeBuilderFlags.WriteTypeParametersInQualifiedName
+            | ts.NodeBuilderFlags.UseAliasDefinedOutsideCurrentScope
+         );
+         if (!generated) {
+            ident--;
+            return node;
+         }
+         const temp = ts.visitEachChild(generated, unwrapping_visitor, this.ctx);
+         ident--;
+         return temp;
+      };
 
-      return unwrapping_visitor;
+      return extracting_visitor;
    }
 }
 

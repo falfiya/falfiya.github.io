@@ -30,4 +30,4 @@ function hex_string<s extends string>(s: s & force_hex_string<s>): hex_string {
    return s as never;
 }
 
-hex_string("0x1("); // Type 'string' is not assignable to type 'hex_string'
+hex_string("0x1aaaa1"); // Type 'string' is not assignable to type 'hex_string'
