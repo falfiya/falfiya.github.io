@@ -24,11 +24,13 @@ export type unwrap<outer> =
          : never
       : outer;
 
+/*
 //! unwrap
 export type api_in<t> = newtype<"api_in"> | t;
 
 //! unwrap
 export type api_out<t> = t;
+*/
 
 export function unwrap<outer>(outer: outer): unwrap<outer> {
    return outer as never;

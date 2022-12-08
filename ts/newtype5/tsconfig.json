@@ -13,7 +13,7 @@
    // emit
    ,  "declaration": true
    ,  "declarationDir": "dts"
-   ,  "emitDeclarationOnly": true
+   // ,  "emitDeclarationOnly": true
    ,  "newLine": "lf"
    // ,  "noEmit": true
    ,  "noEmitOnError": true

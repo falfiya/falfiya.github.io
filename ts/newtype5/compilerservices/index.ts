@@ -1,7 +1,6 @@
 import fs from "fs";
 import ts from "typescript";
 import {dirname} from "path";
-import rl from 'readline-sync';
 
 function print_diagnostics(diagnostics: readonly ts.Diagnostic[]): void {
    for (const diag of diagnostics) {
@@ -163,6 +162,36 @@ class cc_transformer implements ts.CustomTransformer {
             }
 
             if (ts.isTypeReferenceNode(node)) {
+               // dumb method
+               log(node.getText());
+               const typ = checker.getTypeFromTypeNode(node);
+               const tdm_origin = get_origin_type_aliases.type_direct_method(typ);
+               for (const orgn of tdm_origin) {
+                  const comments = leading_comments(orgn, src);
+                  if (comments.includes("//! newtype")) {
+                     return this.ctx.factory.createKeywordTypeNode(
+                        ts.SyntaxKind.UnknownKeyword
+                     );
+                  }
+                  if (comments.includes("//! unwrap")) {
+                     return node.typeArguments || node;
+                  }
+               }
+               log("   node failed type directed method");
+               const sym = checker.getSymbolAtLocation(node.typeName);
+               const srm_origin = get_origin_type_aliases.symbol_recursive_method(sym);
+               for (const orgn of srm_origin) {
+                  const comments = leading_comments(orgn, src);
+                  if (comments.includes("//! newtype")) {
+                     return this.ctx.factory.createKeywordTypeNode(
+                        ts.SyntaxKind.UnknownKeyword
+                     );
+                  }
+                  if (comments.includes("//! unwrap")) {
+                     return node.typeArguments || node;
+                  }
+               }
+               /*
                log(node.getText());
                const typ = checker.getTypeFromTypeNode(node);
                const tdm_origin = get_origin_type_aliases.type_direct_method(typ);
@@ -185,6 +214,7 @@ class cc_transformer implements ts.CustomTransformer {
                      return temp;
                   }
                }
+               */
             }
             break this_node_into_children;
          }
@@ -226,6 +256,7 @@ class cc_transformer implements ts.CustomTransformer {
          ident++;
          if (ts.isTypeReferenceNode(node)) {
             log(`unwrapping ${node.getText()}`);
+            const typ = checker.getTypeFromTypeNode(node);
             const tdm_origin = get_origin_type_aliases.type_direct_method(typ);
             for (const orgn of tdm_origin) {
                const comments = leading_comments(orgn, src);
