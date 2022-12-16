@@ -2,6 +2,13 @@ import fs from "fs";
 import ts from "typescript";
 import {dirname} from "path";
 
+const IGNORED: string[] = [
+   'out', 'version', 'help', 'emitDeclarationOnly',
+   'watch', 'declaration', 'declarationDir', 'declarationMap', 'mapRoot',
+   'sourceMap', 'inlineSources', 'removeComments', 'incremental',
+   'tsBuildInfoFile',
+];
+
 function print_diagnostics(diagnostics: readonly ts.Diagnostic[]): void {
    for (const diag of diagnostics) {
       let message = "Error";
@@ -59,6 +66,7 @@ function leading_comments(node: ts.Node, sf: ts.SourceFile): string[] {
    const raw = declaration_file.getFullText();
    const start = node.getFullStart();
    const ranges = ts.getLeadingCommentRanges(raw, start);
+   ts.get
    return ranges ? ranges.map(({pos, end}) => raw.slice(pos, end).trim()) : [];
 }
 
