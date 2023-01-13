@@ -11,9 +11,6 @@
    ,  "module": "commonjs"
    ,  "moduleResolution": "node16"
    // emit
-   ,  "declaration": true
-   ,  "declarationDir": "dts"
-   // ,  "emitDeclarationOnly": true
    ,  "newLine": "lf"
    // ,  "noEmit": true
    ,  "noEmitOnError": true

@@ -2,6 +2,13 @@ import fs from "fs";
 import ts from "typescript";
 import {dirname} from "path";
 
+const IGNORED: string[] = [
+   'out', 'version', 'help', 'emitDeclarationOnly',
+   'watch', 'declaration', 'declarationDir', 'declarationMap', 'mapRoot',
+   'sourceMap', 'inlineSources', 'removeComments', 'incremental',
+   'tsBuildInfoFile',
+];
+
 function print_diagnostics(diagnostics: readonly ts.Diagnostic[]): void {
    for (const diag of diagnostics) {
       let message = "Error";
