@@ -9,7 +9,7 @@
 #define STATUS_INFO_LENGTH_MISMATCH 0xC0000004
 #endif
 
-RTL_UNICODE_STRING_BUFFER 
+// RTL_UNICODE_STRING_BUFFER
 
 using NtGetNextProcess = NTSTATUS (NTAPI *const)(
    _In_  HANDLE ProcessHandle,
