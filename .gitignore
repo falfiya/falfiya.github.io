@@ -9,6 +9,7 @@ __pycache__/
 zig-cache/
 /.stfolder/
 /ts/dist/
+/.metals/
 
 *.exe
 *.elf
