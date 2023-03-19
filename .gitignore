@@ -22,3 +22,5 @@ zig-cache/
 *.exp
 *.lib
 *.strace
+/build
+/lake-packages/*
