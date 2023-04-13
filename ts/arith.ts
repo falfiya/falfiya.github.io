@@ -15,5 +15,3 @@ function add
 }
 
 const three = add(1, 2);
-
-globalThis.i
