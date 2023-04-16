@@ -1,16 +1,17 @@
 class BinOp {
-   constructor(left, right) {
+   constructor(op, left, right) {
+      this.op = op;
       this.left = left;
       this.right = right;
    }
    toString() {
-      return `(${this.left} ${this.__proto__.constructor.name} ${this.right})`;
+      return `(${this.left} ${this.op} ${this.right})`;
    }
 }
 
 class LeftAssociative extends BinOp {
-   constructor(left, right) {
-      super(left, right);
+   constructor(op, left, right) {
+      super(op, left, right);
       const thisClass = this.__proto__.constructor;
       if (right instanceof thisClass) {
          this.left = new thisClass(left, right.left);
@@ -21,25 +22,25 @@ class LeftAssociative extends BinOp {
 
 class Add extends LeftAssociative {
    constructor(left, right) {
-      super(left, right);
+      super("+", left, right);
    }
 }
 
 class Sub extends LeftAssociative {
    constructor(left, right) {
-      super(left, right);
+      super("-", left, right);
    }
 }
 
 class Mul extends LeftAssociative {
    constructor(left, right) {
-      super(left, right);
+      super("*", left, right);
    }
 }
 
 class Exp extends BinOp {
    constructor(left, right) {
-      super(left, right);
+      super("^", left, right);
    }
 }
 
@@ -48,7 +49,7 @@ class Id {
       this.name = name;
    }
    toString() {
-      return `#${this.name}`;
+      return this.name;
    }
 }
 
@@ -60,6 +61,7 @@ class ParseResult {
 }
 
 function term(s) {
+   // console.log("term", s);
    let left;
    [left, s] = factor(s);
    if (s[0] === "+") {
@@ -79,7 +81,7 @@ function term(s) {
 }
 
 function factor(s) {
-   console.log("factor", s);
+   // console.log("factor", s);
    let left;
    [left, s] = power(s);
 
@@ -94,9 +96,9 @@ function factor(s) {
 }
 
 function power(s) {
-   console.log("power", s);
+   // console.log("power", s);
    let left;
-   [left, s] = id(s);
+   [left, s] = group(s);
 
    if (s[0] === "^") {
       s = s.slice(1);
@@ -108,7 +110,24 @@ function power(s) {
    return [left, s];
 }
 
+function group(s) {
+   // console.log("group", s);
+   if (s[0] === "(") {
+      s = s.slice(1);
+      let inside;
+      [inside, s] = term(s);
+      if (s[0] === ")") {
+         // if the group has somehow ended some other way than this, we're good
+         s = s.slice(1);
+      }
+      return [inside, s];
+   }
+
+   return id(s);
+}
+
 function id(s) {
+   // console.log("id", s);
    let out = "";
    while (s && /[A-Za-z]/.test(s[0])) {
       out += s[0];
@@ -119,7 +138,7 @@ function id(s) {
 
 function parse(s) {
    const [res] = term(s);
-   process.stdout.write("" + res);
+   process.stdout.write(s + "\n==>" + res);
 }
 
-parse("a+b^c^d+e+f+g");
+parse("a+b^c^d+e+f+g+(h+i)*y");
