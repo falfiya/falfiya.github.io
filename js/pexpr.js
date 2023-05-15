@@ -133,6 +133,9 @@ function id(s) {
       out += s[0];
       s = s.slice(1);
    }
+   if (out.length === 0) {
+      out = "???";
+   }
    return [new Id(out), s];
 }
 
@@ -141,4 +144,4 @@ function parse(s) {
    process.stdout.write(s + "\n==>" + res);
 }
 
-parse("a+b^c^d+e+f+g+(h+i)*y");
+parse("a+b2");
