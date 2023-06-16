@@ -1,6 +1,5 @@
 from __future__ import annotations
 from typing import *
-import traceback
 
 T = TypeVar("T")
 Fn = TypeVar("Fn", bound=Callable)
