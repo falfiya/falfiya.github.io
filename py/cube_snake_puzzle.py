@@ -16,6 +16,13 @@ def memoized(fn: Fn) -> Fn:
          return ret
    return memoized_fn
 
+def printer(fn: Fn) -> Fn:
+   def printer_wrapper(*args):
+      out = fn(*args)
+      print(f"{fn.__name__}{','.join(map(repr, args))} = {out}")
+      return out
+   return printer_wrapper
+
 class R3:
    def __init__(self, x: int, y: int, z: int):
          assert type(x) is int
@@ -54,12 +61,14 @@ class R3:
          return type(self)(self.x - x, self.y - y, self.z - z)
       else:
          return NotImplementedError("Incompatible argument")
+   def __repr__(self) -> str:
+      return f"{self.x:2d},{self.y:2d},{self.z:2d}"
 
 # boolean space of occupation
 class Cube:
    def in_bounds(r3: R3):
       coords = r3.as_tuple()
-      return 0 >= min(coords) and max(coords) < 3
+      return 0 <= min(coords) and max(coords) < 3
 
    __index = int
    def __R3_to_index(r3: R3) -> __index:
@@ -76,26 +85,39 @@ class Cube:
 
    # instance methods
    def __init__(self, filled: list[bool] = [False] * 3 * 3 * 3):
-      self.filled = filled
+      self._filled = filled
 
-   def fill(self, r3: R3):
-      self.filled[Cube.R3_to_index(r3)] = True
+   def fill(self, r3: R3) -> Self:
+      self._filled[Cube.__R3_to_index(r3)] = True
+      return self
+
+   def is_filled(self, r3: R3) -> bool:
+      return self._filled[Cube.__R3_to_index(r3)]
+
+   def is_empty(self, r3: R3) -> bool:
+      return not self.is_filled(r3)
+
+   def okay(self, r3: R3) -> Self:
+      return Cube.in_bounds(r3) and self.is_empty(r3)
 
    def __repr__(self):
       out = ""
-      for i, e in enumerate(self.filled):
-         if i % 3 == 0:
+      for i, e in enumerate(self._filled):
+         if i > 1 and i % 3 == 0:
             out += "\n"
          if i % 9 == 0:
-            out += "- - -\n"
+            out += "      \n"
          if e:
-            out += "o "
+            if i % 2 == 0:
+               out += "o "
+            else:
+               out += "o "
          else:
             out += ". "
       return out
 
    def copy(self) -> Self:
-      return type(self)(self.filled.copy())
+      return type(self)(self._filled.copy())
 
 @memoized
 class Ori(R3):
@@ -109,7 +131,7 @@ class Ori(R3):
       if y != 0: count += 1
       if z != 0: count += 1
       assert count == 1, "An orientation must contain one nonzero element"
-      mag = x + y + z
+      mag = abs(x + y + z)
       assert mag == 1, "An orientation must have magnitude 1"
    # @memoized
    def perp(self) -> tuple[Self, Self, Self, Self]:
@@ -125,53 +147,97 @@ x = Ori(1, 0, 0)
 y = Ori(0, 1, 0)
 z = Ori(0, 0, 1)
 
-class CubeHistory(list[Cube]):
-   def __init__(self, initial_pos: R3, initial_ori: Ori):
-      super().__init__()
-      that_cube = self[-1]
-      class Cursor(R3):
-         def __init__(self, *args):
-            super().__init__(*args)
-            that_cube.fill()
-      self.cursor = Cursor(*initial_pos.as_tuple)
-      self.append(Cube())
+steps = list[R3]
+class CubeHistoryState:
+   def __init__(self, steps: steps, cube: Cube):
+      self.steps = steps
+      self.cube = cube
+   def __repr__(self) -> str:
+      return "\n".join([
+         *[f"# {step}  #" for step in self.steps],
+         *[f"#   {line}  #" for line in repr(self.cube).splitlines()],
+      ])
+   def copy(self) -> Self:
+      return type(self)([], self.cube.copy())
+
+class CubeHistory(list[CubeHistoryState]):
+   def __init__(self, it: Iterator[CubeHistoryState] = [CubeHistoryState([], Cube())]):
+      super().__init__(it)
+
+   def cu_fill(self, r3: R3):
+      self[-1].steps.append(r3)
+      self[-1].cube.fill(r3)
+
+   def cu_okay(self, r3: R3) -> bool:
+      return self[-1].cube.okay(r3)
 
    def __repr__(self):
       out = ""
-      for i, e in enumerate(self):
-         # f"###########",
-         # f"# Step 99 #",
-         # f"#  - - -  #",
-         # f"###########",
+      for i, history_state in enumerate(self):
+         # f"############",
+         # f"# Step  99 #",
+         # f"#   - - -  #",
+         # f"# 0, 0, 3  #,
+         # f"############",
          out += "\n".join([
-            f"###########",
-            f"# Step {i + 1:2d} #",
-            *[f"#  {line}  #" for line in repr(e).splitlines()],
-            f"###########",
-            f""
+            f"#############",
+            f"#  Step {i + 1:2d}  #",
+            *repr(history_state).splitlines(),
+            f"#############",
+            f"",
          ])
+      return out
 
-   def next(self) -> CubeHistory:
-      if len(self) == 0:
-         self.append(Cube())
-      else:
-         self.append(self[-1].copy())
-      return self[-1]
+   def next(self) -> Self:
+      assert len(self) > 0, "CubeHistory should never be empty!"
+      return CubeHistory([*self, self[-1].copy()])
 
-def try_permute(count: int, pos: R3, step: Ori) -> Optional[list[Cube]]:
+   def copy(self) -> Self:
+      return type(self)(self)
+
+def try_permute(*, turns: list[int], pos: R3, ori: Ori, ch: CubeHistory, po="") -> Optional[list[Cube]]:
+   if len(turns) == 0:
+      return [ch]
+   count = turns[0]
+   turns = turns[1:]
    assert count > 0, "count must be > 0"
-   assert Cube.in_bounds(pos), "position must be in bounds to begin with"
-   while count > 0:
-      pos += step
-      if not Cube.in_bounds(pos):
+
+   for _ in range(0, count):
+      pos += ori
+      if not ch.cu_okay(pos):
+         print(f"{po} died")
          return None
-      count -= 1
+      ch.cu_fill(pos)
+      print(f"{po}{pos} + {ori}")
+
+
+   possible_histories = []
+   for new_ori in ori.perp():
+      hist = try_permute(turns=turns, pos=pos, ori=new_ori, ch=ch.next(), po=po + "   ")
+      if hist is not None:
+         for h in hist:
+            possible_histories.append(h)
+
+   return possible_histories
 
 def base():
-   chist = CubeHistory()
-   Cursor(chist.next()) + x + x
-   Cursor(chist.next()) + y
-   print(chist)
+   ch = CubeHistory()
+
+   pos = R3(0, 0, 0)
+   ch.cu_fill(pos)
+
+   pos += x
+   ch.cu_fill(pos)
+
+   pos += x
+   ch.cu_fill(pos)
+
+   turns = [2, 2, 2, 1, 1, 1, 2, 2, 1, 1, 2, 1, 2, 1, 1, 2]
+   for i, sol in enumerate(try_permute(turns=turns, pos=pos, ori=y, ch=ch.next())):
+      print(f"Solution #{i + 1}")
+      print(sol)
+
+   # print(ch)
    # try_permute()
 
 base()
