@@ -17,22 +17,11 @@ def memoized(fn: Fn) -> Fn:
    return memoized_fn
 
 class R3:
-   @overload
    def __init__(self, x: int, y: int, z: int):
-      ...
-   @overload
-   def __init__(self, r3: R3):
-      ...
-   def __init__(self, r3_or_x: Union[R3, int], y: Optional[int] = None, z: Optional[int] = None)
-      if isinstance(r3_or_x, R3):
-         self.x = r3_or_x.x
-         self.y = r3_or_x.y
-         self.z = r3_or_x.z
-      else:
-         assert type(r3_or_x) is int
+         assert type(x) is int
          assert type(y) is int
          assert type(z) is int
-         self.x = r3_or_x
+         self.x = x
          self.y = y
          self.z = z
    def as_tuple(self) -> tuple[int, int, int]:
@@ -139,9 +128,14 @@ z = Ori(0, 0, 1)
 class CubeHistory(list[Cube]):
    def __init__(self, initial_pos: R3, initial_ori: Ori):
       super().__init__()
+      that_cube = self[-1]
       class Cursor(R3):
-         def __init__(self, )
-      self.cursor = Cursor()
+         def __init__(self, *args):
+            super().__init__(*args)
+            that_cube.fill()
+      self.cursor = Cursor(*initial_pos.as_tuple)
+      self.append(Cube())
+
    def __repr__(self):
       out = ""
       for i, e in enumerate(self):
@@ -156,7 +150,8 @@ class CubeHistory(list[Cube]):
             f"###########",
             f""
          ])
-   def next(self) -> Cube:
+
+   def next(self) -> CubeHistory:
       if len(self) == 0:
          self.append(Cube())
       else:
