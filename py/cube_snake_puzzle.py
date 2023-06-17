@@ -164,9 +164,9 @@ class CubeHistoryState:
             out += f"{i // 9}│"
          if e:
             if i == last_step:
-               out += colored("o ", "yellow")
+               out += colored("x ", "yellow")
             elif i in middle_steps:
-               out += colored("x ", "cyan")
+               out += colored("o ", "cyan")
             else:
                out += "o "
          else:
