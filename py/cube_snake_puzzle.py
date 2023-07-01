@@ -133,10 +133,9 @@ class Ori(R3):
       assert mag == 1, "An orientation must have magnitude 1"
    # @memoized
    def perp(self) -> tuple[Self, Self, Self, Self]:
-      me = type(self)
-      xs = me(1, 0, 0), me(-1, 0, 0)
-      ys = me(0, 1, 0), me( 0,-1, 0)
-      zs = me(0, 0, 1), me( 0, 0,-1)
+      xs = Ori(1, 0, 0), Ori(-1, 0, 0)
+      ys = Ori(0, 1, 0), Ori( 0,-1, 0)
+      zs = Ori(0, 0, 1), Ori( 0, 0,-1)
       if self.x != 0: return *ys, *zs
       if self.y != 0: return *xs, *zs
       if self.z != 0: return *xs, *ys
