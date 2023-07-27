@@ -48,23 +48,17 @@ def get_arg_ptr(argidx: int) -> ptr[Any]:
       type = annotations[name]
    return ptr(callercaller.f_locals, name, type)
 
-def add1(_: int) -> None:
-   a = get_arg_ptr(0)
-   a._ += 1
-
-x = 1
-add1(x)
-print(x)
-
 class basic_istream:
    def __rshift__(self, _):
       var = get_arg_ptr(0)
       var._ = var.type(input())
 
 cin = basic_istream()
-a: int = None
+
+a: int = 1
 b: float = None
 cin >> a
-print(a)
 cin >> b
-print(b)
+
+print(a, b)
+

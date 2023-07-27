@@ -2,6 +2,13 @@
    "version": "0.2.0",
    "configurations": [
       {
+         "type": "java",
+         "name": "Wrong",
+         "request": "launch",
+         "mainClass": "Wrong",
+         "projectName": "coalpha-java"
+      },
+      {
          "name": "Attach by Process ID",
          "processId": "${command:PickProcess}",
          "request": "attach",
