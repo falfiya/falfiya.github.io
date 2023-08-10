@@ -7,10 +7,9 @@ flowchart TD
    A[commit curse?] --> B[yes.];
 ```
 
-$$
-A = \text{I am going to commit Arson at UHS}\newline
-G = \text{I have gasoline}\newline\newline
-$$
-$$
+```math
+\displaylines{A = \text{I am going to commit Arson at UHS}\\ G = \text{I have gasoline}\newline\newline}
+```
+```math
 \frac{\frac{G\text{ true}}{A\text{ true}}\quad{\frac{G\text{ false}}{A\text{ false}}}}{(G\rightarrow A)\text{ true}\quad(\neg G\rightarrow\neg A)\text{ true}}
-$$
+```
