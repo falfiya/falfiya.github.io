@@ -36,7 +36,7 @@ release~%.c: c/%.release.$(exe)
 	-
 
 # cxx
-cxx_flags   = -Wall -Wextra -std=c++20 -fuse-ld=lld
+cxx_flags   = -Wall -Wextra -std=c++20
 cxx_dflags := -g
 cxx_rflags := -O2
 
