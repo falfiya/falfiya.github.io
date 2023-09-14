@@ -11,15 +11,24 @@ cflags += -Oz
 cflags += -nobuiltininc
 cflags += -nostdlib
 cflags += -ffreestanding
+cflags += -fno-unwind-tables
 ifeq ($(LINKER),lld)
-	cflags += -flto
-	cflags += -fuse-ld=lld
+$(info LINKER = MSVC LINK.EXE)
+cflags += -flto
+cflags += -fuse-ld=lld
 endif
 
 cflags += -Wl,/nodefaultlib,/subsystem:console
 ifeq ($(LINKER),link)
-	cflags += -Wl,/align:16
+$(info LINKER = LLVM lld-link.exe)
+cflags += -Wl,/align:16
 endif
+
+size: clean main.exe
+	@-dir main.exe
+
+clean:
+	@-del main.exe k32.lib main.asm main.ll
 
 main.exe: main.c k32.lib
 	clang $^ $(cflags) -o $@
