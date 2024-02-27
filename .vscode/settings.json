@@ -11,4 +11,5 @@
    "files.watcherExclude": {
       "**/target": true
    },
+   "zig.initialSetupDone": true,
 }
