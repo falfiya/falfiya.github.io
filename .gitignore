@@ -10,7 +10,7 @@ zig-cache/
 /.stfolder/
 /ts/dist/
 /.metals/
-
+*.thy~
 *.exe
 *.elf
 *.class
