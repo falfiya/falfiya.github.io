@@ -1,4 +1,4 @@
-# coalpha's playground
+# falfia's playground
 
 Small, potentially cursed, and interesting artifacts of code.
 
