@@ -158,10 +158,10 @@ def Var_Inverse(var_x: str) -> list[list[str]]:
       raise ValueError(f"Invalid variable {repr(v)}")
 
 def ParenEq(s: str) -> list[list[str]]:
-   m_inside = re.match(r"^\((.+)\) :: (.+)$", s)
+   m_inside = re.match(r"^\((.+)\) :: Expr$", s)
    if m_inside is None:
       raise ValueError("Parens failed")
-   return [[f"{m_inside.group(1).strip()} :: {m_inside.group(2).strip()}"]]
+   return [[f"{m_inside.group(1).strip()} :: Expr"]]
 
 INVERSE_RULES: list[t.Callable[[str], list[list[str]]]] = [
    App_Inverse,
