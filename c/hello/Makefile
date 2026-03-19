@@ -37,6 +37,11 @@ main.exe: main.c k32.lib
 k32.lib: k32.def
 	lld-link /def:$< /machine:x64 /out:$@
 
+main_zig.exe: main.zig k32.lib
+	"P:\lib\zig\zig.exe" build-obj main.zig -target x86_64-windows -O ReleaseSmall
+	lld-link main.obj k32.lib /nodefaultlib /subsystem:console /entry:start /out:$@
+	llvm-strip -s $@
+
 main.asm: main.c
 	clang $< $(cflags) -S -masm=intel -o $@
 
